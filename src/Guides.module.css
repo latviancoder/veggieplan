@@ -1,0 +1,31 @@
+.top {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 20px;
+}
+
+.tick {
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+}
+
+.tick:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 5px;
+  right: 0;
+  width: 1px;
+  background-color: red;
+}
+
+.tickLabel {
+  font-size: 12px;
+  width: 40px;
+  text-align: center;
+  display: inline-block;
+  margin-left: -20px;
+}

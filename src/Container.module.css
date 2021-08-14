@@ -1,0 +1,16 @@
+.root {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+}
+
+.info {
+  position: absolute;
+  padding: 10px;
+  bottom: 0;
+  left: 0;
+}
+
+.svg {
+  background: #ece8f2;
+}
