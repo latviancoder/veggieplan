@@ -3,6 +3,7 @@ import { useAtom } from 'jotai';
 import { creatableAtom } from './atoms/atoms';
 import { ObjectTypes, ShapeTypes } from './types';
 import { Rectangle } from './shapes/Rectangle';
+import { isRectangle } from './utils';
 
 type Props = {};
 
@@ -13,10 +14,7 @@ export const Creatable = (props: Props) => {
     return null;
   }
 
-  if (
-    creatable.objectType === ObjectTypes.Shape &&
-    creatable.shapeType === ShapeTypes.Rectangle
-  ) {
+  if (isRectangle(creatable)) {
     return <Rectangle {...creatable} isHighlighted={true} isSelected={true} />;
   }
 

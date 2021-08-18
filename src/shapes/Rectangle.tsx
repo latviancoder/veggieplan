@@ -52,6 +52,7 @@ export const Rectangle = memo(
     const render = () => (
       <>
         <rect
+          shapeRendering={rotation ? 'auto' : 'crispEdges'}
           strokeWidth={1 / zoom}
           stroke={stroke}
           fill={fill}

@@ -1,4 +1,4 @@
-import Hammer from 'hammerjs';
+import Hammer, { DIRECTION_ALL, DIRECTION_DOWN } from 'hammerjs';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { update } from '@tweenjs/tween.js';
 import { useAtom } from 'jotai';
@@ -24,6 +24,7 @@ import { Info } from './Info';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { copyAtom, pasteAtom } from './atoms/clipboardAtom';
 import { deleteAtom } from './atoms/deleteAtom';
+import { SnapLines } from './SnapLines';
 
 function animate(time: number) {
   requestAnimationFrame(animate);
@@ -97,8 +98,8 @@ export const Container = () => {
         setPanStart(null);
       });
 
-      mc.on('pan', ({ deltaX, deltaY, center }) => {
-        setPan({ deltaX, deltaY, center });
+      mc.on('pan', ({ deltaX, deltaY, center, offsetDirection }) => {
+        setPan({ deltaX, deltaY, center, direction: offsetDirection });
       });
 
       mc.on('tap', (event) => {
@@ -137,7 +138,7 @@ export const Container = () => {
 
   return (
     <div ref={rootRef} className={styles.root}>
-      {/* <Info /> */}
+      <Info />
       <svg
         className={styles.svg}
         viewBox={`
@@ -159,6 +160,7 @@ export const Container = () => {
         <Creatable />
         <Guides />
         <Objects />
+        <SnapLines />
       </svg>
     </div>
   );

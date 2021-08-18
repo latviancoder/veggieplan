@@ -1,7 +1,15 @@
+import { Rectangle } from './shapes/Rectangle';
 import { useAtom } from 'jotai/esm';
 import { plotAtom, plotCanvasAtom } from './atoms/atoms';
 import { zoomAtom } from './atoms/zoomAtom';
-import { Point, RectangleShape } from './types';
+import {
+  Point,
+  RectangleCorners,
+  RectangleShape,
+  GardenObject,
+  ObjectTypes,
+  ShapeTypes,
+} from './types';
 import { HANDLER_OFFSET } from './constants';
 
 export const roundTwoDecimals = (num: number) =>
@@ -19,6 +27,38 @@ export const useConversionHelpers = () => {
   };
 };
 
+export const rotateRectangle = ({
+  rectangle: { x, y, width, height, rotation },
+  rotationOrigin = { x: x + width / 2, y: y + height / 2 },
+}: {
+  rectangle: RectangleShape;
+  rotationOrigin?: Point;
+}) => {
+  return {
+    [RectangleCorners.TopLeft]: rotatePoint({
+      point: { x, y },
+      rotationOrigin,
+      rotation,
+    }),
+    [RectangleCorners.TopRight]: rotatePoint({
+      point: { x: x + width, y },
+      rotationOrigin,
+      rotation,
+    }),
+    [RectangleCorners.BottomRight]: rotatePoint({
+      point: { x: x + width, y: y + height },
+      rotationOrigin,
+      rotation,
+    }),
+    [RectangleCorners.BottomLeft]: rotatePoint({
+      point: { x, y: y + height },
+      rotationOrigin,
+      rotation,
+    }),
+    origin: rotationOrigin,
+  };
+};
+
 export const rotatePoint = ({
   point,
   rotationOrigin,
@@ -29,6 +69,10 @@ export const rotatePoint = ({
   // degrees
   rotation: number;
 }): Point => {
+  if (rotation === 0) {
+    return point;
+  }
+
   rotation = degreesToRadians(rotation);
 
   return {
@@ -150,6 +194,12 @@ export const radiansToDegrees = (radians: number) => {
   return radians * (180 / Math.PI);
 };
 
+export const isRectangle = (obj: GardenObject): obj is RectangleShape => {
+  return (
+    obj.objectType === ObjectTypes.Shape &&
+    obj.shapeType === ShapeTypes.Rectangle
+  );
+};
 /*
 If we have the coordinates of the point we are rotating, (𝑥, 𝑦), and the point we are rotating about, (ℎ, 𝑘), as well as the angle of rotation, 𝜃, then the coordinates of the image, (𝑥', 𝑦'), are as follows:
 

@@ -15,8 +15,8 @@ export const Info = () => {
     <div className={styles.info}>
       MR: {info?.mousePositionRelative.x}, {info?.mousePositionRelative.y}{' '}
       <br />
-      {JSON.stringify(selection)} <br />
-      {JSON.stringify(objects)}
+      {/* {JSON.stringify(selection)} <br />
+      {JSON.stringify(objects)} */}
       {/*{Array.from(atoms).map(([atom, atomValue]) => (*/}
       {/*  <div key={`${atom}`} style={{ fontSize: '12px' }}>*/}
       {/*    {JSON.stringify(atomValue)}*/}

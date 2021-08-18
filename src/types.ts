@@ -51,7 +51,7 @@ export type Plant = BaseObject & {
 
 export type GardenObject = Plant | Shape;
 
-export enum ResizingHandlers {
+export enum RectangleCorners {
   TopLeft = 'TopLeft',
   TopRight = 'TopRight',
   BottomRight = 'BottomRight',
@@ -59,3 +59,10 @@ export enum ResizingHandlers {
 }
 
 export type Point = { x: number; y: number };
+
+export type SnapLine = {
+  pointFrom: Point;
+  pointTo: Point;
+  distance: number; // distance from the snapline to the actual position of the point
+  direction: 'vertical' | 'horizontal';
+};

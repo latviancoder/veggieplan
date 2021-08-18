@@ -1,4 +1,4 @@
-import { RectangleShape, ResizingHandlers } from '../types';
+import { RectangleShape, RectangleCorners } from '../types';
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../constants';
 
 export const rectangleHandlerMap = (
@@ -12,28 +12,28 @@ export const rectangleHandlerMap = (
 ) => {
   return new Map([
     [
-      ResizingHandlers.TopLeft,
+      RectangleCorners.TopLeft,
       {
         x: x - HANDLER_OFFSET / zoom,
         y: y - HANDLER_OFFSET / zoom,
       },
     ],
     [
-      ResizingHandlers.TopRight,
+      RectangleCorners.TopRight,
       {
         x: x + width + HANDLER_OFFSET / zoom - HANDLER_SIZE / zoom,
         y: y - HANDLER_OFFSET / zoom,
       },
     ],
     [
-      ResizingHandlers.BottomRight,
+      RectangleCorners.BottomRight,
       {
         x: x + width + HANDLER_OFFSET / zoom - HANDLER_SIZE / zoom,
         y: y + height + HANDLER_OFFSET / zoom - HANDLER_SIZE / zoom,
       },
     ],
     [
-      ResizingHandlers.BottomLeft,
+      RectangleCorners.BottomLeft,
       {
         x: x - HANDLER_OFFSET / zoom,
         y: y + height + HANDLER_OFFSET / zoom - HANDLER_SIZE / zoom,

@@ -1,11 +1,18 @@
+import { rotatePoint, rotateRectangle, isRectangle } from './../utils';
 import { atom } from 'jotai';
-import { canvasAtom, creatableAtom, modeAtom, offsetAtom } from './atoms';
+import {
+  canvasAtom,
+  creatableAtom,
+  modeAtom,
+  offsetAtom,
+  snapLinesAtom,
+} from './atoms';
 import {
   GardenObject,
   Modes,
   ObjectTypes,
   Point,
-  ResizingHandlers,
+  RectangleCorners,
   ShapeTypes,
 } from '../types';
 import { nanoid } from 'nanoid';
@@ -21,7 +28,8 @@ type PanStart = {
   click: Point;
   selection?: GardenObject[];
   interactableObjectId?: string;
-  resizingHandler?: ResizingHandlers;
+  resizingHandler?: RectangleCorners;
+  snapPoints?: Point[];
 } | null;
 
 export const _panStartAtom = atom<PanStart>(null);
@@ -100,7 +108,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
           }
         }
 
-        let resizingHandler: ResizingHandlers | undefined = undefined;
+        let resizingHandler: RectangleCorners | undefined = undefined;
 
         const updatedSelection = get(selectionAtom);
 
@@ -186,6 +194,39 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
 
       set(_panStartAtom, null);
       set(creatableAtom, null);
+      set(snapLinesAtom, []);
+    }
+
+    // Calculate corners of every non-selected shape
+    // Needed for effective Figma-style snap-to-other-objects functionality
+    if (panStart) {
+      const updatedSelection = get(selectionAtom);
+      const nonSelected = objects.filter(
+        ({ id }) => !updatedSelection.includes(id)
+      );
+
+      let snapPoints: Point[] = [];
+
+      nonSelected.forEach((obj) => {
+        if (isRectangle(obj)) {
+          const { TopLeft, BottomLeft, TopRight, BottomRight, origin } =
+            rotateRectangle({ rectangle: obj });
+
+          snapPoints = [
+            ...snapPoints,
+            TopLeft,
+            BottomLeft,
+            TopRight,
+            BottomRight,
+            origin,
+          ];
+        }
+      });
+
+      set(_panStartAtom, {
+        ...get(_panStartAtom)!,
+        snapPoints,
+      });
     }
   }
 );
