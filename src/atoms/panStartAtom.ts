@@ -1,12 +1,6 @@
 import { rotatePoint, rotateRectangle, isRectangle } from './../utils';
 import { atom } from 'jotai';
-import {
-  canvasAtom,
-  creatableAtom,
-  modeAtom,
-  offsetAtom,
-  snapLinesAtom,
-} from './atoms';
+import { canvasAtom, creatableAtom, modeAtom, offsetAtom } from './atoms';
 import {
   GardenObject,
   Modes,
@@ -22,6 +16,7 @@ import { HANDLER_OFFSET, HANDLER_SIZE } from '../constants';
 import { rectangleHandlerMap } from '../utils/rectangleHandlerMap';
 import { selectionAtom } from './selectionAtom';
 import { objectsAtom } from './objectsAtom';
+import { snapLinesAtom } from './snapLines';
 
 type PanStart = {
   offset: Point;
@@ -194,10 +189,10 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
 
       set(_panStartAtom, null);
       set(creatableAtom, null);
-      set(snapLinesAtom, []);
+      set(snapLinesAtom, { selectedObjects: [], snapPoints: [] });
     }
 
-    // Calculate corners of every non-selected shape
+    // Calculate corners and middlepoints of every non-selected shape on pan start
     // Needed for effective Figma-style snap-to-other-objects functionality
     if (panStart) {
       const updatedSelection = get(selectionAtom);

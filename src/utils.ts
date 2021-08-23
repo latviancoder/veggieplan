@@ -9,8 +9,9 @@ import {
   GardenObject,
   ObjectTypes,
   ShapeTypes,
+  SnapLine,
 } from './types';
-import { HANDLER_OFFSET } from './constants';
+import { HANDLER_OFFSET, SNAPPING_THRESHOLD } from './constants';
 
 export const roundTwoDecimals = (num: number) =>
   Math.round((num + Number.EPSILON) * 100) / 100;
@@ -200,6 +201,7 @@ export const isRectangle = (obj: GardenObject): obj is RectangleShape => {
     obj.shapeType === ShapeTypes.Rectangle
   );
 };
+
 /*
 If we have the coordinates of the point we are rotating, (𝑥, 𝑦), and the point we are rotating about, (ℎ, 𝑘), as well as the angle of rotation, 𝜃, then the coordinates of the image, (𝑥', 𝑦'), are as follows:
 

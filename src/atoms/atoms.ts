@@ -27,5 +27,3 @@ export const creatableAtom = atom<null | GardenObject>(null);
 export const mousePositionAtom = atom({ x: 0, y: 0 });
 
 export const offsetAtom = atom({ x: 0, y: 0 });
-
-export const snapLinesAtom = atom<SnapLine[]>([]);

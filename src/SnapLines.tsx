@@ -1,8 +1,8 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { snapLinesAtom } from './atoms/atoms';
 import { useAtomValue } from 'jotai/utils';
 import { zoomAtom } from './atoms/zoomAtom';
+import { snapLinesAtom } from './atoms/snapLines';
 
 export const SnapLines = () => {
   const zoom = useAtomValue(zoomAtom);
@@ -38,11 +38,10 @@ export const SnapLines = () => {
           x1={0}
           y1={pointFrom.y}
           x2={999999}
-          y2={pointFrom.y}
+          y2={pointTo.y}
           stroke="blue"
           strokeWidth={1 / zoom}
           shapeRendering="crispEdges"
-          strokeOpacity={0.1}
         />
       ))}
       {horizontalLines.map(({ pointFrom, pointTo }, i) => (
@@ -55,7 +54,6 @@ export const SnapLines = () => {
           stroke="blue"
           strokeWidth={1 / zoom}
           shapeRendering="crispEdges"
-          strokeOpacity={0.1}
         />
       ))}
     </>
