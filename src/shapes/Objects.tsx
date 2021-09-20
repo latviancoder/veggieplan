@@ -6,7 +6,7 @@ import { hoveredAtom } from '../atoms/hoveredAtom';
 import { selectionAtom } from '../atoms/selectionAtom';
 import { useAtomValue } from 'jotai/utils';
 import { objectsAtom } from '../atoms/objectsAtom';
-import { isRectangle } from '../utils';
+import { isRectangular } from '../utils';
 
 export const Objects = () => {
   const hoveredObject = useAtomValue(hoveredAtom);
@@ -16,7 +16,7 @@ export const Objects = () => {
   return (
     <>
       {objects.map((obj) => {
-        if (isRectangle(obj)) {
+        if (isRectangular(obj)) {
           return (
             <Rectangle
               key={obj.id}

@@ -13,7 +13,7 @@ export const Info = () => {
 
   return (
     <div className={styles.info}>
-      MR: {info?.mousePositionRelative.x}, {info?.mousePositionRelative.y}{' '}
+      MR: {info?.mousePositionRelative?.x}, {info?.mousePositionRelative?.y}{' '}
       <br />
       {/* {JSON.stringify(selection)} <br />
       {JSON.stringify(objects)} */}

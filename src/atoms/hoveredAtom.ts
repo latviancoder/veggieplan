@@ -4,8 +4,10 @@ import { Modes } from '../types';
 import { isPointInsideRectangle } from '../utils';
 import { modeAtom, mousePositionAtom, offsetAtom } from './atoms';
 import { objectsAtom } from './objectsAtom';
+import { utilsAtom } from './utilsAtom';
 
 export const hoveredAtom = atom<null | string>((get) => {
+  const { absoluteToRelativeX, absoluteToRelativeY } = get(utilsAtom);
   const objects = get(objectsAtom);
   const mode = get(modeAtom);
   const mousePosition = get(mousePositionAtom);
@@ -14,13 +16,13 @@ export const hoveredAtom = atom<null | string>((get) => {
 
   let hoveredObjectId = null;
 
-  if (mode === Modes.DEFAULT) {
+  if (mode === Modes.DEFAULT && mousePosition) {
     for (let obj of objects) {
       if (
         isPointInsideRectangle({
           point: {
-            x: mousePosition.x / zoom + offset.x,
-            y: mousePosition.y / zoom + offset.y,
+            x: absoluteToRelativeX(mousePosition.x),
+            y: absoluteToRelativeY(mousePosition.y),
           },
           rectangle: obj,
           offset: 2 / zoom,

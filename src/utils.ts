@@ -1,6 +1,10 @@
-import { Rectangle } from './shapes/Rectangle';
-import { useAtom } from 'jotai/esm';
-import { plotAtom, plotCanvasAtom } from './atoms/atoms';
+import { useAtomValue } from 'jotai/utils';
+import {
+  canvasAtom,
+  offsetAtom,
+  plotAtom,
+  plotCanvasAtom,
+} from './atoms/atoms';
 import { zoomAtom } from './atoms/zoomAtom';
 import {
   Point,
@@ -9,21 +13,33 @@ import {
   GardenObject,
   ObjectTypes,
   ShapeTypes,
-  SnapLine,
+  Plant,
 } from './types';
-import { HANDLER_OFFSET, SNAPPING_THRESHOLD } from './constants';
+import { plants } from './data/plants';
 
 export const roundTwoDecimals = (num: number) =>
   Math.round((num + Number.EPSILON) * 100) / 100;
 
 export const useConversionHelpers = () => {
-  const [plot] = useAtom(plotAtom);
-  const [plotCanvas] = useAtom(plotCanvasAtom);
+  const zoom = useAtomValue(zoomAtom);
+  const plot = useAtomValue(plotAtom);
+  const plotCanvas = useAtomValue(plotCanvasAtom);
+  const canvas = useAtomValue(canvasAtom);
+  const offset = useAtomValue(offsetAtom);
 
   return {
     pxToMeter: (px: number = 0): number => {
       const meterInPx = plotCanvas.width / plot.width;
       return roundTwoDecimals(px / meterInPx);
+    },
+    meterToPx: (meters: number = 0): number => {
+      return ((meters * plotCanvas.width) / plot.width) * zoom;
+    },
+    absoluteToRelativeX: (x: number) => {
+      return (x - canvas.x) / zoom + offset.x;
+    },
+    absoluteToRelativeY: (y: number) => {
+      return (y - canvas.y) / zoom + offset.y;
     },
   };
 };
@@ -32,7 +48,7 @@ export const rotateRectangle = ({
   rectangle: { x, y, width, height, rotation },
   rotationOrigin = { x: x + width / 2, y: y + height / 2 },
 }: {
-  rectangle: RectangleShape;
+  rectangle: RectangleShape | Plant;
   rotationOrigin?: Point;
 }) => {
   return {
@@ -195,11 +211,25 @@ export const radiansToDegrees = (radians: number) => {
   return radians * (180 / Math.PI);
 };
 
-export const isRectangle = (obj: GardenObject): obj is RectangleShape => {
+export const isRectangleShape = (obj: GardenObject): obj is RectangleShape => {
   return (
     obj.objectType === ObjectTypes.Shape &&
     obj.shapeType === ShapeTypes.Rectangle
   );
+};
+
+export const isPlant = (obj: GardenObject): obj is Plant => {
+  return obj.objectType === ObjectTypes.Plant;
+};
+
+export const isRectangular = (
+  obj: GardenObject
+): obj is Plant | RectangleShape => {
+  return isPlant(obj) || isRectangleShape(obj);
+};
+
+export const getPlant = (id: number) => {
+  return plants.find(({ plantID }) => plantID === id)!;
 };
 
 /*

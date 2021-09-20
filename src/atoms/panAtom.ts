@@ -1,6 +1,6 @@
 import { SnapLine } from './../types';
 import { SNAPPING_THRESHOLD } from './../constants';
-import { rotatePoint, rotateRectangle, isRectangle } from './../utils';
+import { rotatePoint, rotateRectangle, isRectangular } from './../utils';
 import { atom } from 'jotai';
 import {
   Modes,
@@ -17,6 +17,7 @@ import { radiansToDegrees } from '../utils';
 import { selectionAtom } from './selectionAtom';
 import { objectsAtom } from './objectsAtom';
 import { snapLinesAtom } from './snapLines';
+import { utilsAtom } from './utilsAtom';
 
 type Params = {
   deltaX: number;
@@ -27,10 +28,10 @@ type Params = {
 
 export const panAtom = atom(
   null,
-  (get, set, { deltaX, deltaY, center, direction }: Params) => {
+  (get, set, { deltaX, deltaY, center }: Params) => {
+    const { relativeToAbsoluteX, relativeToAbsoluteY } = get(utilsAtom);
+
     const zoom = get(zoomAtom);
-    const canvas = get(canvasAtom);
-    const offset = get(offsetAtom);
     const panStart = get(panStartAtom);
     const mode = get(modeAtom);
     const creatable = get(creatableAtom);
@@ -41,57 +42,8 @@ export const panAtom = atom(
       return;
     }
 
-    if (mode === Modes.MOVEMENT) {
-      const objectsAfterDelta = produce(objects, (draft) => {
-        panStart.selection?.forEach((selectedObject) => {
-          const i = objects.findIndex(({ id }) => selectedObject.id === id);
-
-          draft[i].x = selectedObject.x + deltaX / zoom;
-          draft[i].y = selectedObject.y + deltaY / zoom;
-        });
-      });
-
-      const selectedObjects = objectsAfterDelta.filter(({ id }) =>
-        selection.includes(id)
-      );
-
-      set(snapLinesAtom, {
-        selectedObjects,
-        snapPoints: panStart.snapPoints,
-      });
-      const snapLines = get(snapLinesAtom);
-
-      let snappedObjects;
-
-      if (snapLines.length) {
-        snappedObjects = produce(objectsAfterDelta, (draft) => {
-          panStart.selection?.forEach((selectedObject) => {
-            const i = objects.findIndex(({ id }) => selectedObject.id === id);
-
-            const h = snapLines.find(
-              ({ direction }) => direction === 'horizontal'
-            );
-            const v = snapLines.find(
-              ({ direction }) => direction === 'vertical'
-            );
-
-            if (isRectangle(selectedObject)) {
-              if (v) {
-                draft[i].y = draft[i].y + v.distance;
-              }
-              if (h) {
-                draft[i].x = draft[i].x + h.distance;
-              }
-            }
-          });
-        });
-      }
-
-      set(objectsAtom, snappedObjects || objectsAfterDelta);
-    }
-
     if (mode === Modes.CREATION && creatable) {
-      if (isRectangle(creatable)) {
+      if (isRectangular(creatable)) {
         let creatableAfterDelta = {
           ...creatable,
           x: panStart.click.x + Math.min(deltaX / zoom, 0),
@@ -153,6 +105,55 @@ export const panAtom = atom(
       }
     }
 
+    if (mode === Modes.MOVEMENT) {
+      const objectsAfterDelta = produce(objects, (draft) => {
+        panStart.selection?.forEach((selectedObject) => {
+          const i = objects.findIndex(({ id }) => selectedObject.id === id);
+
+          draft[i].x = selectedObject.x + deltaX / zoom;
+          draft[i].y = selectedObject.y + deltaY / zoom;
+        });
+      });
+
+      const selectedObjects = objectsAfterDelta.filter(({ id }) =>
+        selection.includes(id)
+      );
+
+      set(snapLinesAtom, {
+        selectedObjects,
+        snapPoints: panStart.snapPoints,
+      });
+      const snapLines = get(snapLinesAtom);
+
+      let snappedObjects;
+
+      if (snapLines.length) {
+        snappedObjects = produce(objectsAfterDelta, (draft) => {
+          panStart.selection?.forEach((selectedObject) => {
+            const i = objects.findIndex(({ id }) => selectedObject.id === id);
+
+            const h = snapLines.find(
+              ({ direction }) => direction === 'horizontal'
+            );
+            const v = snapLines.find(
+              ({ direction }) => direction === 'vertical'
+            );
+
+            if (isRectangular(selectedObject)) {
+              if (v) {
+                draft[i].y = draft[i].y + v.distance;
+              }
+              if (h) {
+                draft[i].x = draft[i].x + h.distance;
+              }
+            }
+          });
+        });
+      }
+
+      set(objectsAtom, snappedObjects || objectsAfterDelta);
+    }
+
     if (mode === Modes.RESIZING && panStart.resizingHandler) {
       const resizingHandler = panStart.resizingHandler;
 
@@ -164,7 +165,7 @@ export const panAtom = atom(
       )!;
 
       // todo circle
-      if (!isRectangle(obj)) return;
+      if (!isRectangular(obj)) return;
 
       const objectsAfterResize = produce(objects, (draft) => {
         // Resizing while considering element rotation
@@ -284,12 +285,14 @@ export const panAtom = atom(
               ({ direction }) => direction === 'vertical'
             );
 
-            if (isRectangle(selectedObject)) {
+            if (selectedObject) {
               if (v) {
-                draft[i].y = draft[i].y + v.distance;
+                // draft[i].y = draft[i].y + v.distance;
+                draft[i].height = draft[i].height + v.distance;
               }
               if (h) {
-                draft[i].x = draft[i].x + h.distance;
+                // draft[i].x = draft[i].x + h.distance;
+                draft[i].width = draft[i].width + h.distance;
               }
             }
           });
@@ -313,8 +316,8 @@ export const panAtom = atom(
       // https://stackoverflow.com/questions/17372332/specify-origin-of-math-atan2
       // For that we also need to convert relative zoomed values to absolute screen values
       const origin = {
-        x: canvas.x - offset.x * zoom + obj.x * zoom + (obj.width * zoom) / 2,
-        y: canvas.y - offset.y * zoom + obj.y * zoom + (obj.height * zoom) / 2,
+        x: relativeToAbsoluteX(obj.x) + (obj.width * zoom) / 2,
+        y: relativeToAbsoluteY(obj.y) + (obj.height * zoom) / 2,
       };
 
       const rota = radiansToDegrees(

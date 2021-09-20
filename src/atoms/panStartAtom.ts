@@ -1,6 +1,18 @@
-import { rotatePoint, rotateRectangle, isRectangle } from './../utils';
+import { Plant } from './../types';
+import {
+  rotatePoint,
+  rotateRectangle,
+  isRectangular,
+  getPlant,
+} from './../utils';
 import { atom } from 'jotai';
-import { canvasAtom, creatableAtom, modeAtom, offsetAtom } from './atoms';
+import {
+  canvasAtom,
+  creatableAtom,
+  modeAtom,
+  offsetAtom,
+  selectedPlantAtom,
+} from './atoms';
 import {
   GardenObject,
   Modes,
@@ -17,6 +29,7 @@ import { rectangleHandlerMap } from '../utils/rectangleHandlerMap';
 import { selectionAtom } from './selectionAtom';
 import { objectsAtom } from './objectsAtom';
 import { snapLinesAtom } from './snapLines';
+import { utilsAtom } from './utilsAtom';
 
 type PanStart = {
   offset: Point;
@@ -32,18 +45,20 @@ export const _panStartAtom = atom<PanStart>(null);
 export const panStartAtom = atom<PanStart, { center: Point } | null>(
   (get) => get(_panStartAtom),
   (get, set, panStart) => {
+    const { absoluteToRelativeX, absoluteToRelativeY, meterToPx } =
+      get(utilsAtom);
     const offset = get(offsetAtom);
-    const canvas = get(canvasAtom);
     const creatable = get(creatableAtom);
     const objects = get(objectsAtom);
     const mode = get(modeAtom);
     const zoom = get(zoomAtom);
     const selection = get(selectionAtom);
+    const selectedPlant = get(selectedPlantAtom);
 
     // Wben panning is starting we want to save starting offset and click position
     if (panStart) {
-      const panStartX = (panStart.center.x - canvas.x) / zoom + offset.x;
-      const panStartY = (panStart.center.y - canvas.y) / zoom + offset.y;
+      const panStartX = absoluteToRelativeX(panStart.center.x);
+      const panStartY = absoluteToRelativeY(panStart.center.y);
 
       set(_panStartAtom, {
         offset: {
@@ -59,16 +74,40 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
       if (mode === Modes.CREATION) {
         set(selectionAtom, { type: 'reset' });
 
-        set(creatableAtom, {
+        let creatable: GardenObject = {
           id: nanoid(),
-          objectType: ObjectTypes.Shape,
-          shapeType: ShapeTypes.Rectangle,
           x: 0,
           y: 0,
           height: 0,
           width: 0,
           rotation: 0,
-        });
+        } as GardenObject;
+
+        if (selectedPlant) {
+          creatable = {
+            ...creatable,
+            objectType: ObjectTypes.Plant,
+            plantID: selectedPlant,
+          };
+
+          const plant = getPlant(selectedPlant);
+
+          set(_panStartAtom, {
+            ...get(_panStartAtom)!,
+            click: {
+              x: panStartX,
+              y: panStartY,
+            },
+          });
+        } else {
+          creatable = {
+            ...creatable,
+            objectType: ObjectTypes.Shape,
+            shapeType: ShapeTypes.Rectangle,
+          };
+        }
+
+        set(creatableAtom, creatable);
       } else {
         // Check if pan start position is within an object
         let obj: GardenObject | null = null;
@@ -180,7 +219,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
     } else {
       // Pan end
 
-      if (creatable?.objectType === ObjectTypes.Shape && creatable.id) {
+      if (creatable?.id) {
         set(objectsAtom, [...objects, creatable]);
         set(selectionAtom, { type: 'add', objectIds: [creatable.id] });
       }
@@ -189,6 +228,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
 
       set(_panStartAtom, null);
       set(creatableAtom, null);
+      set(selectedPlantAtom, null);
       set(snapLinesAtom, { selectedObjects: [], snapPoints: [] });
     }
 
@@ -203,7 +243,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
       let snapPoints: Point[] = [];
 
       nonSelected.forEach((obj) => {
-        if (isRectangle(obj)) {
+        if (isRectangular(obj)) {
           const { TopLeft, BottomLeft, TopRight, BottomRight, origin } =
             rotateRectangle({ rectangle: obj });
 

@@ -25,6 +25,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { copyAtom, pasteAtom } from './atoms/clipboardAtom';
 import { deleteAtom } from './atoms/deleteAtom';
 import { SnapLines } from './SnapLines';
+import { PlantUnderCursor } from './PlantUnderCursor';
 
 function animate(time: number) {
   requestAnimationFrame(animate);
@@ -69,11 +70,15 @@ export const Container = () => {
   );
 
   const onMouseMove = useCallback(
-    ({ offsetX, offsetY }: MouseEvent) => {
-      setMousePosition({ x: offsetX, y: offsetY });
+    ({ offsetX, offsetY, clientX, clientY }: MouseEvent) => {
+      setMousePosition({ x: clientX, y: clientY });
     },
     [setMousePosition]
   );
+
+  const onMouseLeave = useCallback(() => {
+    setMousePosition(null);
+  }, [setMousePosition]);
 
   useEffect(() => {
     const $root = rootRef.current;
@@ -82,6 +87,7 @@ export const Container = () => {
     if ($root) {
       $root.addEventListener('wheel', onWheel);
       $root.addEventListener('mousemove', onMouseMove);
+      $root.addEventListener('mouseleave', onMouseLeave);
 
       mc.add(new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }));
       mc.add(new Hammer.Tap({ event: 'tap', taps: 1 }));
@@ -121,11 +127,20 @@ export const Container = () => {
       });
     }
     return () => {
-      mc.off('panstart panend panmove tap doubletap');
+      mc.off('panstart pan panend panmove tap doubletap');
       $root!.removeEventListener('wheel', onWheel);
       $root!.removeEventListener('mousemove', onMouseMove);
+      $root!.removeEventListener('mouseleave', onMouseLeave);
     };
-  }, [setPan, setPanStart, setZoom, onWheel, onMouseMove, setTap]);
+  }, [
+    setPan,
+    setPanStart,
+    setZoom,
+    onWheel,
+    onMouseMove,
+    setTap,
+    onMouseLeave,
+  ]);
 
   useEffect(() => {
     if (rootRef.current) {
@@ -157,10 +172,11 @@ export const Container = () => {
           strokeWidth={1 / zoom}
           strokeDasharray={4 / zoom}
         />
-        <Creatable />
         <Guides />
         <Objects />
+        <Creatable />
         <SnapLines />
+        {/* <PlantUnderCursor /> */}
       </svg>
     </div>
   );

@@ -1,11 +1,20 @@
+import { Modes, ObjectTypes, Plant } from './../types';
 import { atom } from 'jotai';
 import { GardenObject, Point } from '../types';
 import { zoomAtom } from './zoomAtom';
-import { isPointInsideRectangle } from '../utils';
-import { canvasAtom, offsetAtom } from './atoms';
+import { getPlant, isPointInsideRectangle } from '../utils';
+import {
+  canvasAtom,
+  offsetAtom,
+  plotAtom,
+  selectedPlantAtom,
+  plotCanvasAtom,
+  modeAtom,
+} from './atoms';
 import { selectionAtom } from './selectionAtom';
-import produce from 'immer';
 import { objectsAtom } from './objectsAtom';
+import { nanoid } from 'nanoid';
+import { utilsAtom } from './utilsAtom';
 
 type Params = {
   center: Point;
@@ -15,11 +24,35 @@ type Params = {
 export const tapAtom = atom<unknown, Params>(
   null,
   (get, set, { center, shiftPressed }) => {
+    const { absoluteToRelativeX, absoluteToRelativeY, meterToPx } =
+      get(utilsAtom);
     const zoom = get(zoomAtom);
-    const offset = get(offsetAtom);
-    const canvas = get(canvasAtom);
     const objects = get(objectsAtom);
     const selection = get(selectionAtom);
+    const selectedPlant = get(selectedPlantAtom);
+
+    if (selectedPlant) {
+      const plant = getPlant(selectedPlant);
+      const spacingInPx = meterToPx(plant.spacing / 100);
+
+      const creatable: Plant = {
+        id: nanoid(),
+        rotation: 0,
+        objectType: ObjectTypes.Plant,
+        plantID: selectedPlant,
+        x: absoluteToRelativeX(center.x) - spacingInPx / 2,
+        y: absoluteToRelativeY(center.y) - spacingInPx / 2,
+        width: spacingInPx,
+        height: spacingInPx,
+      };
+
+      set(objectsAtom, [...objects, creatable]);
+      set(selectionAtom, { type: 'reset-add', objectIds: [creatable.id] });
+      set(selectedPlantAtom, null);
+      set(modeAtom, Modes.DEFAULT);
+
+      return;
+    }
 
     let tappedObject: GardenObject | null = null;
 
@@ -27,8 +60,8 @@ export const tapAtom = atom<unknown, Params>(
       if (
         isPointInsideRectangle({
           point: {
-            x: (center.x - canvas.x) / zoom + offset.x,
-            y: (center.y - canvas.y) / zoom + offset.y,
+            x: absoluteToRelativeX(center.x),
+            y: absoluteToRelativeY(center.y),
           },
           rectangle: obj,
           offset: 2 / zoom,

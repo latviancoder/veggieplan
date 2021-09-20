@@ -1,6 +1,5 @@
-import { SnapLine } from './../types';
 import { atom } from 'jotai';
-import { GardenObject, Modes, RectangleCorners } from '../types';
+import { GardenObject, Modes, Point } from '../types';
 
 export const modeAtom = atom(Modes.CREATION);
 
@@ -13,8 +12,8 @@ export const canvasAtom = atom({
 
 // In meters
 export const plotAtom = atom({
-  width: 20,
-  height: 15,
+  width: 10,
+  height: 10,
 });
 
 export const plotCanvasAtom = atom({
@@ -24,6 +23,8 @@ export const plotCanvasAtom = atom({
 
 export const creatableAtom = atom<null | GardenObject>(null);
 
-export const mousePositionAtom = atom({ x: 0, y: 0 });
+export const mousePositionAtom = atom<null | Point>(null);
 
 export const offsetAtom = atom({ x: 0, y: 0 });
+
+export const selectedPlantAtom = atom<null | number>(null);

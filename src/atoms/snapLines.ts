@@ -1,7 +1,7 @@
 import { zoomAtom } from './zoomAtom';
 import { atom } from 'jotai';
 import { GardenObject, Point, SnapLine } from '../types';
-import { isRectangle, rotateRectangle } from '../utils';
+import { isRectangular, rotateRectangle } from '../utils';
 import { SNAPPING_THRESHOLD } from '../constants';
 
 const _snapLinesAtom = atom<SnapLine[]>([]);
@@ -26,7 +26,7 @@ export const snapLinesAtom = atom(
     let corners: Point[] = [];
 
     selectedObjects.forEach((obj) => {
-      if (isRectangle(obj)) {
+      if (isRectangular(obj)) {
         const { TopLeft, BottomLeft, TopRight, BottomRight } = rotateRectangle({
           rectangle: obj,
         });
