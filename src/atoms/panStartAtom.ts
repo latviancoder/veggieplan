@@ -81,6 +81,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
           height: 0,
           width: 0,
           rotation: 0,
+          dateAdded: Date.now() / Math.pow(10, Date.now().toString().length),
         } as GardenObject;
 
         if (selectedPlant) {

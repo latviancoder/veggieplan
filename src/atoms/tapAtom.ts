@@ -44,6 +44,7 @@ export const tapAtom = atom<unknown, Params>(
         y: absoluteToRelativeY(center.y) - spacingInPx / 2,
         width: spacingInPx,
         height: spacingInPx,
+        dateAdded: Date.now() / Math.pow(10, Date.now().toString().length),
       };
 
       set(objectsAtom, [...objects, creatable]);
