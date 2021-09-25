@@ -13,8 +13,6 @@ export const Objects = () => {
   const [selection] = useAtom(selectionAtom);
   const [objects] = useAtom(objectsAtom);
 
-  console.log(objects);
-
   return (
     <>
       {objects.map((obj) => {

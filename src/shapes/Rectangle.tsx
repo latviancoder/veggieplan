@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { ObjectTypes, Plant, RectangleShape } from '../types';
 import {
   degreesToRadians,
@@ -14,6 +14,8 @@ import { HANDLER_OFFSET, HANDLER_SIZE } from '../constants';
 import { rectangleHandlerMap } from '../utils/rectangleHandlerMap';
 import { ReactComponent as Tomato } from '../icons/tomato.svg';
 import { plants } from '../data/plants';
+import { useAtomValue } from 'jotai/utils';
+import { RectangleBadge } from './bagde/RectangleBadge';
 
 type Props = (RectangleShape | Plant) & {
   isSelected?: boolean;
@@ -33,8 +35,7 @@ export const Rectangle = memo(
     rotation,
     ...rest
   }: Props) => {
-    const { pxToMeter } = useConversionHelpers();
-    const [zoom] = useAtom(zoomAtom);
+    const zoom = useAtomValue(zoomAtom);
 
     let fill = '#fff';
     let stroke = 'black';
@@ -49,23 +50,6 @@ export const Rectangle = memo(
       fill = '#eee';
     }
 
-    if (rest.objectType === ObjectTypes.Plant) {
-      // Area in centimeters
-      const area = pxToMeter(width) * pxToMeter(height) * 10000;
-      const { inRowSpacing, rowSpacing } = getPlant(rest.plantID);
-      const plantArea = inRowSpacing * rowSpacing;
-      const smallestSide = Math.min(width, height);
-      // console.log('rows', Math.ceil(smallestSide / rowSpacing));
-
-      // console.log(Math.ceil(area / plantArea));
-      // console.log(
-      //   'rows',
-      //   Math.round(
-      //     (Math.min(pxToMeter(width), pxToMeter(height)) / rowSpacing) * 100
-      //   )
-      // );
-    }
-
     const render = () => (
       <>
         <rect
@@ -77,24 +61,15 @@ export const Rectangle = memo(
           width={width}
           height={height}
         />
-        <text
-          x={width / 2}
-          y={height / 2}
-          style={{ fontSize: 13 / zoom }}
-          dominantBaseline="middle"
-          textAnchor="middle"
-          transform={
-            rotation ? `rotate(${-rotation} ${width / 2} ${height / 2})` : ''
+
+        <RectangleBadge
+          plantID={
+            rest.objectType === ObjectTypes.Plant ? rest.plantID : undefined
           }
-        >
-          {pxToMeter(width)}x{pxToMeter(height)}
-          {/* <tspan x="0" dy="1.2em">
-            width: {roundTwoDecimals(width)}, height: {roundTwoDecimals(height)}
-          </tspan>
-          <tspan x="0" dy="1.2em">
-            {pxToMeter(width)}x{pxToMeter(height)}
-          </tspan> */}
-        </text>
+          width={width}
+          height={height}
+          rotation={rotation}
+        />
 
         {/* Resize/Rotate handlers */}
         {isSelected && (
@@ -122,18 +97,14 @@ export const Rectangle = memo(
     );
 
     return (
-      <>
-        <g
-          transform={`
-            translate(${x} ${y}) 
-            rotate(${rotation} ${width / 2} ${height / 2})
-          `}
-        >
-          {render()}
-        </g>
-
-        {/*<g transform={`translate(${x} ${y})`}>{render()}</g>*/}
-      </>
+      <g
+        transform={`
+          translate(${x} ${y}) 
+          rotate(${rotation} ${width / 2} ${height / 2})
+        `}
+      >
+        {render()}
+      </g>
     );
   }
 );
