@@ -50,9 +50,9 @@ export const Container = () => {
   const paste = useUpdateAtom(pasteAtom);
   const del = useUpdateAtom(deleteAtom);
 
-  useHotkeys('ctrl+c, cmd+c', copy);
-  useHotkeys('ctrl+v, cmd+v', paste);
-  useHotkeys('delete, backspace', del);
+  useHotkeys('ctrl+c, cmd+c', () => void copy());
+  useHotkeys('ctrl+v, cmd+v', () => void paste());
+  useHotkeys('delete, backspace', () => void del());
 
   const onWheel = useCallback(
     (event: WheelEvent) => {
