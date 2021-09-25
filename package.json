@@ -93,8 +93,8 @@
   },
   "main": "src/server/server.js",
   "scripts": {
-    "start": "node scripts/start.js && node src/server/server.js",
-    "build": "node scripts/build.js",
+    "start": "node scripts/start.js",
+    "build": "node scripts/build.js && node src/server/server.js",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {
