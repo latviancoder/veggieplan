@@ -91,10 +91,10 @@
     "webpack-manifest-plugin": "2.2.0",
     "workbox-webpack-plugin": "5.1.4"
   },
-  "main": "src/server/server.js",
+  "main": "server.js",
   "scripts": {
     "start": "node scripts/start.js",
-    "build": "node scripts/build.js && node src/server/server.js",
+    "build": "node scripts/build.js",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {
