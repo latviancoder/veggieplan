@@ -7,11 +7,13 @@ import { selectionAtom } from '../atoms/selectionAtom';
 import { useAtomValue } from 'jotai/utils';
 import { objectsAtom } from '../atoms/objectsAtom';
 import { isRectangular } from '../utils';
+import { panStartAtom } from '../atoms/panStartAtom';
 
 export const Objects = () => {
-  const hoveredObject = useAtomValue(hoveredAtom);
-  const [selection] = useAtom(selectionAtom);
-  const [objects] = useAtom(objectsAtom);
+  const hoveredObjectId = useAtomValue(hoveredAtom);
+  const selection = useAtomValue(selectionAtom);
+  const objects = useAtomValue(objectsAtom);
+  const panStart = useAtomValue(panStartAtom);
 
   return (
     <>
@@ -22,7 +24,8 @@ export const Objects = () => {
               key={obj.id}
               {...obj}
               isSelected={selection.includes(obj.id)}
-              isHovered={obj.id === hoveredObject}
+              isHovered={obj.id === hoveredObjectId}
+              isInteracted={obj.id === panStart?.interactableObjectId}
             />
           );
         }

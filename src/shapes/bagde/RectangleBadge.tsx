@@ -64,6 +64,9 @@ export const RectangleBadge = ({ width, height, plantID, rotation }: Props) => {
           strokeWidth={1 / zoom}
           width={(textDimensions.width + textOffset * 2) / zoom}
           height={(textDimensions.height + textOffset * 2 - 1) / zoom}
+          transform={
+            rotation ? `rotate(${-rotation} ${width / 2} ${height / 2})` : ''
+          }
         />
       )}
       <text

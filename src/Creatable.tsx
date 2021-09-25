@@ -14,7 +14,7 @@ export const Creatable = (props: Props) => {
   }
 
   if (isRectangular(creatable)) {
-    return <Rectangle {...creatable} isHighlighted={true} isSelected={true} />;
+    return <Rectangle {...creatable} isInteracted={true} isSelected={true} />;
   }
 
   return null;
