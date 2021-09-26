@@ -12,7 +12,10 @@ const { Client } = pg;
 const app = express();
 const port = process.env.PORT || 5000;
 
-const client = new Client();
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+});
+
 await client.connect();
 
 app.use(express.static(path.join(__dirname, 'build')));
