@@ -39,7 +39,15 @@ export const Rectangle = memo(
       fill = '#eee';
     }
 
-    const isBadgeVisible = isHovered || isInteracted;
+    let plantIconSize = 30;
+
+    if (plantIconSize > Math.min(width, height) - 20) {
+      plantIconSize = width - 10;
+    }
+
+    if (plantIconSize * zoom > 40) {
+      plantIconSize = 40 / zoom;
+    }
 
     const render = () => (
       <>
@@ -53,7 +61,7 @@ export const Rectangle = memo(
           height={height}
         />
 
-        {isBadgeVisible && (
+        {(isHovered || isInteracted) && (
           <RectangleBadge
             plantID={
               rest.objectType === ObjectTypes.Plant ? rest.plantID : undefined
@@ -63,6 +71,19 @@ export const Rectangle = memo(
             rotation={rotation}
           />
         )}
+
+        {!isHovered &&
+          !isInteracted &&
+          rest.objectType === ObjectTypes.Plant &&
+          rest.plantID && (
+            <image
+              href="image/zucchini.png"
+              height={plantIconSize}
+              width={plantIconSize}
+              x={width / 2 - plantIconSize / 2}
+              y={height / 2 - plantIconSize / 2}
+            />
+          )}
 
         {/* Resize/Rotate handlers */}
         {isSelected && (
