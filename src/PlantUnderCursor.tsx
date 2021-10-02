@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai/utils';
-import React from 'react';
+
 import {
   modeAtom,
   mousePositionAtom,

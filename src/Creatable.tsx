@@ -1,4 +1,3 @@
-import React from 'react';
 import { useAtom } from 'jotai';
 import { creatableAtom } from './atoms/atoms';
 import { Rectangle } from './shapes/Rectangle';

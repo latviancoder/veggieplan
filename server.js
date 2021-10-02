@@ -24,8 +24,8 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-app.get('/api', async (req, res) => {
-  const result = await client.query('SELECT * FROM users');
+app.get('/api/plants', async (req, res) => {
+  const result = await client.query('SELECT * FROM plants ORDER BY name');
   res.json(result.rows);
 });
 

@@ -1,5 +1,5 @@
-import Hammer, { DIRECTION_ALL, DIRECTION_DOWN } from 'hammerjs';
-import React, { useCallback, useEffect, useRef } from 'react';
+import Hammer from 'hammerjs';
+import { useCallback, useEffect, useRef } from 'react';
 import { update } from '@tweenjs/tween.js';
 import { useAtom } from 'jotai';
 import styles from './Container.module.css';
@@ -17,15 +17,12 @@ import { zoomAtom } from './atoms/zoomAtom';
 import { Objects } from './shapes/Objects';
 import { initialAtom } from './atoms/initialAtom';
 import { tapAtom } from './atoms/tapAtom';
-import { infoAtom } from './atoms/infoAtom';
 import { useUpdateAtom } from 'jotai/utils';
-import { selectionAtom } from './atoms/selectionAtom';
 import { Info } from './Info';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { copyAtom, pasteAtom } from './atoms/clipboardAtom';
 import { deleteAtom } from './atoms/deleteAtom';
 import { SnapLines } from './SnapLines';
-import { PlantUnderCursor } from './PlantUnderCursor';
 
 function animate(time: number) {
   requestAnimationFrame(animate);

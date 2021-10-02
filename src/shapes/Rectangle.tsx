@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { ObjectTypes, Plant, RectangleShape } from '../types';
 import { zoomAtom } from '../atoms/zoomAtom';
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../constants';
@@ -77,11 +77,16 @@ export const Rectangle = memo(
           rest.objectType === ObjectTypes.Plant &&
           rest.plantID && (
             <image
-              href="image/zucchini.png"
+              href="image/garlic.png"
               height={plantIconSize}
               width={plantIconSize}
               x={width / 2 - plantIconSize / 2}
               y={height / 2 - plantIconSize / 2}
+              transform={
+                rotation
+                  ? `rotate(${-rotation} ${width / 2} ${height / 2})`
+                  : ''
+              }
             />
           )}
 

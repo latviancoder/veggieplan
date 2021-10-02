@@ -1,4 +1,3 @@
-import React from 'react';
 import { useAtomsSnapshot } from 'jotai/devtools';
 import styles from './Container.module.css';
 import { useAtom } from 'jotai';
