@@ -1,3 +1,5 @@
+import { plants } from './data/plants';
+
 export enum Modes {
   DEFAULT = 'DEFAULT',
   CREATION = 'CREATION',
@@ -67,3 +69,5 @@ export type SnapLine = {
   distance: number; // distance from the snapline to the actual position of the point
   direction: 'vertical' | 'horizontal';
 };
+
+export type PlantDetails = typeof plants[0];
