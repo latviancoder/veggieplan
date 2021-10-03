@@ -1,3 +1,4 @@
+import { PlantDetails } from './../types';
 import { atom } from 'jotai';
 import { GardenObject, Modes, Point } from '../types';
 
@@ -28,3 +29,5 @@ export const mousePositionAtom = atom<null | Point>(null);
 export const offsetAtom = atom({ x: 0, y: 0 });
 
 export const selectedPlantAtom = atom<null | number>(null);
+
+export const plantsAtom = atom<PlantDetails[]>([]);

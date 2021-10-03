@@ -1,18 +1,12 @@
 import { useAtomValue } from 'jotai/utils';
 
-import {
-  modeAtom,
-  mousePositionAtom,
-  offsetAtom,
-  selectedPlantAtom,
-} from './atoms/atoms';
+import { modeAtom, mousePositionAtom, selectedPlantAtom } from './atoms/atoms';
 import { panStartAtom } from './atoms/panStartAtom';
-import { zoomAtom } from './atoms/zoomAtom';
-import { getPlant, useConversionHelpers } from './utils';
+import { useHelpers } from './utils';
 
 export const PlantUnderCursor = () => {
-  const { meterToPx, absoluteToRelativeX, absoluteToRelativeY } =
-    useConversionHelpers();
+  const { meterToPx, absoluteToRelativeX, absoluteToRelativeY, getPlant } =
+    useHelpers();
   const selectedPlant = useAtomValue(selectedPlantAtom);
   const mousePosition = useAtomValue(mousePositionAtom);
   const mode = useAtomValue(modeAtom);

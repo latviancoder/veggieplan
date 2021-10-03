@@ -1,22 +1,14 @@
 import { useAtom } from 'jotai';
-import { modeAtom, selectedPlantAtom } from '../../atoms/atoms';
+import { modeAtom, plantsAtom, selectedPlantAtom } from '../../atoms/atoms';
 import styles from './Sidebar.module.css';
-import { zoomAtom } from '../../atoms/zoomAtom';
 import { Modes } from '../../types';
-import { plants } from '../../data/plants';
-import { useUpdateAtom } from 'jotai/utils';
 import classnames from 'classnames';
-import { useQuery } from 'react-query';
+import { useAtomValue } from 'jotai/utils';
 
 export const Sidebar = () => {
+  const plants = useAtomValue(plantsAtom);
   const [mode, setMode] = useAtom(modeAtom);
   const [selectedPlant, setSelectedPlant] = useAtom(selectedPlantAtom);
-
-  const { isLoading, error, data } = useQuery('plants', () =>
-    fetch('https://api.github.com/repos/tannerlinsley/react-query').then(
-      (res) => res.json()
-    )
-  );
 
   return (
     <aside className={styles.root}>
@@ -36,19 +28,19 @@ export const Sidebar = () => {
       </div>
       <div className={styles.block}>
         <div>Plants</div>
-        {plants.map(({ plantID, plantName }) => (
+        {plants?.map(({ id, name }) => (
           <button
-            key={plantID}
+            key={id}
             onClick={() => {
               setMode(Modes.CREATION);
-              setSelectedPlant(plantID);
+              setSelectedPlant(id);
             }}
             className={classnames(styles.button, {
               [styles.buttonSelected]:
-                mode === Modes.CREATION && selectedPlant === plantID,
+                mode === Modes.CREATION && selectedPlant === id,
             })}
           >
-            {plantName}
+            {name}
           </button>
         ))}
       </div>

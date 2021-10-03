@@ -1,8 +1,7 @@
 import { useAtomValue } from 'jotai/utils';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { zoomAtom } from '../../atoms/zoomAtom';
-import { plants } from '../../data/plants';
-import { getPlant, useConversionHelpers } from '../../utils';
+import { useHelpers } from '../../utils';
 
 type Props = {
   width: number;
@@ -12,7 +11,7 @@ type Props = {
 };
 
 export const RectangleBadge = ({ width, height, plantID, rotation }: Props) => {
-  const { pxToMeter } = useConversionHelpers();
+  const { pxToMeter, getPlant } = useHelpers();
   const [textDimensions, setTextDimensions] = useState({
     width: 0,
     height: 0,
@@ -46,7 +45,7 @@ export const RectangleBadge = ({ width, height, plantID, rotation }: Props) => {
     const rows = Math.round(smallestSide / (rowSpacing / 100));
     const inRow = Math.round(largestSide / (inRowSpacing / 100));
 
-    return `${plant.plantName} - ${rows} x ${inRow} Pflanzen (${
+    return `${plant.name} - ${rows} x ${inRow} Pflanzen (${
       rows * inRow
     }) - ${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}`;
   };

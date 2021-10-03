@@ -1,6 +1,12 @@
 import { atom } from 'jotai';
 import { roundTwoDecimals } from '../utils';
-import { canvasAtom, offsetAtom, plotAtom, plotCanvasAtom } from './atoms';
+import {
+  canvasAtom,
+  offsetAtom,
+  plantsAtom,
+  plotAtom,
+  plotCanvasAtom,
+} from './atoms';
 import { zoomAtom } from './zoomAtom';
 
 export const utilsAtom = atom((get) => {
@@ -9,6 +15,7 @@ export const utilsAtom = atom((get) => {
   const offset = get(offsetAtom);
   const plot = get(plotAtom);
   const plotCanvas = get(plotCanvasAtom);
+  const plants = get(plantsAtom);
 
   return {
     absoluteToRelativeX: (x: number): number => {
@@ -29,6 +36,9 @@ export const utilsAtom = atom((get) => {
     pxToMeter: (px: number = 0): number => {
       const meterInPx = plotCanvas.width / plot.width;
       return roundTwoDecimals(px / meterInPx);
+    },
+    getPlant: (plantId: number) => {
+      return plants.find(({ id }) => id === plantId)!;
     },
   };
 });

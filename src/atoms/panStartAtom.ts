@@ -1,13 +1,6 @@
-import { Plant } from './../types';
-import {
-  rotatePoint,
-  rotateRectangle,
-  isRectangular,
-  getPlant,
-} from './../utils';
+import { rotateRectangle, isRectangular } from './../utils';
 import { atom } from 'jotai';
 import {
-  canvasAtom,
   creatableAtom,
   modeAtom,
   offsetAtom,
@@ -45,7 +38,7 @@ export const _panStartAtom = atom<PanStart>(null);
 export const panStartAtom = atom<PanStart, { center: Point } | null>(
   (get) => get(_panStartAtom),
   (get, set, panStart) => {
-    const { absoluteToRelativeX, absoluteToRelativeY, meterToPx } =
+    const { absoluteToRelativeX, absoluteToRelativeY, getPlant } =
       get(utilsAtom);
     const offset = get(offsetAtom);
     const creatable = get(creatableAtom);

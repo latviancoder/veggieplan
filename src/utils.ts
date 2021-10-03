@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai/utils';
 import {
   canvasAtom,
   offsetAtom,
+  plantsAtom,
   plotAtom,
   plotCanvasAtom,
 } from './atoms/atoms';
@@ -15,17 +16,17 @@ import {
   ShapeTypes,
   Plant,
 } from './types';
-import { plants } from './data/plants';
 
 export const roundTwoDecimals = (num: number) =>
   Math.round((num + Number.EPSILON) * 100) / 100;
 
-export const useConversionHelpers = () => {
+export const useHelpers = () => {
   const zoom = useAtomValue(zoomAtom);
   const plot = useAtomValue(plotAtom);
   const plotCanvas = useAtomValue(plotCanvasAtom);
   const canvas = useAtomValue(canvasAtom);
   const offset = useAtomValue(offsetAtom);
+  const plants = useAtomValue(plantsAtom);
 
   return {
     pxToMeter: (px: number = 0): number => {
@@ -40,6 +41,9 @@ export const useConversionHelpers = () => {
     },
     absoluteToRelativeY: (y: number) => {
       return (y - canvas.y) / zoom + offset.y;
+    },
+    getPlant: (plantId: number) => {
+      return plants.find(({ id }) => id === plantId)!;
     },
   };
 };
@@ -226,10 +230,6 @@ export const isRectangular = (
   obj: GardenObject
 ): obj is Plant | RectangleShape => {
   return isPlant(obj) || isRectangleShape(obj);
-};
-
-export const getPlant = (id: number) => {
-  return plants.find(({ plantID }) => plantID === id)!;
 };
 
 /*

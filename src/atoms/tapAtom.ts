@@ -2,15 +2,8 @@ import { Modes, ObjectTypes, Plant } from './../types';
 import { atom } from 'jotai';
 import { GardenObject, Point } from '../types';
 import { zoomAtom } from './zoomAtom';
-import { getPlant, isPointInsideRectangle } from '../utils';
-import {
-  canvasAtom,
-  offsetAtom,
-  plotAtom,
-  selectedPlantAtom,
-  plotCanvasAtom,
-  modeAtom,
-} from './atoms';
+import { isPointInsideRectangle } from '../utils';
+import { selectedPlantAtom, modeAtom } from './atoms';
 import { selectionAtom } from './selectionAtom';
 import { objectsAtom } from './objectsAtom';
 import { nanoid } from 'nanoid';
@@ -24,7 +17,7 @@ type Params = {
 export const tapAtom = atom<unknown, Params>(
   null,
   (get, set, { center, shiftPressed }) => {
-    const { absoluteToRelativeX, absoluteToRelativeY, meterToPx } =
+    const { absoluteToRelativeX, absoluteToRelativeY, meterToPx, getPlant } =
       get(utilsAtom);
     const zoom = get(zoomAtom);
     const objects = get(objectsAtom);

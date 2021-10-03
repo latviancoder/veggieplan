@@ -1,5 +1,3 @@
-import { plants } from './data/plants';
-
 export enum Modes {
   DEFAULT = 'DEFAULT',
   CREATION = 'CREATION',
@@ -70,4 +68,19 @@ export type SnapLine = {
   direction: 'vertical' | 'horizontal';
 };
 
-export type PlantDetails = typeof plants[0];
+export type PlantDetails = {
+  id: number;
+  code: string;
+  name: string;
+  latinName: string;
+  familyId: number;
+  alternativeNames: string[];
+  spacing: number;
+  inRowSpacing: number;
+  rowSpacing: number;
+  frostTolerant: boolean;
+  plantRelativeToLastFrost: number;
+  timeToMaturity: number;
+  harvestRelativeToFirstFrost: number;
+  perennial: boolean;
+};
