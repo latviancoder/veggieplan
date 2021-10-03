@@ -1,17 +1,17 @@
-import { useAtomsSnapshot } from 'jotai/devtools';
-import styles from './Container.module.css';
 import { useAtom } from 'jotai';
-import { infoAtom } from './atoms/infoAtom';
-import { selectionAtom } from './atoms/selectionAtom';
-import { objectsAtom } from './atoms/objectsAtom';
+import { infoAtom } from '../../atoms/infoAtom';
+import { selectionAtom } from '../../atoms/selectionAtom';
+import { objectsAtom } from '../../atoms/objectsAtom';
 
 export const Info = () => {
   const [info] = useAtom(infoAtom);
   const [selection] = useAtom(selectionAtom);
   const [objects] = useAtom(objectsAtom);
 
+  return null;
+
   return (
-    <div className={styles.info}>
+    <div>
       MR: {info?.mousePositionRelative?.x}, {info?.mousePositionRelative?.y}{' '}
       <br />
       {/* {JSON.stringify(selection)} <br />

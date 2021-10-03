@@ -1,12 +1,12 @@
 import { useAtom } from 'jotai';
-import { ObjectTypes, ShapeTypes } from '../types';
+import { ObjectTypes, ShapeTypes } from '../../types';
 import { Rectangle } from './Rectangle';
-import { hoveredAtom } from '../atoms/hoveredAtom';
-import { selectionAtom } from '../atoms/selectionAtom';
+import { hoveredAtom } from '../../atoms/hoveredAtom';
+import { selectionAtom } from '../../atoms/selectionAtom';
 import { useAtomValue } from 'jotai/utils';
-import { objectsAtom } from '../atoms/objectsAtom';
-import { isRectangular } from '../utils';
-import { panStartAtom } from '../atoms/panStartAtom';
+import { objectsAtom } from '../../atoms/objectsAtom';
+import { isRectangular } from '../../utils';
+import { panStartAtom } from '../../atoms/panStartAtom';
 
 export const Objects = () => {
   const hoveredObjectId = useAtomValue(hoveredAtom);

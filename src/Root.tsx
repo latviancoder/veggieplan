@@ -1,14 +1,12 @@
 import styles from './App.module.css';
 import { Sidebar } from './components/sidebar/Sidebar';
 import { Zoom } from './components/zoom/Zoom';
-import { Container } from './Container';
-import { QueryClient, useQuery } from 'react-query';
+import { Container } from './components/container/Container';
+import { useQuery } from 'react-query';
 import { PlantDetails } from './types';
 import { plantsAtom } from './atoms/atoms';
 import { useUpdateAtom } from 'jotai/utils';
 import { useEffect } from 'react';
-
-const queryClient = new QueryClient();
 
 const Root = () => {
   const setPlants = useUpdateAtom(plantsAtom);

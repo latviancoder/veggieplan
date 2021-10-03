@@ -8,21 +8,21 @@ import {
   offsetAtom,
   plotCanvasAtom,
   mousePositionAtom,
-} from './atoms/atoms';
-import { Guides } from './Guides';
-import { Creatable } from './Creatable';
-import { panAtom } from './atoms/panAtom';
-import { panStartAtom } from './atoms/panStartAtom';
-import { zoomAtom } from './atoms/zoomAtom';
-import { Objects } from './shapes/Objects';
-import { initialAtom } from './atoms/initialAtom';
-import { tapAtom } from './atoms/tapAtom';
+} from '../../atoms/atoms';
+import { Guides } from '../guides/Guides';
+import { Creatable } from '../creatable/Creatable';
+import { panAtom } from '../../atoms/panAtom';
+import { panStartAtom } from '../../atoms/panStartAtom';
+import { zoomAtom } from '../../atoms/zoomAtom';
+import { Objects } from '../shapes/Objects';
+import { initialAtom } from '../../atoms/initialAtom';
+import { tapAtom } from '../../atoms/tapAtom';
 import { useUpdateAtom } from 'jotai/utils';
-import { Info } from './Info';
+import { Info } from '../info/Info';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { copyAtom, pasteAtom } from './atoms/clipboardAtom';
-import { deleteAtom } from './atoms/deleteAtom';
-import { SnapLines } from './SnapLines';
+import { copyAtom, pasteAtom } from '../../atoms/clipboardAtom';
+import { deleteAtom } from '../../atoms/deleteAtom';
+import { SnapLines } from '../snapLines/SnapLines';
 
 function animate(time: number) {
   requestAnimationFrame(animate);

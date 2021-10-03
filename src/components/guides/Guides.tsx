@@ -4,10 +4,10 @@ import {
   offsetAtom,
   plotAtom,
   plotCanvasAtom,
-} from './atoms/atoms';
+} from '../../atoms/atoms';
 import { scaleLinear } from 'd3-scale';
-import { zoomAtom } from './atoms/zoomAtom';
-import { infoAtom } from './atoms/infoAtom';
+import { zoomAtom } from '../../atoms/zoomAtom';
+import { infoAtom } from '../../atoms/infoAtom';
 
 type Props = {};
 

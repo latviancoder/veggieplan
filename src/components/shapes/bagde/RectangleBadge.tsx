@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai/utils';
 import { useEffect, useRef, useState } from 'react';
-import { zoomAtom } from '../../atoms/zoomAtom';
-import { useHelpers } from '../../utils';
+import { zoomAtom } from '../../../atoms/zoomAtom';
+import { useHelpers } from '../../../utils';
 
 type Props = {
   width: number;
