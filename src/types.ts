@@ -43,7 +43,7 @@ export type Shape = RectangleShape;
 
 export type Plant = BaseObject & {
   objectType: ObjectTypes.Plant;
-  plantID: number;
+  plantId: number;
   x: number;
   y: number;
   width: number;

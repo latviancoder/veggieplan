@@ -81,7 +81,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
           creatable = {
             ...creatable,
             objectType: ObjectTypes.Plant,
-            plantID: selectedPlant,
+            plantId: selectedPlant,
           };
 
           const plant = getPlant(selectedPlant);

@@ -63,8 +63,8 @@ export const Rectangle = memo(
 
         {(isHovered || isInteracted) && (
           <RectangleBadge
-            plantID={
-              rest.objectType === ObjectTypes.Plant ? rest.plantID : undefined
+            plantId={
+              rest.objectType === ObjectTypes.Plant ? rest.plantId : undefined
             }
             width={width}
             height={height}
@@ -75,9 +75,9 @@ export const Rectangle = memo(
         {!isHovered &&
           !isInteracted &&
           rest.objectType === ObjectTypes.Plant &&
-          rest.plantID && (
+          rest.plantId && (
             <image
-              href="image/garlic.png"
+              href={`image/${rest.plantId}.png`}
               height={plantIconSize}
               width={plantIconSize}
               x={width / 2 - plantIconSize / 2}

@@ -32,7 +32,7 @@ export const tapAtom = atom<unknown, Params>(
         id: nanoid(),
         rotation: 0,
         objectType: ObjectTypes.Plant,
-        plantID: selectedPlant,
+        plantId: selectedPlant,
         x: absoluteToRelativeX(center.x) - spacingInPx / 2,
         y: absoluteToRelativeY(center.y) - spacingInPx / 2,
         width: spacingInPx,

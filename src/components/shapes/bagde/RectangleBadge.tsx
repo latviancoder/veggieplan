@@ -7,10 +7,10 @@ type Props = {
   width: number;
   height: number;
   rotation: number;
-  plantID?: number;
+  plantId?: number;
 };
 
-export const RectangleBadge = ({ width, height, plantID, rotation }: Props) => {
+export const RectangleBadge = ({ width, height, plantId, rotation }: Props) => {
   const { pxToMeter, getPlant } = useHelpers();
   const [textDimensions, setTextDimensions] = useState({
     width: 0,
@@ -79,8 +79,8 @@ export const RectangleBadge = ({ width, height, plantID, rotation }: Props) => {
           rotation ? `rotate(${-rotation} ${width / 2} ${height / 2})` : ''
         }
       >
-        {plantID
-          ? renderPlantSpecific(plantID)
+        {plantId
+          ? renderPlantSpecific(plantId)
           : `${width.toFixed(2)}x${height.toFixed(2)}`}
       </text>
     </>

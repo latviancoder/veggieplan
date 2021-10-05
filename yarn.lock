@@ -1948,6 +1948,13 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
 
+"@types/lodash.camelcase@^4.3.6":
+  version "4.3.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.camelcase/-/lodash.camelcase-4.3.6.tgz#393c748b70cd926fc629e6502a9d0929f217d5fd"
+  integrity sha512-hd/TEuPd76Jtf1xEq85CHbCqR+iqvs5IOKyrYbiaOg69BRQgPN9XkvLj8Jl8rBp/dfJ2wQ1AVcP8mZmybq7kIg==
+  dependencies:
+    "@types/lodash" "*"
+
 "@types/lodash.debounce@^4.0.6":
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.debounce/-/lodash.debounce-4.0.6.tgz#c5a2326cd3efc46566c47e4c0aa248dc0ee57d60"
@@ -3339,6 +3346,11 @@ camel-case@^4.1.1:
   dependencies:
     pascal-case "^3.1.2"
     tslib "^2.0.3"
+
+camelcase-object-deep@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/camelcase-object-deep/-/camelcase-object-deep-1.1.4.tgz#5eca4ff37a92da7b3889a66614ddbd0f92d41423"
+  integrity sha512-COeBFKyRCn1Y04GP5Ku+8AWueuoiZDefB31m8+AM7oBUG2ct2bona2CayCBzcIOX6ryMIWAaLZy+N1vAeAK2iw==
 
 camelcase@5.3.1, camelcase@^5.0.0, camelcase@^5.3.1:
   version "5.3.1"
@@ -7284,6 +7296,11 @@ lodash._reinterpolate@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/lodash._reinterpolate/-/lodash._reinterpolate-3.0.0.tgz#0ccf2d89166af03b3663c796538b75ac6e114d9d"
   integrity sha1-DM8tiRZq8Ds2Y8eWU4t1rG4RTZ0=
+
+lodash.camelcase@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
+  integrity sha1-soqmKIorn8ZRA1x3EfZathkDMaY=
 
 lodash.clonedeep@^4.5.0:
   version "4.5.0"
