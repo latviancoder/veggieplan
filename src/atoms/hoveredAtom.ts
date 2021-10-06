@@ -12,7 +12,6 @@ export const hoveredAtom = atom<null | string>((get) => {
   const mode = get(modeAtom);
   const mousePosition = get(mousePositionAtom);
   const zoom = get(zoomAtom);
-  const offset = get(offsetAtom);
 
   let hoveredObjectId = null;
 

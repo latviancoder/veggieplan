@@ -2,6 +2,7 @@ import express from 'express';
 import path, { dirname } from 'path';
 import pg from 'pg';
 import camelCaseObjectDeep from 'camelcase-object-deep';
+import SQL from 'sql-template-strings';
 
 import { fileURLToPath } from 'url';
 
@@ -19,11 +20,17 @@ const client = new Client({
 
 await client.connect();
 
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'build')));
 
 // Serve react app as an index
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+app.get('/api/objects', async (req, res) => {
+  const result = await client.query(`SELECT objects.* FROM objects`);
+  res.json(camelCaseObjectDeep(result.rows));
 });
 
 app.get('/api/plants', async (req, res) => {
@@ -32,6 +39,27 @@ app.get('/api/plants', async (req, res) => {
     FROM plants INNER JOIN families ON (plants.family_id = families.id)`
   );
   res.json(camelCaseObjectDeep(result.rows));
+});
+
+app.post('/api/save', async (req, res) => {
+  // Deleted objects
+  if (req.body.deletedObjectIds?.length) {
+    await client.query(`DELETE FROM objects WHERE id = ANY($1)`, [
+      req.body.deletedObjectIds,
+    ]);
+  }
+
+  for (const obj of req.body.changedObjects || []) {
+    await client.query(
+      SQL`INSERT INTO objects 
+        (id, x, y, width, height, rotation, object_type, plant_id, date_added, sorting) VALUES 
+        (${obj.id}, ${obj.x}, ${obj.y}, ${obj.width}, ${obj.height}, ${obj.rotation}, ${obj.objectType}, ${obj.plantId}, ${obj.dateAdded}, ${obj.sorting}) 
+      ON CONFLICT (id) DO UPDATE SET 
+        x = ${obj.x}, y = ${obj.y}, width = ${obj.width}, height = ${obj.height}, rotation = ${obj.rotation}`
+    );
+  }
+
+  res.send();
 });
 
 app.listen(port, () => {

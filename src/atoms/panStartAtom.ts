@@ -23,6 +23,7 @@ import { selectionAtom } from './selectionAtom';
 import { objectsAtom } from './objectsAtom';
 import { snapLinesAtom } from './snapLines';
 import { utilsAtom } from './utilsAtom';
+import { now } from '@tweenjs/tween.js';
 
 type PanStart = {
   offset: Point;
@@ -67,6 +68,8 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
       if (mode === Modes.CREATION) {
         set(selectionAtom, { type: 'reset' });
 
+        const now = new Date();
+
         let creatable: GardenObject = {
           id: nanoid(),
           x: 0,
@@ -74,7 +77,9 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
           height: 0,
           width: 0,
           rotation: 0,
-          dateAdded: Date.now() / Math.pow(10, Date.now().toString().length),
+          dateAdded: now.toISOString(),
+          sorting:
+            now.getTime() / Math.pow(10, now.getTime().toString().length),
         } as GardenObject;
 
         if (selectedPlant) {

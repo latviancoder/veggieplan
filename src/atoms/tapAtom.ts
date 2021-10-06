@@ -28,6 +28,8 @@ export const tapAtom = atom<unknown, Params>(
       const plant = getPlant(selectedPlant);
       const spacingInPx = meterToPx(plant.spacing / 100);
 
+      const now = new Date();
+
       const creatable: Plant = {
         id: nanoid(),
         rotation: 0,
@@ -37,7 +39,8 @@ export const tapAtom = atom<unknown, Params>(
         y: absoluteToRelativeY(center.y) - spacingInPx / 2,
         width: spacingInPx,
         height: spacingInPx,
-        dateAdded: Date.now() / Math.pow(10, Date.now().toString().length),
+        dateAdded: now.toISOString(),
+        sorting: now.getTime() / Math.pow(10, now.getTime().toString().length),
       };
 
       set(objectsAtom, [...objects, creatable]);

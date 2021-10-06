@@ -23,7 +23,8 @@ type BaseObject = {
   id: string;
   zIndex?: number;
   rotation: number;
-  dateAdded: number;
+  sorting: number;
+  dateAdded: string;
 };
 
 type BaseShape = BaseObject & {

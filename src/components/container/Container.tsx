@@ -23,6 +23,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { copyAtom, pasteAtom } from '../../atoms/clipboardAtom';
 import { deleteAtom } from '../../atoms/deleteAtom';
 import { SnapLines } from '../snapLines/SnapLines';
+import isEmpty from 'lodash.isempty';
 
 function animate(time: number) {
   requestAnimationFrame(animate);
@@ -150,31 +151,35 @@ export const Container = () => {
 
   return (
     <div ref={rootRef} className={styles.root}>
-      <Info />
-      <svg
-        className={styles.svg}
-        viewBox={`
+      {!isEmpty(canvas) && !isEmpty(plotCanvas) && (
+        <>
+          <Info />
+          <svg
+            className={styles.svg}
+            viewBox={`
             ${offset.x} 
             ${offset.y} 
             ${canvas.width / zoom} 
             ${canvas.height / zoom}
           `}
-        style={{ display: 'block' }}
-      >
-        <rect
-          width={plotCanvas.width}
-          height={plotCanvas.height}
-          fill="#fff"
-          stroke="#333"
-          strokeWidth={1 / zoom}
-          strokeDasharray={4 / zoom}
-        />
-        <Guides />
-        <Objects />
-        <Creatable />
-        <SnapLines />
-        {/* <PlantUnderCursor /> */}
-      </svg>
+            style={{ display: 'block' }}
+          >
+            <rect
+              width={plotCanvas.width}
+              height={plotCanvas.height}
+              fill="#fff"
+              stroke="#333"
+              strokeWidth={1 / zoom}
+              strokeDasharray={4 / zoom}
+            />
+            <Guides />
+            <Objects />
+            <Creatable />
+            <SnapLines />
+            {/* <PlantUnderCursor /> */}
+          </svg>
+        </>
+      )}
     </div>
   );
 };

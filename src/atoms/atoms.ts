@@ -2,14 +2,21 @@ import { PlantDetails } from './../types';
 import { atom } from 'jotai';
 import { GardenObject, Modes, Point } from '../types';
 
-export const modeAtom = atom(Modes.CREATION);
+export const modeAtom = atom(Modes.DEFAULT);
 
-export const canvasAtom = atom({
-  x: 0,
-  y: 0,
-  width: 0,
-  height: 0,
-});
+export const canvasAtom = atom<{
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}>(
+  {} as {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }
+);
 
 // In meters
 export const plotAtom = atom({
@@ -17,10 +24,9 @@ export const plotAtom = atom({
   height: 10,
 });
 
-export const plotCanvasAtom = atom({
-  width: 0,
-  height: 0,
-});
+export const plotCanvasAtom = atom<{ width: number; height: number }>(
+  {} as { width: number; height: number }
+);
 
 export const creatableAtom = atom<null | GardenObject>(null);
 
