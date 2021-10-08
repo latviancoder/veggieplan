@@ -41,7 +41,7 @@ export const Container = () => {
   const setTap = useUpdateAtom(tapAtom);
   const setPan = useUpdateAtom(panAtom);
   const setPanStart = useUpdateAtom(panStartAtom);
-  const setInitial = useUpdateAtom(initialAtom);
+  const [initial, setInitial] = useAtom(initialAtom);
   const setMousePosition = useUpdateAtom(mousePositionAtom);
 
   const copy = useUpdateAtom(copyAtom);
@@ -141,13 +141,13 @@ export const Container = () => {
   ]);
 
   useEffect(() => {
-    if (rootRef.current) {
+    if (rootRef.current && !initial) {
       const { width, height, x, y } = rootRef.current.getBoundingClientRect();
       setInitial({
         canvas: { width, height, x, y },
       });
     }
-  }, [setInitial]);
+  }, [setInitial, initial]);
 
   return (
     <div ref={rootRef} className={styles.root}>
