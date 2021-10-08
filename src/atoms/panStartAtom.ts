@@ -21,7 +21,7 @@ import { HANDLER_OFFSET, HANDLER_SIZE } from '../constants';
 import { rectangleHandlerMap } from '../utils/rectangleHandlerMap';
 import { selectionAtom } from './selectionAtom';
 import { objectsAtom } from './objectsAtom';
-import { snapLinesAtom } from './snapLines';
+import { snapLinesAtom } from './snapLinesAtom';
 import { utilsAtom } from './utilsAtom';
 import { now } from '@tweenjs/tween.js';
 

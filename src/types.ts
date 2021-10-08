@@ -63,8 +63,8 @@ export enum RectangleCorners {
 export type Point = { x: number; y: number };
 
 export type SnapLine = {
-  pointFrom: Point;
-  pointTo: Point;
+  point: Point;
+  selection: number;
   distance: number; // distance from the snapline to the actual position of the point
   direction: 'vertical' | 'horizontal';
 };

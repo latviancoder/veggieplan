@@ -16,7 +16,7 @@ import produce from 'immer';
 import { radiansToDegrees } from '../utils';
 import { selectionAtom } from './selectionAtom';
 import { objectsAtom } from './objectsAtom';
-import { snapLinesAtom } from './snapLines';
+import { snapLinesAtom } from './snapLinesAtom';
 import { utilsAtom } from './utilsAtom';
 
 type Params = {
@@ -69,9 +69,9 @@ export const panAtom = atom(
           if (v) {
             creatableAfterDelta = produce(creatableAfterDelta, (draft) => {
               if (
-                Math.abs(v.pointFrom.y - creatableAfterDelta.y) >=
+                Math.abs(v.point.y - creatableAfterDelta.y) >=
                 Math.abs(
-                  v.pointFrom.y -
+                  v.point.y -
                     (creatableAfterDelta.y + creatableAfterDelta.height)
                 )
               ) {
@@ -86,9 +86,9 @@ export const panAtom = atom(
           if (h) {
             creatableAfterDelta = produce(creatableAfterDelta, (draft) => {
               if (
-                Math.abs(h.pointFrom.x - creatableAfterDelta.x) >=
+                Math.abs(h.point.x - creatableAfterDelta.x) >=
                 Math.abs(
-                  h.pointFrom.x -
+                  h.point.x -
                     (creatableAfterDelta.x + creatableAfterDelta.width)
                 )
               ) {
@@ -277,25 +277,29 @@ export const panAtom = atom(
 
       if (snapLines.length) {
         snappedObjects = produce(objectsAfterResize, (draft) => {
-          panStart.selection?.forEach((selectedObject) => {
-            const h = snapLines.find(
-              ({ direction }) => direction === 'horizontal'
-            );
-            const v = snapLines.find(
-              ({ direction }) => direction === 'vertical'
-            );
+          snapLines
+            .filter(({ direction }) => direction === 'horizontal')
+            .forEach((line) => {
+              if (line.selection === draft[i].x + draft[i].width) {
+                draft[i].width = draft[i].width + line.distance;
+              }
+              if (line.selection === draft[i].x) {
+                draft[i].x = draft[i].x + line.distance;
+                draft[i].width = draft[i].width - line.distance;
+              }
+            });
 
-            if (selectedObject) {
-              if (v) {
-                // draft[i].y = draft[i].y + v.distance;
-                draft[i].height = draft[i].height + v.distance;
+          snapLines
+            .filter(({ direction }) => direction === 'vertical')
+            .forEach((line) => {
+              if (line.selection === draft[i].y + draft[i].height) {
+                draft[i].height = draft[i].height + line.distance;
               }
-              if (h) {
-                // draft[i].x = draft[i].x + h.distance;
-                draft[i].width = draft[i].width + h.distance;
+              if (line.selection === draft[i].y) {
+                draft[i].y = draft[i].y + line.distance;
+                draft[i].height = draft[i].height - line.distance;
               }
-            }
-          });
+            });
         });
       }
 

@@ -49,6 +49,7 @@ app.post('/api/save', async (req, res) => {
     ]);
   }
 
+  // Upsert all changed objects
   for (const obj of req.body.changedObjects || []) {
     await client.query(
       SQL`INSERT INTO objects 
