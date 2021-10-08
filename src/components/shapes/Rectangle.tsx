@@ -42,7 +42,7 @@ export const Rectangle = memo(
     let plantIconSize = 30;
 
     if (plantIconSize > Math.min(width, height) - 20) {
-      plantIconSize = width - 10;
+      plantIconSize = Math.min(width, height) - 10;
     }
 
     if (plantIconSize * zoom > 40) {
