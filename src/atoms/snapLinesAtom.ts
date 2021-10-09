@@ -73,8 +73,6 @@ export const snapLinesAtom = atom(
     }
 
     let snapLines: SnapLine[] = [];
-    // todo
-    let snapLinesVertical: SnapLine[] = [];
 
     if (snapPoints?.length) {
       const snapPointsX = uniq(snapPoints?.map(({ x }) => x));
@@ -92,6 +90,8 @@ export const snapLinesAtom = atom(
               selectionX,
             };
           }
+
+          return undefined;
         })
         .filter((n) => n);
 
@@ -119,6 +119,8 @@ export const snapLinesAtom = atom(
               selectionY,
             };
           }
+
+          return undefined;
         })
         .filter((n) => n);
 

@@ -1,4 +1,3 @@
-import { CONSOLE } from '@blueprintjs/icons/lib/esm/generated/iconContents';
 import { useAtomValue } from 'jotai/utils';
 import {
   canvasAtom,

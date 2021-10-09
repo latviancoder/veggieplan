@@ -2,7 +2,6 @@ import { useAtom } from 'jotai';
 import { modeAtom, plantsAtom, selectedPlantAtom } from '../../atoms/atoms';
 import styles from './Sidebar.module.css';
 import { Modes } from '../../types';
-import classnames from 'classnames';
 import { useAtomValue } from 'jotai/utils';
 import { Button, Icon } from '@blueprintjs/core';
 

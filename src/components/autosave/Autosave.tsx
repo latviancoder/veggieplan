@@ -8,7 +8,7 @@ import { useMutation } from 'react-query';
 import { useHelpers } from '../../utils';
 import produce from 'immer';
 
-let timeout: NodeJS.Timeout;
+// let timeout: NodeJS.Timeout;
 
 export const Autosave = () => {
   const { pxToMeter } = useHelpers();
