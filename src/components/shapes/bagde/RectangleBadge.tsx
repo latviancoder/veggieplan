@@ -48,7 +48,7 @@ export const RectangleBadge = ({ width, height, plant, rotation }: Props) => {
 
     return `${plant.name} - ${rows} x ${inRow} Pflanzen (${
       rows * inRow
-    }) - ${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}`;
+    }) - ${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}m`;
   }, [heightInMeter, widthInMeter, plant]);
 
   return (
@@ -82,7 +82,7 @@ export const RectangleBadge = ({ width, height, plant, rotation }: Props) => {
       >
         {plant
           ? renderPlantSpecific()
-          : `${width.toFixed(2)}x${height.toFixed(2)}`}
+          : `${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}m`}
       </text>
     </>
   );

@@ -34,13 +34,13 @@ const Root = () => {
 
   useEffect(() => {
     if (
-      objectsFromDb &&
       isEmpty(objects) &&
+      !isEmpty(objectsFromDb) &&
       !isEmpty(canvas) &&
       !isEmpty(plotCanvas)
     ) {
       setObjects(
-        objectsFromDb.map((obj) =>
+        objectsFromDb!.map((obj) =>
           // In DB objects are saved with real dimensions
           produce(obj, (draft) => {
             draft.x = meterToPx(draft.x);

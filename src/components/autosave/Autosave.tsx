@@ -44,11 +44,13 @@ export const Autosave = () => {
   const objects = useAtomValue(objectsAtom);
 
   useEffect(() => {
+    console.log('ttt');
     if (
       mode !== Modes.MOVEMENT &&
       mode !== Modes.RESIZING &&
-      !deepEqual(objects, prevObjects.current)
+      (!prevObjects.current || !deepEqual(objects, prevObjects.current))
     ) {
+      console.log('lul');
       // Removed object ids
       const deletedObjectIds = prevObjects.current
         ?.filter(
@@ -76,7 +78,7 @@ export const Autosave = () => {
       // console.log(objects);
       //   }, 5000);
     }
-  }, [mode, objects, save]);
+  }, [mode, save]);
 
   // todo some autosave
   return null;
