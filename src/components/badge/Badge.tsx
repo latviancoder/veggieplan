@@ -4,14 +4,12 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { hoveredAtom } from '../../atoms/hoveredAtom';
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
-import { selectionAtom } from '../../atoms/selectionAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { ObjectTypes } from '../../types';
 import { useHelpers } from '../../utils';
 
 export const Badge = () => {
   const hoveredObjectId = useAtomValue(hoveredAtom);
-  const selection = useAtomValue(selectionAtom);
   const objects = useAtomValue(objectsAtom);
   const panStart = useAtomValue(panStartAtom);
   const zoom = useAtomValue(zoomAtom);

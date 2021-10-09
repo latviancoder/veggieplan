@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { ObjectTypes, Plant, PlantDetails, RectangleShape } from '../../types';
+import { ObjectTypes, Plant, RectangleShape } from '../../types';
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../../constants';
 import { rectangleHandlerMap } from '../../utils/rectangleHandlerMap';

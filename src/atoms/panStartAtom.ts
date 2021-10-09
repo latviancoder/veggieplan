@@ -38,8 +38,7 @@ export const _panStartAtom = atom<PanStart>(null);
 export const panStartAtom = atom<PanStart, { center: Point } | null>(
   (get) => get(_panStartAtom),
   (get, set, panStart) => {
-    const { absoluteToRelativeX, absoluteToRelativeY, getPlant } =
-      get(utilsAtom);
+    const { absoluteToRelativeX, absoluteToRelativeY } = get(utilsAtom);
     const offset = get(offsetAtom);
     const creatable = get(creatableAtom);
     const objects = get(objectsAtom);
@@ -87,8 +86,6 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
             objectType: ObjectTypes.Plant,
             plantId: selectedPlant,
           };
-
-          const plant = getPlant(selectedPlant);
 
           set(_panStartAtom, {
             ...get(_panStartAtom)!,
