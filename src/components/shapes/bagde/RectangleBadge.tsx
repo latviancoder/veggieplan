@@ -1,27 +1,29 @@
 import { useAtomValue } from 'jotai/utils';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { zoomAtom } from '../../../atoms/zoomAtom';
+import { PlantDetails } from '../../../types';
 import { useHelpers } from '../../../utils';
 
 type Props = {
   width: number;
   height: number;
   rotation: number;
-  plantId?: number;
+  plant?: PlantDetails;
 };
 
-export const RectangleBadge = ({ width, height, plantId, rotation }: Props) => {
-  const { pxToMeter, getPlant } = useHelpers();
+export const RectangleBadge = ({ width, height, plant, rotation }: Props) => {
+  const { pxToMeter } = useHelpers();
   const [textDimensions, setTextDimensions] = useState({
     width: 0,
     height: 0,
   });
   const textRef = useRef<SVGTextElement>(null);
-
   const zoom = useAtomValue(zoomAtom);
 
   const widthInMeter = pxToMeter(width);
   const heightInMeter = pxToMeter(height);
+
+  const textOffset = 4;
 
   useEffect(() => {
     if (textRef.current) {
@@ -33,10 +35,9 @@ export const RectangleBadge = ({ width, height, plantId, rotation }: Props) => {
     }
   }, [width, height, zoom]);
 
-  const textOffset = 4;
+  const renderPlantSpecific = useCallback(() => {
+    if (!plant) return;
 
-  const renderPlantSpecific = (id: number) => {
-    const plant = getPlant(id);
     const { inRowSpacing, rowSpacing } = plant;
 
     const smallestSide = Math.min(heightInMeter, widthInMeter);
@@ -48,7 +49,7 @@ export const RectangleBadge = ({ width, height, plantId, rotation }: Props) => {
     return `${plant.name} - ${rows} x ${inRow} Pflanzen (${
       rows * inRow
     }) - ${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}`;
-  };
+  }, [heightInMeter, widthInMeter, plant]);
 
   return (
     <>
@@ -79,8 +80,8 @@ export const RectangleBadge = ({ width, height, plantId, rotation }: Props) => {
           rotation ? `rotate(${-rotation} ${width / 2} ${height / 2})` : ''
         }
       >
-        {plantId
-          ? renderPlantSpecific(plantId)
+        {plant
+          ? renderPlantSpecific()
           : `${width.toFixed(2)}x${height.toFixed(2)}`}
       </text>
     </>

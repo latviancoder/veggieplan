@@ -51,11 +51,11 @@ const Root = () => {
         )
       );
     }
-  }, [objectsFromDb, plotCanvas, canvas, objects]);
+  }, [objectsFromDb, plotCanvas, canvas, setObjects, meterToPx, objects]);
 
   useEffect(() => {
     if (plants) setPlants(plants);
-  }, [plants]);
+  }, [plants, setPlants]);
 
   if (isPlantsLoading || isObjectsLoading) return null;
 

@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { ObjectTypes, Plant, RectangleShape } from '../../types';
+import { Plant, PlantDetails, RectangleShape } from '../../types';
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../../constants';
 import { rectangleHandlerMap } from '../../utils/rectangleHandlerMap';
@@ -10,6 +10,8 @@ type Props = (RectangleShape | Plant) & {
   isSelected?: boolean;
   isInteracted?: boolean;
   isHovered?: boolean;
+  plant?: PlantDetails;
+  borderRadius?: number;
 };
 
 export const Rectangle = memo(
@@ -22,12 +24,13 @@ export const Rectangle = memo(
     isInteracted,
     isHovered,
     rotation,
-    ...rest
+    plant,
+    borderRadius,
   }: Props) => {
     const zoom = useAtomValue(zoomAtom);
 
-    let fill = '#fff';
-    let stroke = 'black';
+    let fill = plant ? '#c8e6c9' : 'white';
+    let stroke = plant ? 'transparent' : '#333';
     if (isSelected) {
       stroke = 'red';
     }
@@ -41,8 +44,8 @@ export const Rectangle = memo(
 
     let plantIconSize = 30;
 
-    if (plantIconSize > Math.min(width, height) - 20) {
-      plantIconSize = Math.min(width, height) - 10;
+    if (plantIconSize > Math.min(width, height) - 10 / zoom) {
+      plantIconSize = Math.min(width, height) - 10 / zoom;
     }
 
     if (plantIconSize * zoom > 40) {
@@ -56,39 +59,34 @@ export const Rectangle = memo(
           strokeWidth={1 / zoom}
           stroke={stroke}
           fill={fill}
-          fillOpacity={0.7}
+          fillOpacity={0.5}
           width={width}
           height={height}
+          rx={plant ? borderRadius : 0}
+          ry={plant ? borderRadius : 0}
         />
 
         {(isHovered || isInteracted) && (
           <RectangleBadge
-            plantId={
-              rest.objectType === ObjectTypes.Plant ? rest.plantId : undefined
-            }
+            plant={plant}
             width={width}
             height={height}
             rotation={rotation}
           />
         )}
 
-        {!isHovered &&
-          !isInteracted &&
-          rest.objectType === ObjectTypes.Plant &&
-          rest.plantId && (
-            <image
-              href={`image/${rest.plantId}.png`}
-              height={plantIconSize}
-              width={plantIconSize}
-              x={width / 2 - plantIconSize / 2}
-              y={height / 2 - plantIconSize / 2}
-              transform={
-                rotation
-                  ? `rotate(${-rotation} ${width / 2} ${height / 2})`
-                  : ''
-              }
-            />
-          )}
+        {!isHovered && !isInteracted && plant && (
+          <image
+            href={`image/${plant.id}.png`}
+            height={plantIconSize > 1 ? plantIconSize : 1}
+            width={plantIconSize > 1 ? plantIconSize : 1}
+            x={width / 2 - plantIconSize / 2}
+            y={height / 2 - plantIconSize / 2}
+            transform={
+              rotation ? `rotate(${-rotation} ${width / 2} ${height / 2})` : ''
+            }
+          />
+        )}
 
         {/* Resize/Rotate handlers */}
         {isSelected && (

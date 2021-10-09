@@ -68,19 +68,17 @@ export const Guides = (props: Props) => {
         fill="none"
       />
       {horizontalTicks.map((tick: number) => {
-        const x = info.meterInPx * zoom * tick;
+        const x = -offset.x * zoom + info.meterInPx * zoom * tick;
+
+        if (x < 0 || x > canvas.width) {
+          return null;
+        }
 
         return (
           <g key={tick}>
-            <line
-              x1={-offset.x * zoom + x}
-              y1="0"
-              x2={-offset.x * zoom + x}
-              y2={5}
-              stroke="#333"
-            />
+            <line x1={x} y1="0" x2={x} y2={5} stroke="#333" />
             <text
-              x={-offset.x * zoom + x}
+              x={x}
               y={16}
               fill="#333"
               textAnchor="middle"
@@ -99,19 +97,17 @@ export const Guides = (props: Props) => {
         fill="none"
       />
       {verticalTicks.map((tick) => {
-        const y = info.meterInPx * zoom * tick;
+        const y = -offset.y * zoom + info.meterInPx * zoom * tick;
+
+        if (y < 0 || y > canvas.height) {
+          return null;
+        }
 
         return (
           <g key={tick}>
-            <line
-              x1="0"
-              y1={-offset.y * zoom + y}
-              x2="5"
-              y2={-offset.y * zoom + y}
-              stroke="#333"
-            />
+            <line x1="0" y1={y} x2="5" y2={y} stroke="#333" />
             <text
-              x={-(-offset.y * zoom + y)}
+              x={-y}
               y={16}
               fill="#333"
               textAnchor="middle"

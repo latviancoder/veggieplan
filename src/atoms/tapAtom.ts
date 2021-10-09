@@ -26,7 +26,7 @@ export const tapAtom = atom<unknown, Params>(
 
     if (selectedPlant) {
       const plant = getPlant(selectedPlant);
-      const spacingInPx = meterToPx(plant.spacing / 100);
+      const spacingInPx = meterToPx(plant.spacing / 100) / zoom;
 
       const now = new Date();
 
@@ -42,6 +42,19 @@ export const tapAtom = atom<unknown, Params>(
         dateAdded: now.toISOString(),
         sorting: now.getTime() / Math.pow(10, now.getTime().toString().length),
       };
+
+      console.log({
+        id: nanoid(),
+        rotation: 0,
+        objectType: ObjectTypes.Plant,
+        plantId: selectedPlant,
+        x: absoluteToRelativeX(center.x) - spacingInPx / 2,
+        y: absoluteToRelativeY(center.y) - spacingInPx / 2,
+        width: spacingInPx,
+        height: spacingInPx,
+        dateAdded: now.toISOString(),
+        sorting: now.getTime() / Math.pow(10, now.getTime().toString().length),
+      });
 
       set(objectsAtom, [...objects, creatable]);
       set(selectionAtom, { type: 'reset-add', objectIds: [creatable.id] });
