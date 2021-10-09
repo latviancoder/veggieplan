@@ -44,7 +44,6 @@ export const Autosave = () => {
   const objects = useAtomValue(objectsAtom);
 
   useEffect(() => {
-    console.log('ttt');
     if (
       mode !== Modes.MOVEMENT &&
       mode !== Modes.RESIZING &&
@@ -78,7 +77,7 @@ export const Autosave = () => {
       // console.log(objects);
       //   }, 5000);
     }
-  }, [mode, save]);
+  }, [mode, objects, save]);
 
   // todo some autosave
   return null;

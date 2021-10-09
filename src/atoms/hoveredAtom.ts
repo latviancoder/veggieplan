@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 import { zoomAtom } from './zoomAtom';
 import { Modes } from '../types';
 import { isPointInsideRectangle } from '../utils';
-import { modeAtom, mousePositionAtom, offsetAtom } from './atoms';
+import { modeAtom, mousePositionAtom } from './atoms';
 import { objectsAtom } from './objectsAtom';
 import { utilsAtom } from './utilsAtom';
 
