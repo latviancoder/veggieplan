@@ -4,6 +4,7 @@ import styles from './Sidebar.module.css';
 import { Modes } from '../../types';
 import classnames from 'classnames';
 import { useAtomValue } from 'jotai/utils';
+import { Button, Icon } from '@blueprintjs/core';
 
 export const Sidebar = () => {
   const plants = useAtomValue(plantsAtom);
@@ -13,35 +14,39 @@ export const Sidebar = () => {
   return (
     <aside className={styles.root}>
       <div className={styles.block}>
+        <Button
+          active={mode === Modes.SELECTION}
+          onClick={() => {
+            setMode(Modes.SELECTION);
+            setSelectedPlant(null);
+          }}
+        >
+          <Icon icon="select" />
+        </Button>
         <div>Shapes</div>
-        <button
+        <Button
           onClick={() => {
             setMode(Modes.CREATION);
             setSelectedPlant(null);
           }}
-          className={classnames(styles.button, {
-            [styles.buttonSelected]: mode === Modes.CREATION && !selectedPlant,
-          })}
+          active={mode === Modes.CREATION && !selectedPlant}
         >
-          []
-        </button>
+          <Icon icon="widget" />
+        </Button>
       </div>
       <div className={styles.block}>
         <div>Plants</div>
         {plants?.map(({ id, name }) => (
-          <button
+          <Button
             key={id}
             onClick={() => {
               setMode(Modes.CREATION);
               setSelectedPlant(id);
             }}
-            className={classnames(styles.button, {
-              [styles.buttonSelected]:
-                mode === Modes.CREATION && selectedPlant === id,
-            })}
+            active={mode === Modes.CREATION && selectedPlant === id}
           >
             {name}
-          </button>
+          </Button>
         ))}
       </div>
     </aside>

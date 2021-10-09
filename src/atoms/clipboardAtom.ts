@@ -1,7 +1,6 @@
-import { offsetAtom, canvasAtom, plotCanvasAtom } from './atoms';
 import { zoomAtom } from './zoomAtom';
 import { objectsAtom } from './objectsAtom';
-import { selectionAtom } from './selectionAtom';
+import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { GardenObject } from './../types';
 import { atom } from 'jotai';
 import { nanoid } from 'nanoid';
@@ -9,13 +8,13 @@ import { nanoid } from 'nanoid';
 const _clipboardAtom = atom<GardenObject[]>([]);
 
 export const copyAtom = atom(null, (get, set) => {
-  const selection = get(selectionAtom);
+  const selectedObjectIds = get(selectedObjectIdsAtom);
   const objects = get(objectsAtom);
 
   // Save snapshot of currently selected objects
   set(
     _clipboardAtom,
-    selection.map((id) => objects.find((obj) => obj.id === id)!)
+    selectedObjectIds.map((id) => objects.find((obj) => obj.id === id)!)
   );
 });
 
@@ -39,7 +38,7 @@ export const pasteAtom = atom(null, (get, set) => {
 
   set(objectsAtom, [...objects, ...newObjects]);
 
-  set(selectionAtom, {
+  set(selectedObjectIdsAtom, {
     type: 'reset-add',
     objectIds: newObjects.map(({ id }) => id),
   });

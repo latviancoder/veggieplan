@@ -19,10 +19,11 @@ import { isPointInsideCircle, isPointInsideRectangle } from '../utils';
 import { zoomAtom } from './zoomAtom';
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../constants';
 import { rectangleHandlerMap } from '../utils/rectangleHandlerMap';
-import { selectionAtom } from './selectionAtom';
+import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { objectsAtom } from './objectsAtom';
 import { snapLinesAtom } from './snapLinesAtom';
 import { utilsAtom } from './utilsAtom';
+import { selectionAtom } from './selectionAtom';
 
 type PanStart = {
   offset: Point;
@@ -44,7 +45,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
     const objects = get(objectsAtom);
     const mode = get(modeAtom);
     const zoom = get(zoomAtom);
-    const selection = get(selectionAtom);
+    const selectedObjectIds = get(selectedObjectIdsAtom);
     const selectedPlant = get(selectedPlantAtom);
 
     // Wben panning is starting we want to save starting offset and click position
@@ -63,8 +64,18 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
         },
       });
 
-      if (mode === Modes.CREATION) {
-        set(selectionAtom, { type: 'reset' });
+      if (mode === Modes.SELECTION) {
+        set(selectedObjectIdsAtom, { type: 'reset' });
+
+        set(_panStartAtom, {
+          ...get(_panStartAtom)!,
+          click: {
+            x: panStartX,
+            y: panStartY,
+          },
+        });
+      } else if (mode === Modes.CREATION) {
+        set(selectedObjectIdsAtom, { type: 'reset' });
 
         const now = new Date();
 
@@ -118,14 +129,17 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
 
         set(modeAtom, Modes.MOVEMENT);
 
-        if (!selection.length) {
+        if (!selectedObjectIds.length) {
           // When nothing selected and panning starts on object we automatically select it
-          set(selectionAtom, { type: 'add', objectIds: [pannedObject.id] });
+          set(selectedObjectIdsAtom, {
+            type: 'add',
+            objectIds: [pannedObject.id],
+          });
         } else {
           // When something is selected, but panning doesn't start on selected object
           // we deselect everything and select it.
-          if (!selection.includes(pannedObject.id)) {
-            set(selectionAtom, {
+          if (!selectedObjectIds.includes(pannedObject.id)) {
+            set(selectedObjectIdsAtom, {
               type: 'reset-add',
               objectIds: [pannedObject.id],
             });
@@ -134,10 +148,10 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
 
         let resizingHandler: RectangleCorners | undefined = undefined;
 
-        const updatedSelection = get(selectionAtom);
+        const updatedSelectedObjectIds = get(selectedObjectIdsAtom);
 
         // Is this one of selected objects?
-        if (updatedSelection.find((id) => id === pannedObject?.id)) {
+        if (updatedSelectedObjectIds.find((id) => id === pannedObject?.id)) {
           // Is this resizing handler?
           const handlerMap = rectangleHandlerMap(pannedObject, zoom);
 
@@ -200,7 +214,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
           ...get(_panStartAtom)!,
           // Snapshot selected objects before moving/resizing/rotating starts.
           // This is needed because we need 'initial data' when adding delta values.
-          selection: updatedSelection.map(
+          selection: updatedSelectedObjectIds.map(
             (id) => objects.find((obj) => obj.id === id)!
           ),
           resizingHandler,
@@ -214,23 +228,25 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
 
       if (creatable?.id) {
         set(objectsAtom, [...objects, creatable]);
-        set(selectionAtom, { type: 'add', objectIds: [creatable.id] });
+        set(selectedObjectIdsAtom, { type: 'add', objectIds: [creatable.id] });
       }
 
       set(modeAtom, Modes.DEFAULT);
 
+      set(selectionAtom, null);
       set(_panStartAtom, null);
       set(creatableAtom, null);
       set(selectedPlantAtom, null);
+
       set(snapLinesAtom, { selectedObjects: [], snapPoints: [] });
     }
 
     // Calculate corners and middlepoints of every non-selected shape on pan start
     // Needed for effective Figma-style snap-to-other-objects functionality
     if (panStart) {
-      const updatedSelection = get(selectionAtom);
+      const updatedSelectedObjectIds = get(selectedObjectIdsAtom);
       const nonSelected = objects.filter(
-        ({ id }) => !updatedSelection.includes(id)
+        ({ id }) => !updatedSelectedObjectIds.includes(id)
       );
 
       let snapPoints: Point[] = [];

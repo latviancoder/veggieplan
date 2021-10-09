@@ -1,23 +1,16 @@
-import { SnapLine } from './../types';
-import { SNAPPING_THRESHOLD } from './../constants';
 import { rotatePoint, rotateRectangle, isRectangular } from './../utils';
 import { atom } from 'jotai';
-import {
-  Modes,
-  ObjectTypes,
-  Point,
-  RectangleCorners,
-  ShapeTypes,
-} from '../types';
-import { canvasAtom, creatableAtom, modeAtom, offsetAtom } from './atoms';
+import { Modes, Point, RectangleCorners } from '../types';
+import { creatableAtom, modeAtom, offsetAtom } from './atoms';
 import { panStartAtom } from './panStartAtom';
 import { zoomAtom } from './zoomAtom';
 import produce from 'immer';
 import { radiansToDegrees } from '../utils';
-import { selectionAtom } from './selectionAtom';
+import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { objectsAtom } from './objectsAtom';
 import { snapLinesAtom } from './snapLinesAtom';
 import { utilsAtom } from './utilsAtom';
+import { selectionAtom } from './selectionAtom';
 
 type Params = {
   deltaX: number;
@@ -36,10 +29,19 @@ export const panAtom = atom(
     const mode = get(modeAtom);
     const creatable = get(creatableAtom);
     const objects = get(objectsAtom);
-    const selection = get(selectionAtom);
+    const selectedObjectIds = get(selectedObjectIdsAtom);
 
     if (!panStart) {
       return;
+    }
+
+    if (mode === Modes.SELECTION) {
+      set(selectionAtom, {
+        x: panStart.click.x + Math.min(deltaX / zoom, 0),
+        y: panStart.click.y + Math.min(deltaY / zoom, 0),
+        width: Math.abs(deltaX / zoom),
+        height: Math.abs(deltaY / zoom),
+      });
     }
 
     if (mode === Modes.CREATION && creatable) {
@@ -116,7 +118,7 @@ export const panAtom = atom(
       });
 
       const selectedObjects = objectsAfterDelta.filter(({ id }) =>
-        selection.includes(id)
+        selectedObjectIds.includes(id)
       );
 
       set(snapLinesAtom, {

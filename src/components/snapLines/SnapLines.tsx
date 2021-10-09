@@ -1,4 +1,3 @@
-import { useAtom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { snapLinesAtom } from '../../atoms/snapLinesAtom';
@@ -20,7 +19,7 @@ export const SnapLines = () => {
             y1={point.y}
             x2={999999}
             y2={point.y}
-            stroke="blue"
+            stroke="#8a9fe3"
             strokeWidth={1 / zoom}
             shapeRendering="crispEdges"
           />
@@ -34,7 +33,7 @@ export const SnapLines = () => {
             y1={0}
             x2={point.x}
             y2={999999}
-            stroke="blue"
+            stroke="#8a9fe3"
             strokeWidth={1 / zoom}
             shapeRendering="crispEdges"
           />

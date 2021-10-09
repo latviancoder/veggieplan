@@ -1,6 +1,6 @@
 import { Rectangle } from './Rectangle';
 import { hoveredAtom } from '../../atoms/hoveredAtom';
-import { selectionAtom } from '../../atoms/selectionAtom';
+import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
 import { useAtomValue } from 'jotai/utils';
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { isRectangular, useHelpers } from '../../utils';
@@ -11,7 +11,7 @@ import { zoomAtom } from '../../atoms/zoomAtom';
 export const Objects = () => {
   const { getPlant, meterToPx } = useHelpers();
   const hoveredObjectId = useAtomValue(hoveredAtom);
-  const selection = useAtomValue(selectionAtom);
+  const selection = useAtomValue(selectedObjectIdsAtom);
   const objects = useAtomValue(objectsAtom);
   const panStart = useAtomValue(panStartAtom);
   const zoom = useAtomValue(zoomAtom);

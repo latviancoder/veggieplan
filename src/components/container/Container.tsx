@@ -25,6 +25,7 @@ import { deleteAtom } from '../../atoms/deleteAtom';
 import { SnapLines } from '../snapLines/SnapLines';
 import isEmpty from 'lodash.isempty';
 import { Badge } from '../badge/Badge';
+import { SelectionArea } from '../selectionArea/SelectionArea';
 
 function animate(time: number) {
   requestAnimationFrame(animate);
@@ -178,6 +179,7 @@ export const Container = () => {
             <Creatable />
             <SnapLines />
             <Badge />
+            <SelectionArea />
             {/* <PlantUnderCursor /> */}
           </svg>
         </>

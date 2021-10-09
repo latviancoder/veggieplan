@@ -4,7 +4,7 @@ import { atom } from 'jotai';
 import { Point } from '../types';
 import { zoomAtom } from './zoomAtom';
 import { selectedPlantAtom, modeAtom } from './atoms';
-import { selectionAtom } from './selectionAtom';
+import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { objectsAtom } from './objectsAtom';
 import { nanoid } from 'nanoid';
 import { utilsAtom } from './utilsAtom';
@@ -21,7 +21,7 @@ export const tapAtom = atom<unknown, Params>(
       get(utilsAtom);
     const zoom = get(zoomAtom);
     const objects = get(objectsAtom);
-    const selection = get(selectionAtom);
+    const selectedObjectIds = get(selectedObjectIdsAtom);
     const selectedPlant = get(selectedPlantAtom);
 
     if (selectedPlant) {
@@ -44,7 +44,10 @@ export const tapAtom = atom<unknown, Params>(
       };
 
       set(objectsAtom, [...objects, creatable]);
-      set(selectionAtom, { type: 'reset-add', objectIds: [creatable.id] });
+      set(selectedObjectIdsAtom, {
+        type: 'reset-add',
+        objectIds: [creatable.id],
+      });
       set(selectedPlantAtom, null);
       set(modeAtom, Modes.DEFAULT);
 
@@ -65,20 +68,29 @@ export const tapAtom = atom<unknown, Params>(
 
       if (!shiftPressed) {
         // Single selection
-        set(selectionAtom, { type: 'reset-add', objectIds: [tappedObjectId] });
+        set(selectedObjectIdsAtom, {
+          type: 'reset-add',
+          objectIds: [tappedObjectId],
+        });
       } else {
         // Multi selection
-        if (selection?.includes(tappedObjectId)) {
+        if (selectedObjectIds?.includes(tappedObjectId)) {
           // Remove object from selection
-          set(selectionAtom, { type: 'remove', objectIds: [tappedObjectId] });
+          set(selectedObjectIdsAtom, {
+            type: 'remove',
+            objectIds: [tappedObjectId],
+          });
         } else {
           // Add another object to selection
-          set(selectionAtom, { type: 'add', objectIds: [tappedObjectId] });
+          set(selectedObjectIdsAtom, {
+            type: 'add',
+            objectIds: [tappedObjectId],
+          });
         }
       }
     } else {
       if (!shiftPressed) {
-        set(selectionAtom, { type: 'reset' });
+        set(selectedObjectIdsAtom, { type: 'reset' });
       }
     }
   }

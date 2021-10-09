@@ -1,52 +1,50 @@
+import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
+import { isRectangular, doPolygonsIntersect } from './../utils';
 import { atom } from 'jotai';
-import { GardenObject } from '../types';
-import produce, { current } from 'immer';
+import { convertRectangleToPolygon } from '../utils';
 import { objectsAtom } from './objectsAtom';
 
-const _selectionAtom = atom<string[]>([]);
+type Selection = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
 
-export const selectionAtom = atom<
-  string[],
-  | { type: 'remove' | 'add' | 'reset-add'; objectIds: string[] }
-  | { type: 'reset' }
->(
-  (get) => get(_selectionAtom),
-  (get, set, action) => {
+const _selectionAtom = atom<Selection | null>(null);
+
+export const selectionAtom = atom<Selection | null, Selection | null>(
+  (get) => {
+    return get(_selectionAtom);
+  },
+  (get, set, selection) => {
     const objects = get(objectsAtom);
 
-    if (action.type === 'reset') {
-      set(_selectionAtom, []);
-    }
+    if (selection) {
+      const selectionPolygon = convertRectangleToPolygon({
+        rectangle: { ...selection, rotation: 0 },
+      });
 
-    if (action.type === 'reset-add') {
-      set(_selectionAtom, [...action.objectIds]);
-    }
+      let selectedObjectIds: string[] = [];
 
-    if (action.type === 'add' && !!action.objectIds.length) {
-      set(_selectionAtom, [...get(_selectionAtom), ...action.objectIds]);
-    }
+      objects.forEach((obj) => {
+        if (isRectangular(obj)) {
+          const rectanglePolygon = convertRectangleToPolygon({
+            rectangle: obj,
+          });
 
-    if (action.type === 'remove') {
-      set(
-        _selectionAtom,
-        get(_selectionAtom).filter((id) => action.objectIds.includes(id))
-      );
-    }
-
-    const selection = get(_selectionAtom);
-
-    // Selected objects
-    set(
-      objectsAtom,
-      produce(objects, (draft) => {
-        for (let i = 0; i < draft.length; i++) {
-          const obj = draft[i];
-
-          const isSelected = selection.includes(obj.id);
-
-          obj.zIndex = isSelected ? selection.indexOf(obj.id) + 1 : undefined;
+          if (doPolygonsIntersect(selectionPolygon, rectanglePolygon)) {
+            selectedObjectIds.push(obj.id);
+          }
         }
-      })
-    );
+      });
+
+      set(selectedObjectIdsAtom, {
+        type: 'reset-add',
+        objectIds: selectedObjectIds,
+      });
+    }
+
+    set(_selectionAtom, selection);
   }
 );
