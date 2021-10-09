@@ -49,7 +49,6 @@ export const Autosave = () => {
       mode !== Modes.RESIZING &&
       (!prevObjects.current || !deepEqual(objects, prevObjects.current))
     ) {
-      console.log('lul');
       // Removed object ids
       const deletedObjectIds = prevObjects.current
         ?.filter(

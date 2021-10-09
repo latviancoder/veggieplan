@@ -29,17 +29,25 @@ export const Rectangle = memo(
   }: Props) => {
     const zoom = useAtomValue(zoomAtom);
 
-    let fill = plant ? '#c8e6c9' : 'white';
-    let stroke = plant ? 'transparent' : '#333';
+    let strokeWidth = 2 / zoom;
+    let fillOpacity = 0.5;
+    let fill = plant ? '#b6dbb7' : 'transparent';
+    let stroke = plant ? 'transparent' : '#ba9c4a';
     if (isSelected) {
-      stroke = 'red';
+      stroke = '#e3938a';
     }
     if (isInteracted) {
-      stroke = 'blue';
+      stroke = '#8a9fe3';
     }
 
     if (isHovered) {
-      fill = '#eee';
+      stroke = '#8ce38a';
+      if (plant) {
+        fill = '#a5d4a7';
+      } else {
+        fill = 'transparent';
+        fillOpacity = 1;
+      }
     }
 
     let plantIconSize = 30;
@@ -56,10 +64,10 @@ export const Rectangle = memo(
       <>
         <rect
           shapeRendering={rotation ? 'auto' : 'crispEdges'}
-          strokeWidth={1 / zoom}
+          strokeWidth={strokeWidth}
           stroke={stroke}
           fill={fill}
-          fillOpacity={0.5}
+          fillOpacity={fillOpacity}
           width={width}
           height={height}
           rx={plant ? borderRadius : 0}

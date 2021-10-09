@@ -1,3 +1,4 @@
+import { getObjectAtPoint } from './../utils';
 import { Modes, ObjectTypes, Plant } from './../types';
 import { atom } from 'jotai';
 import { GardenObject, Point } from '../types';
@@ -43,19 +44,6 @@ export const tapAtom = atom<unknown, Params>(
         sorting: now.getTime() / Math.pow(10, now.getTime().toString().length),
       };
 
-      console.log({
-        id: nanoid(),
-        rotation: 0,
-        objectType: ObjectTypes.Plant,
-        plantId: selectedPlant,
-        x: absoluteToRelativeX(center.x) - spacingInPx / 2,
-        y: absoluteToRelativeY(center.y) - spacingInPx / 2,
-        width: spacingInPx,
-        height: spacingInPx,
-        dateAdded: now.toISOString(),
-        sorting: now.getTime() / Math.pow(10, now.getTime().toString().length),
-      });
-
       set(objectsAtom, [...objects, creatable]);
       set(selectionAtom, { type: 'reset-add', objectIds: [creatable.id] });
       set(selectedPlantAtom, null);
@@ -64,37 +52,29 @@ export const tapAtom = atom<unknown, Params>(
       return;
     }
 
-    let tappedObject: GardenObject | null = null;
-
-    for (let obj of objects) {
-      if (
-        isPointInsideRectangle({
-          point: {
-            x: absoluteToRelativeX(center.x),
-            y: absoluteToRelativeY(center.y),
-          },
-          rectangle: obj,
-          offset: 2 / zoom,
-        })
-      ) {
-        tappedObject = obj;
-      }
-    }
+    const tappedObject = getObjectAtPoint({
+      point: {
+        x: absoluteToRelativeX(center.x),
+        y: absoluteToRelativeY(center.y),
+      },
+      objects,
+      offset: 2 / zoom,
+    });
 
     if (tappedObject) {
-      const tappedId = tappedObject.id;
+      const tappedObjectId = tappedObject.id;
 
       if (!shiftPressed) {
         // Single selection
-        set(selectionAtom, { type: 'reset-add', objectIds: [tappedId] });
+        set(selectionAtom, { type: 'reset-add', objectIds: [tappedObjectId] });
       } else {
         // Multi selection
-        if (selection?.includes(tappedId)) {
+        if (selection?.includes(tappedObjectId)) {
           // Remove object from selection
-          set(selectionAtom, { type: 'remove', objectIds: [tappedId] });
+          set(selectionAtom, { type: 'remove', objectIds: [tappedObjectId] });
         } else {
           // Add another object to selection
-          set(selectionAtom, { type: 'add', objectIds: [tappedId] });
+          set(selectionAtom, { type: 'add', objectIds: [tappedObjectId] });
         }
       }
     } else {

@@ -16,6 +16,8 @@ export const Objects = () => {
   const panStart = useAtomValue(panStartAtom);
   const zoom = useAtomValue(zoomAtom);
 
+  // console.log({ objects });
+
   return (
     <>
       {objects.map((obj) => {

@@ -232,6 +232,44 @@ export const isRectangular = (
   return isPlant(obj) || isRectangleShape(obj);
 };
 
+export const getObjectAtPoint = ({
+  point,
+  objects,
+  offset,
+}: {
+  point: Point;
+  objects: GardenObject[];
+  offset?: number;
+}): null | GardenObject => {
+  let objectAtPoint = null;
+  const hoveredObjects: GardenObject[] = [];
+
+  for (let obj of objects) {
+    if (
+      isPointInsideRectangle({
+        point,
+        rectangle: obj,
+        offset,
+      })
+    ) {
+      hoveredObjects.push(obj);
+    }
+  }
+
+  // Prioritize plants over objects because plants are usually put on top of them
+  const hoveredPlants = hoveredObjects.filter(
+    ({ objectType }) => objectType === ObjectTypes.Plant
+  );
+
+  if (hoveredPlants.length) {
+    objectAtPoint = hoveredPlants[hoveredPlants.length - 1];
+  } else if (hoveredObjects.length) {
+    objectAtPoint = hoveredObjects[hoveredObjects.length - 1];
+  }
+
+  return objectAtPoint;
+};
+
 /*
 If we have the coordinates of the point we are rotating, (𝑥, 𝑦), and the point we are rotating about, (ℎ, 𝑘), as well as the angle of rotation, 𝜃, then the coordinates of the image, (𝑥', 𝑦'), are as follows:
 

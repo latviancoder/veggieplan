@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 import { zoomAtom } from './zoomAtom';
 import { Modes } from '../types';
-import { isPointInsideRectangle } from '../utils';
+import { getObjectAtPoint } from '../utils';
 import { modeAtom, mousePositionAtom } from './atoms';
 import { objectsAtom } from './objectsAtom';
 import { utilsAtom } from './utilsAtom';
@@ -13,24 +13,18 @@ export const hoveredAtom = atom<null | string>((get) => {
   const mousePosition = get(mousePositionAtom);
   const zoom = get(zoomAtom);
 
-  let hoveredObjectId = null;
+  let hoveredObject;
 
   if (mode === Modes.DEFAULT && mousePosition) {
-    for (let obj of objects) {
-      if (
-        isPointInsideRectangle({
-          point: {
-            x: absoluteToRelativeX(mousePosition.x),
-            y: absoluteToRelativeY(mousePosition.y),
-          },
-          rectangle: obj,
-          offset: 2 / zoom,
-        })
-      ) {
-        hoveredObjectId = obj.id;
-      }
-    }
+    hoveredObject = getObjectAtPoint({
+      point: {
+        x: absoluteToRelativeX(mousePosition.x),
+        y: absoluteToRelativeY(mousePosition.y),
+      },
+      objects,
+      offset: 2 / zoom,
+    });
   }
 
-  return hoveredObjectId;
+  return hoveredObject?.id ?? null;
 });

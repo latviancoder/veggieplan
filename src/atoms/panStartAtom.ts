@@ -1,4 +1,4 @@
-import { rotateRectangle, isRectangular } from './../utils';
+import { rotateRectangle, isRectangular, getObjectAtPoint } from './../utils';
 import { atom } from 'jotai';
 import {
   creatableAtom,
@@ -109,35 +109,30 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
         set(creatableAtom, creatable);
       } else {
         // Check if pan start position is within an object
-        let obj: GardenObject | null = null;
+        let pannedObject = getObjectAtPoint({
+          point: {
+            x: panStartX,
+            y: panStartY,
+          },
+          objects,
+          offset: 2 / zoom,
+        });
 
-        for (let s of objects) {
-          if (
-            isPointInsideRectangle({
-              point: {
-                x: panStartX,
-                y: panStartY,
-              },
-              rectangle: s,
-              offset: 2 / zoom,
-            })
-          ) {
-            obj = s;
-          }
-        }
-
-        if (!obj) return;
+        if (!pannedObject) return;
 
         set(modeAtom, Modes.MOVEMENT);
 
         if (!selection.length) {
           // When nothing selected and panning starts on object we automatically select it
-          set(selectionAtom, { type: 'add', objectIds: [obj.id] });
+          set(selectionAtom, { type: 'add', objectIds: [pannedObject.id] });
         } else {
           // When something is selected, but panning doesn't start on selected object
           // we deselect everything and select it.
-          if (!selection.includes(obj.id)) {
-            set(selectionAtom, { type: 'reset-add', objectIds: [obj.id] });
+          if (!selection.includes(pannedObject.id)) {
+            set(selectionAtom, {
+              type: 'reset-add',
+              objectIds: [pannedObject.id],
+            });
           }
         }
 
@@ -146,9 +141,9 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
         const updatedSelection = get(selectionAtom);
 
         // Is this one of selected objects?
-        if (updatedSelection.find((id) => id === obj?.id)) {
+        if (updatedSelection.find((id) => id === pannedObject?.id)) {
           // Is this resizing handler?
-          const handlerMap = rectangleHandlerMap(obj, zoom);
+          const handlerMap = rectangleHandlerMap(pannedObject, zoom);
 
           handlerMap.forEach(({ x, y }, key) => {
             if (
@@ -162,11 +157,11 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
                   y,
                   width: HANDLER_SIZE / zoom,
                   height: HANDLER_SIZE / zoom,
-                  rotation: obj!.rotation,
+                  rotation: pannedObject!.rotation,
                 },
                 rotationOrigin: {
-                  x: obj!.x + obj!.width / 2,
-                  y: obj!.y + obj!.height / 2,
+                  x: pannedObject!.x + pannedObject!.width / 2,
+                  y: pannedObject!.y + pannedObject!.height / 2,
                 },
                 // Offset because of 1px stroke around object
                 offset: 1 / zoom,
@@ -186,14 +181,17 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
                 y: panStartY,
               },
               circle: {
-                x: obj.x + obj.width / 2,
-                y: obj.y + HANDLER_SIZE / zoom / 2 - HANDLER_OFFSET / zoom,
+                x: pannedObject.x + pannedObject.width / 2,
+                y:
+                  pannedObject.y +
+                  HANDLER_SIZE / zoom / 2 -
+                  HANDLER_OFFSET / zoom,
                 radius: HANDLER_SIZE / zoom / 2 + 1 / zoom,
               },
-              rotation: obj.rotation,
+              rotation: pannedObject.rotation,
               rotationOrigin: {
-                x: obj!.x + obj!.width / 2,
-                y: obj!.y + obj!.height / 2,
+                x: pannedObject!.x + pannedObject!.width / 2,
+                y: pannedObject!.y + pannedObject!.height / 2,
               },
             })
           ) {
@@ -210,7 +208,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
             (id) => objects.find((obj) => obj.id === id)!
           ),
           resizingHandler,
-          interactableObjectId: obj.id,
+          interactableObjectId: pannedObject.id,
         });
 
         // Otherwise it's panning, so we do nothing
