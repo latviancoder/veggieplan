@@ -24,6 +24,7 @@ import { copyAtom, pasteAtom } from '../../atoms/clipboardAtom';
 import { deleteAtom } from '../../atoms/deleteAtom';
 import { SnapLines } from '../snapLines/SnapLines';
 import isEmpty from 'lodash.isempty';
+import { Badge } from '../badge/Badge';
 
 function animate(time: number) {
   requestAnimationFrame(animate);
@@ -176,6 +177,7 @@ export const Container = () => {
             <Objects />
             <Creatable />
             <SnapLines />
+            <Badge />
             {/* <PlantUnderCursor /> */}
           </svg>
         </>

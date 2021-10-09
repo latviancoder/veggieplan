@@ -1,16 +1,14 @@
 import { memo } from 'react';
-import { Plant, PlantDetails, RectangleShape } from '../../types';
+import { ObjectTypes, Plant, PlantDetails, RectangleShape } from '../../types';
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../../constants';
 import { rectangleHandlerMap } from '../../utils/rectangleHandlerMap';
 import { useAtomValue } from 'jotai/utils';
-import { RectangleBadge } from './bagde/RectangleBadge';
 
 type Props = (RectangleShape | Plant) & {
   isSelected?: boolean;
   isInteracted?: boolean;
   isHovered?: boolean;
-  plant?: PlantDetails;
   borderRadius?: number;
 };
 
@@ -24,15 +22,18 @@ export const Rectangle = memo(
     isInteracted,
     isHovered,
     rotation,
-    plant,
     borderRadius,
+    ...rest
   }: Props) => {
     const zoom = useAtomValue(zoomAtom);
 
+    const isPlant = (obj: Partial<Props>): obj is Plant =>
+      obj.objectType === ObjectTypes.Plant;
+
     let strokeWidth = 2 / zoom;
     let fillOpacity = 0.5;
-    let fill = plant ? '#b6dbb7' : 'transparent';
-    let stroke = plant ? 'transparent' : '#ba9c4a';
+    let fill = isPlant(rest) ? '#b6dbb7' : 'transparent';
+    let stroke = isPlant(rest) ? 'transparent' : '#ba9c4a';
     if (isSelected) {
       stroke = '#e3938a';
     }
@@ -42,7 +43,7 @@ export const Rectangle = memo(
 
     if (isHovered) {
       stroke = '#8ce38a';
-      if (plant) {
+      if (isPlant(rest)) {
         fill = '#a5d4a7';
       } else {
         fill = 'transparent';
@@ -63,29 +64,20 @@ export const Rectangle = memo(
     const render = () => (
       <>
         <rect
-          shapeRendering={rotation ? 'auto' : 'crispEdges'}
+          shapeRendering="auto"
           strokeWidth={strokeWidth}
           stroke={stroke}
           fill={fill}
           fillOpacity={fillOpacity}
           width={width}
           height={height}
-          rx={plant ? borderRadius : 0}
-          ry={plant ? borderRadius : 0}
+          rx={isPlant(rest) ? borderRadius : 0}
+          ry={isPlant(rest) ? borderRadius : 0}
         />
 
-        {(isHovered || isInteracted) && (
-          <RectangleBadge
-            plant={plant}
-            width={width}
-            height={height}
-            rotation={rotation}
-          />
-        )}
-
-        {!isHovered && !isInteracted && plant && (
+        {!isHovered && !isInteracted && isPlant(rest) && (
           <image
-            href={`image/${plant.id}.png`}
+            href={`image/${rest.plantId}.png`}
             height={plantIconSize > 1 ? plantIconSize : 1}
             width={plantIconSize > 1 ? plantIconSize : 1}
             x={width / 2 - plantIconSize / 2}

@@ -1,29 +1,36 @@
 import { useAtomValue } from 'jotai/utils';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { zoomAtom } from '../../../atoms/zoomAtom';
-import { PlantDetails } from '../../../types';
-import { useHelpers } from '../../../utils';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
-type Props = {
-  width: number;
-  height: number;
-  rotation: number;
-  plant?: PlantDetails;
-};
+import { hoveredAtom } from '../../atoms/hoveredAtom';
+import { objectsAtom } from '../../atoms/objectsAtom';
+import { panStartAtom } from '../../atoms/panStartAtom';
+import { selectionAtom } from '../../atoms/selectionAtom';
+import { zoomAtom } from '../../atoms/zoomAtom';
+import { ObjectTypes } from '../../types';
+import { useHelpers } from '../../utils';
 
-export const RectangleBadge = ({ width, height, plant, rotation }: Props) => {
-  const { pxToMeter } = useHelpers();
+export const Badge = () => {
+  const hoveredObjectId = useAtomValue(hoveredAtom);
+  const selection = useAtomValue(selectionAtom);
+  const objects = useAtomValue(objectsAtom);
+  const panStart = useAtomValue(panStartAtom);
+  const zoom = useAtomValue(zoomAtom);
+
+  const { pxToMeter, getPlant } = useHelpers();
   const [textDimensions, setTextDimensions] = useState({
     width: 0,
     height: 0,
   });
   const textRef = useRef<SVGTextElement>(null);
-  const zoom = useAtomValue(zoomAtom);
 
-  const widthInMeter = pxToMeter(width);
-  const heightInMeter = pxToMeter(height);
+  const obj = objects.find(
+    ({ id }) => hoveredObjectId === id || panStart?.interactableObjectId === id
+  );
 
-  const textOffset = 4;
+  const plant =
+    obj?.objectType === ObjectTypes.Plant && obj.plantId
+      ? getPlant(obj.plantId)
+      : undefined;
 
   useEffect(() => {
     if (textRef.current) {
@@ -33,7 +40,10 @@ export const RectangleBadge = ({ width, height, plant, rotation }: Props) => {
         height: boundingRect.height,
       });
     }
-  }, [width, height, zoom]);
+  }, [obj?.width, obj?.height, zoom]);
+
+  const widthInMeter = pxToMeter(obj?.width);
+  const heightInMeter = pxToMeter(obj?.height);
 
   const renderPlantSpecific = useCallback(() => {
     if (!plant) return;
@@ -51,8 +61,19 @@ export const RectangleBadge = ({ width, height, plant, rotation }: Props) => {
     }) - ${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}m`;
   }, [heightInMeter, widthInMeter, plant]);
 
+  const textOffset = 4;
+
+  if (!obj) return null;
+
+  const { width, height, rotation, x, y } = obj;
+
   return (
-    <>
+    <g
+      transform={`
+        translate(${x} ${y}) 
+        rotate(${rotation} ${width / 2} ${height / 2})
+    `}
+    >
       {textDimensions.width > 0 && (
         <rect
           x={width / 2 - textDimensions.width / zoom / 2 - textOffset / zoom}
@@ -84,6 +105,6 @@ export const RectangleBadge = ({ width, height, plant, rotation }: Props) => {
           ? renderPlantSpecific()
           : `${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}m`}
       </text>
-    </>
+    </g>
   );
 };

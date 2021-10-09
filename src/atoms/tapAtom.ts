@@ -1,9 +1,8 @@
 import { getObjectAtPoint } from './../utils';
 import { Modes, ObjectTypes, Plant } from './../types';
 import { atom } from 'jotai';
-import { GardenObject, Point } from '../types';
+import { Point } from '../types';
 import { zoomAtom } from './zoomAtom';
-import { isPointInsideRectangle } from '../utils';
 import { selectedPlantAtom, modeAtom } from './atoms';
 import { selectionAtom } from './selectionAtom';
 import { objectsAtom } from './objectsAtom';

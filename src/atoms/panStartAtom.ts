@@ -23,7 +23,6 @@ import { selectionAtom } from './selectionAtom';
 import { objectsAtom } from './objectsAtom';
 import { snapLinesAtom } from './snapLinesAtom';
 import { utilsAtom } from './utilsAtom';
-import { now } from '@tweenjs/tween.js';
 
 type PanStart = {
   offset: Point;
