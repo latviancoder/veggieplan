@@ -30,12 +30,12 @@ export const utilsAtom = atom((get) => {
     relativeToAbsoluteY: (y: number) => {
       return canvas.y - offset.y * zoom + y * zoom;
     },
-    meterToPx: (meters: number = 0): number => {
-      return ((meters * plotCanvas.width) / plot.width) * zoom;
-    },
-    pxToMeter: (px: number = 0): number => {
+    pxToMeter: (px: number = 0, noZoom = false): number => {
       const meterInPx = plotCanvas.width / plot.width;
-      return roundTwoDecimals(px / meterInPx);
+      return roundTwoDecimals(px / meterInPx / (noZoom ? 1 : zoom));
+    },
+    meterToPx: (meters: number = 0, noZoom = false): number => {
+      return ((meters * plotCanvas.width) / plot.width) * (noZoom ? 1 : zoom);
     },
     getPlant: (plantId: number) => {
       return plants.find(({ id }) => id === plantId)!;

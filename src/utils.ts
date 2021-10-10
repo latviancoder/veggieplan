@@ -20,7 +20,7 @@ import {
 export const roundTwoDecimals = (num: number) =>
   Math.round((num + Number.EPSILON) * 100) / 100;
 
-export const useHelpers = () => {
+export const useUtils = () => {
   const zoom = useAtomValue(zoomAtom);
   const plot = useAtomValue(plotAtom);
   const plotCanvas = useAtomValue(plotCanvasAtom);
@@ -29,12 +29,12 @@ export const useHelpers = () => {
   const plants = useAtomValue(plantsAtom);
 
   return {
-    pxToMeter: (px: number = 0): number => {
+    pxToMeter: (px: number = 0, noZoom = false): number => {
       const meterInPx = plotCanvas.width / plot.width;
-      return roundTwoDecimals(px / meterInPx);
+      return roundTwoDecimals(px / meterInPx / (noZoom ? 1 : zoom));
     },
-    meterToPx: (meters: number = 0): number => {
-      return ((meters * plotCanvas.width) / plot.width) * zoom;
+    meterToPx: (meters: number = 0, noZoom = false): number => {
+      return ((meters * plotCanvas.width) / plot.width) * (noZoom ? 1 : zoom);
     },
     absoluteToRelativeX: (x: number) => {
       return (x - canvas.x) / zoom + offset.x;
