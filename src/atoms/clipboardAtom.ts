@@ -36,7 +36,7 @@ export const pasteAtom = atom(null, (get, set) => {
     };
   });
 
-  set(objectsAtom, [...objects, ...newObjects]);
+  set(objectsAtom, { objects: [...objects, ...newObjects] });
 
   set(selectedObjectIdsAtom, {
     type: 'reset-add',

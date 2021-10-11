@@ -3,13 +3,13 @@ import { hoveredAtom } from '../../atoms/hoveredAtom';
 import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
 import { useAtomValue } from 'jotai/utils';
 import { objectsAtom } from '../../atoms/objectsAtom';
-import { isRectangular, useHelpers } from '../../utils';
+import { isRectangular, useUtils } from '../../utils';
 import { panStartAtom } from '../../atoms/panStartAtom';
 import { ObjectTypes } from '../../types';
 import { zoomAtom } from '../../atoms/zoomAtom';
 
 export const Objects = () => {
-  const { getPlant, meterToPx } = useHelpers();
+  const { getPlant, meterToPx } = useUtils();
   const hoveredObjectId = useAtomValue(hoveredAtom);
   const selection = useAtomValue(selectedObjectIdsAtom);
   const objects = useAtomValue(objectsAtom);

@@ -53,8 +53,8 @@ app.post('/api/save', async (req, res) => {
   for (const obj of req.body.changedObjects || []) {
     await client.query(
       SQL`INSERT INTO objects 
-        (id, x, y, width, height, rotation, object_type, plant_id, date_added, sorting) VALUES 
-        (${obj.id}, ${obj.x}, ${obj.y}, ${obj.width}, ${obj.height}, ${obj.rotation}, ${obj.objectType}, ${obj.plantId}, ${obj.dateAdded}, ${obj.sorting}) 
+        (id, x, y, width, height, rotation, object_type, shape_type, plant_id, date_added, sorting) VALUES 
+        (${obj.id}, ${obj.x}, ${obj.y}, ${obj.width}, ${obj.height}, ${obj.rotation}, ${obj.objectType}, ${obj.shapeType}, ${obj.plantId}, ${obj.dateAdded}, ${obj.sorting}) 
       ON CONFLICT (id) DO UPDATE SET 
         x = ${obj.x}, y = ${obj.y}, width = ${obj.width}, height = ${obj.height}, rotation = ${obj.rotation}`
     );

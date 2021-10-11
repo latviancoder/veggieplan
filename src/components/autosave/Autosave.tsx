@@ -5,13 +5,14 @@ import { objectsAtom } from '../../atoms/objectsAtom';
 import { GardenObject, Modes } from '../../types';
 import deepEqual from 'deep-equal';
 import { useMutation } from 'react-query';
-import { useHelpers } from '../../utils';
+import { useUtils } from '../../utils';
 import produce from 'immer';
 
 // let timeout: NodeJS.Timeout;
 
 export const Autosave = () => {
-  const { pxToMeter } = useHelpers();
+  const { pxToMeter } = useUtils();
+
   const { mutate: save } = useMutation<
     {},
     string,
@@ -25,12 +26,11 @@ export const Autosave = () => {
       },
       body: JSON.stringify({
         changedObjects: changedObjects.map((obj) =>
-          // In DB objects are saved with real dimensions
           produce(obj, (draft) => {
-            draft.x = pxToMeter(draft.x);
-            draft.y = pxToMeter(draft.y);
-            draft.width = pxToMeter(draft.width);
-            draft.height = pxToMeter(draft.height);
+            draft.x = pxToMeter(draft.x, true);
+            draft.y = pxToMeter(draft.y, true);
+            draft.width = pxToMeter(draft.width, true);
+            draft.height = pxToMeter(draft.height, true);
           })
         ),
         deletedObjectIds,
@@ -65,7 +65,9 @@ export const Autosave = () => {
           )
       );
 
-      save({ changedObjects, deletedObjectIds });
+      if (changedObjects.length || deletedObjectIds?.length) {
+        save({ changedObjects, deletedObjectIds });
+      }
 
       prevObjects.current = objects;
 

@@ -1,29 +1,33 @@
 import { useAtomValue } from 'jotai/utils';
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { creatableAtom } from '../../atoms/atoms';
 
 import { hoveredAtom } from '../../atoms/hoveredAtom';
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { ObjectTypes } from '../../types';
-import { useHelpers } from '../../utils';
+import { useUtils } from '../../utils';
 
 export const Badge = () => {
   const hoveredObjectId = useAtomValue(hoveredAtom);
   const objects = useAtomValue(objectsAtom);
   const panStart = useAtomValue(panStartAtom);
   const zoom = useAtomValue(zoomAtom);
+  const creatable = useAtomValue(creatableAtom);
 
-  const { pxToMeter, getPlant } = useHelpers();
+  const { pxToMeter, getPlant } = useUtils();
   const [textDimensions, setTextDimensions] = useState({
     width: 0,
     height: 0,
   });
   const textRef = useRef<SVGTextElement>(null);
 
-  const obj = objects.find(
-    ({ id }) => hoveredObjectId === id || panStart?.interactableObjectId === id
-  );
+  const obj =
+    objects.find(
+      ({ id }) =>
+        hoveredObjectId === id || panStart?.interactableObjectId === id
+    ) || creatable;
 
   const plant =
     obj?.objectType === ObjectTypes.Plant && obj.plantId

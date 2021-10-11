@@ -153,7 +153,7 @@ export const panAtom = atom(
         });
       }
 
-      set(objectsAtom, snappedObjects || objectsAfterDelta);
+      set(objectsAtom, { objects: snappedObjects || objectsAfterDelta });
     }
 
     if (mode === Modes.RESIZING && panStart.resizingHandler) {
@@ -305,7 +305,7 @@ export const panAtom = atom(
         });
       }
 
-      set(objectsAtom, snappedObjects || objectsAfterResize);
+      set(objectsAtom, { objects: snappedObjects || objectsAfterResize });
     }
 
     if (mode === Modes.ROTATION) {
@@ -330,13 +330,12 @@ export const panAtom = atom(
         Math.atan2(center.y - origin.y, center.x - origin.x)
       );
 
-      set(
-        objectsAtom,
-        produce(objects, (draft) => {
+      set(objectsAtom, {
+        objects: produce(objects, (draft) => {
           // No idea why +90 degree is necessary :shrug:
           draft[i].rotation = rota + 90;
-        })
-      );
+        }),
+      });
     }
 
     if (mode === Modes.DEFAULT) {

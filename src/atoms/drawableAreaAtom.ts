@@ -1,9 +1,9 @@
-// On initial app load position plot canvas in the middle of canvas and zoom out one level
 import { atom } from 'jotai';
 import { zoomAtom } from './zoomAtom';
 import { canvasAtom, offsetAtom, plotAtom, plotCanvasAtom } from './atoms';
 
-export const initialAtom = atom(null, (get, set, { canvas }: any) => {
+// On initial app load position plot canvas in the middle of canvas
+export const drawableAreaAtom = atom(null, (get, set, { canvas }: any) => {
   const plot = get(plotAtom);
   const zoom = get(zoomAtom);
 
@@ -30,6 +30,10 @@ export const initialAtom = atom(null, (get, set, { canvas }: any) => {
   set(canvasAtom, canvas);
   set(plotCanvasAtom, plotCanvas);
   set(offsetAtom, offset);
+
+  // console.log('canvas', canvas);
+  // console.log('plotCanvas', plotCanvas);
+  // console.log('offset', offset);
 
   if (zoom === 1) {
     // set(zoomAtom, { direction: 'zoomOut' });

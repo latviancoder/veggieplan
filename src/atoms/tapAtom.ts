@@ -43,7 +43,7 @@ export const tapAtom = atom<unknown, Params>(
         sorting: now.getTime() / Math.pow(10, now.getTime().toString().length),
       };
 
-      set(objectsAtom, [...objects, creatable]);
+      set(objectsAtom, { objects: [...objects, creatable] });
       set(selectedObjectIdsAtom, {
         type: 'reset-add',
         objectIds: [creatable.id],

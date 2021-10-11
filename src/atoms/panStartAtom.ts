@@ -227,7 +227,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
       // Pan end
 
       if (creatable?.id) {
-        set(objectsAtom, [...objects, creatable]);
+        set(objectsAtom, { objects: [...objects, creatable] });
         set(selectedObjectIdsAtom, { type: 'add', objectIds: [creatable.id] });
       }
 

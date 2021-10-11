@@ -7,10 +7,9 @@ export const deleteAtom = atom(null, (get, set) => {
   const selectedObjectIds = get(selectedObjectIdsAtom);
   const objects = get(objectsAtom);
 
-  set(
-    objectsAtom,
-    objects.filter(({ id }) => !selectedObjectIds.includes(id))
-  );
+  set(objectsAtom, {
+    objects: objects.filter(({ id }) => !selectedObjectIds.includes(id)),
+  });
 
   set(selectedObjectIdsAtom, { type: 'reset' });
 });

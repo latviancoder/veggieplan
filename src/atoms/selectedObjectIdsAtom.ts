@@ -1,6 +1,4 @@
 import { atom } from 'jotai';
-import produce from 'immer';
-import { objectsAtom } from './objectsAtom';
 
 const _selectedObjectIdsAtom = atom<string[]>([]);
 
@@ -11,8 +9,6 @@ export const selectedObjectIdsAtom = atom<
 >(
   (get) => get(_selectedObjectIdsAtom),
   (get, set, action) => {
-    const objects = get(objectsAtom);
-
     if (action.type === 'reset') {
       set(_selectedObjectIdsAtom, []);
     }
@@ -36,21 +32,5 @@ export const selectedObjectIdsAtom = atom<
         )
       );
     }
-
-    const selection = get(_selectedObjectIdsAtom);
-
-    // Selected objects
-    set(
-      objectsAtom,
-      produce(objects, (draft) => {
-        for (let i = 0; i < draft.length; i++) {
-          const obj = draft[i];
-
-          const isSelected = selection.includes(obj.id);
-
-          obj.zIndex = isSelected ? selection.indexOf(obj.id) + 1 : undefined;
-        }
-      })
-    );
   }
 );

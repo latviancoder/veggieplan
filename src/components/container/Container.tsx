@@ -15,7 +15,7 @@ import { panAtom } from '../../atoms/panAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { Objects } from '../shapes/Objects';
-import { initialAtom } from '../../atoms/initialAtom';
+import { drawableAreaAtom } from '../../atoms/drawableAreaAtom';
 import { tapAtom } from '../../atoms/tapAtom';
 import { useUpdateAtom } from 'jotai/utils';
 import { Info } from '../info/Info';
@@ -43,7 +43,7 @@ export const Container = () => {
   const setTap = useUpdateAtom(tapAtom);
   const setPan = useUpdateAtom(panAtom);
   const setPanStart = useUpdateAtom(panStartAtom);
-  const [initial, setInitial] = useAtom(initialAtom);
+  const setDrawableArea = useUpdateAtom(drawableAreaAtom);
   const setMousePosition = useUpdateAtom(mousePositionAtom);
 
   const copy = useUpdateAtom(copyAtom);
@@ -142,48 +142,62 @@ export const Container = () => {
     onMouseLeave,
   ]);
 
-  useEffect(() => {
-    if (rootRef.current && !initial) {
+  const recalculateDrawableAreaDimensions = useCallback(() => {
+    if (rootRef.current) {
       const { width, height, x, y } = rootRef.current.getBoundingClientRect();
-      setInitial({
+      setDrawableArea({
         canvas: { width, height, x, y },
       });
     }
-  }, [setInitial, initial]);
+  }, [setDrawableArea]);
+
+  useEffect(() => {
+    recalculateDrawableAreaDimensions();
+
+    window.addEventListener('resize', recalculateDrawableAreaDimensions);
+
+    return () => {
+      rootRef.current?.removeEventListener(
+        'resize',
+        recalculateDrawableAreaDimensions
+      );
+    };
+  }, [setDrawableArea, recalculateDrawableAreaDimensions]);
 
   return (
     <div ref={rootRef} className={styles.root}>
-      {!isEmpty(canvas) && !isEmpty(plotCanvas) && (
-        <>
-          <Info />
-          <svg
-            className={styles.svg}
-            viewBox={`
-            ${offset.x} 
-            ${offset.y} 
-            ${canvas.width / zoom} 
-            ${canvas.height / zoom}
-          `}
-            style={{ display: 'block' }}
-          >
-            <rect
-              width={plotCanvas.width}
-              height={plotCanvas.height}
-              fill="#fff"
-              stroke="#333"
-              strokeWidth={1 / zoom}
-              strokeDasharray={4 / zoom}
-            />
-            <Guides />
-            <Objects />
-            <Creatable />
-            <SnapLines />
-            <Badge />
-            <SelectionArea />
-            {/* <PlantUnderCursor /> */}
-          </svg>
-        </>
-      )}
+      <div className={styles.inside}>
+        {!isEmpty(canvas) && !isEmpty(plotCanvas) && (
+          <>
+            <Info />
+            <svg
+              className={styles.svg}
+              viewBox={`
+                ${offset.x} 
+                ${offset.y} 
+                ${canvas.width / zoom} 
+                ${canvas.height / zoom}
+              `}
+              style={{ display: 'block' }}
+            >
+              <rect
+                width={plotCanvas.width}
+                height={plotCanvas.height}
+                fill="#fff"
+                stroke="#333"
+                strokeWidth={1 / zoom}
+                strokeDasharray={4 / zoom}
+              />
+              <Guides />
+              <Objects />
+              <Creatable />
+              <SnapLines />
+              <Badge />
+              <SelectionArea />
+            </svg>
+          </>
+        )}
+      </div>
     </div>
   );
 };
