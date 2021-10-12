@@ -44,8 +44,8 @@ export const Badge = () => {
     }
   }, [obj?.width, obj?.height, zoom]);
 
-  const widthInMeter = pxToMeter(obj?.width);
-  const heightInMeter = pxToMeter(obj?.height);
+  const widthInMeter = pxToMeter(obj?.width, true);
+  const heightInMeter = pxToMeter(obj?.height, true);
 
   const renderPlantSpecific = useCallback(() => {
     if (!plant) return;

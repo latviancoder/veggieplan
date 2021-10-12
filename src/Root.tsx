@@ -1,5 +1,5 @@
 import styles from './App.module.css';
-import { Sidebar } from './components/sidebar/Sidebar';
+import { Sidebar } from './components/sidebar/SidebarLeft';
 import { Zoom } from './components/zoom/Zoom';
 import { Container } from './components/container/Container';
 import { useQuery } from 'react-query';

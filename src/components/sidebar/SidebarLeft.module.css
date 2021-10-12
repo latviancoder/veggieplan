@@ -1,0 +1,9 @@
+.root {
+  border-right: 1px #ddd solid;
+  flex: none;
+}
+
+.zoom {
+  display: flex;
+  align-items: center;
+}

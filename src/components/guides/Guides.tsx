@@ -9,9 +9,7 @@ import { scaleLinear } from 'd3-scale';
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { infoAtom } from '../../atoms/infoAtom';
 
-type Props = {};
-
-export const Guides = (props: Props) => {
+export const Guides = () => {
   const [offset] = useAtom(offsetAtom);
   const [info] = useAtom(infoAtom);
   const [zoom] = useAtom(zoomAtom);
@@ -20,6 +18,7 @@ export const Guides = (props: Props) => {
   const [canvas] = useAtom(canvasAtom);
 
   const guideSize = 20;
+  const guideFill = '#EAEAEA';
 
   if (!info) {
     return null;
@@ -60,41 +59,26 @@ export const Guides = (props: Props) => {
 
   return (
     <g transform={`translate(${offset.x} ${offset.y}) scale(${1 / zoom})`}>
-      <rect width={canvas.width} height={guideSize} fill="#fff" />
-      <rect
-        x={-offset.x * zoom}
-        width={plotCanvas.width * zoom}
-        height={guideSize}
-        fill="none"
+      <line
+        x1={0}
+        y1={guideSize}
+        x2={canvas.width}
+        y2={guideSize}
+        stroke="#aaa"
       />
-      {horizontalTicks.map((tick: number) => {
-        const x = -offset.x * zoom + info.meterInPx * zoom * tick;
-
-        if (x < 0 || x > canvas.width) {
-          return null;
-        }
-
-        return (
-          <g key={tick}>
-            <line x1={x} y1="0" x2={x} y2={5} stroke="#333" />
-            <text
-              x={x}
-              y={16}
-              fill="#333"
-              textAnchor="middle"
-              style={{ fontSize: '10px' }}
-            >
-              {tick}
-            </text>
-          </g>
-        );
-      })}
-      <rect width={guideSize} height={canvas.height} fill="#fff" />
+      <line
+        x1={guideSize}
+        y1={0}
+        x2={guideSize}
+        y2={canvas.height}
+        stroke="#aaa"
+      />
+      <rect width={guideSize} height={canvas.height} fill={guideFill} />
       <rect
         y={-offset.y * zoom}
         height={plotCanvas.height * zoom}
         width={guideSize}
-        fill="none"
+        fill={guideFill}
       />
       {verticalTicks.map((tick) => {
         const y = -offset.y * zoom + info.meterInPx * zoom * tick;
@@ -105,14 +89,43 @@ export const Guides = (props: Props) => {
 
         return (
           <g key={tick}>
-            <line x1="0" y1={y} x2="5" y2={y} stroke="#333" />
+            <line x1="15" y1={y} x2="20" y2={y} stroke="#333" />
             <text
               x={-y}
-              y={16}
+              y={11}
               fill="#333"
               textAnchor="middle"
-              style={{ fontSize: '10px' }}
+              style={{ fontSize: '11px' }}
               transform={'rotate(270)'}
+            >
+              {tick}
+            </text>
+          </g>
+        );
+      })}
+      <rect width={canvas.width} height={guideSize} fill={guideFill} />
+      <rect
+        x={-offset.x * zoom}
+        width={plotCanvas.width * zoom}
+        height={guideSize}
+        fill={guideFill}
+      />
+      {horizontalTicks.map((tick: number) => {
+        const x = -offset.x * zoom + info.meterInPx * zoom * tick;
+
+        if (x < 0 || x > canvas.width) {
+          return null;
+        }
+
+        return (
+          <g key={tick}>
+            <line x1={x} y1={15} x2={x} y2={20} stroke="#333" />
+            <text
+              x={x}
+              y={11}
+              fill="#333"
+              textAnchor="middle"
+              style={{ fontSize: '11px' }}
             >
               {tick}
             </text>

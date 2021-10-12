@@ -188,10 +188,10 @@ export const Container = () => {
                 strokeWidth={1 / zoom}
                 strokeDasharray={4 / zoom}
               />
-              <Guides />
               <Objects />
               <Creatable />
               <SnapLines />
+              <Guides />
               <Badge />
               <SelectionArea />
             </svg>
