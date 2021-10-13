@@ -2,7 +2,7 @@ import Hammer from 'hammerjs';
 import { useCallback, useEffect, useRef } from 'react';
 import { update } from '@tweenjs/tween.js';
 import { useAtom } from 'jotai';
-import styles from './Container.module.css';
+import styles from './CanvasContainer.module.css';
 import {
   canvasAtom,
   offsetAtom,
@@ -33,7 +33,7 @@ function animate(time: number) {
 }
 requestAnimationFrame(animate);
 
-export const Container = () => {
+export const CanvasContainer = () => {
   const rootRef = useRef<HTMLDivElement>(null);
 
   const [plotCanvas] = useAtom(plotCanvasAtom);
@@ -70,7 +70,7 @@ export const Container = () => {
   );
 
   const onMouseMove = useCallback(
-    ({ offsetX, offsetY, clientX, clientY }: MouseEvent) => {
+    ({ clientX, clientY }: MouseEvent) => {
       setMousePosition({ x: clientX, y: clientY });
     },
     [setMousePosition]
@@ -152,15 +152,14 @@ export const Container = () => {
   }, [setDrawableArea]);
 
   useEffect(() => {
+    const $root = rootRef.current;
+
     recalculateDrawableAreaDimensions();
 
     window.addEventListener('resize', recalculateDrawableAreaDimensions);
 
     return () => {
-      rootRef.current?.removeEventListener(
-        'resize',
-        recalculateDrawableAreaDimensions
-      );
+      $root?.removeEventListener('resize', recalculateDrawableAreaDimensions);
     };
   }, [setDrawableArea, recalculateDrawableAreaDimensions]);
 

@@ -1,18 +1,18 @@
-import styles from './App.module.css';
-import { Sidebar } from './components/sidebar/SidebarLeft';
-import { Zoom } from './components/zoom/Zoom';
-import { Container } from './components/container/Container';
+import styles from './Root.module.css';
+import { SidebarLeft } from '../sidebarLeft/SidebarLeft';
+import { Zoom } from '../zoom/Zoom';
+import { CanvasContainer } from '../canvasContainer/CanvasContainer';
 import { useQuery } from 'react-query';
-import { GardenObject, PlantDetails } from './types';
-import { canvasAtom, plantsAtom, plotCanvasAtom } from './atoms/atoms';
+import { GardenObject, PlantDetails } from '../../types';
+import { canvasAtom, plantsAtom, plotCanvasAtom } from '../../atoms/atoms';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useEffect } from 'react';
-import { Autosave } from './components/autosave/Autosave';
-import { useUtils } from './utils';
-import produce from 'immer';
-import { objectsAtom, _objectsAtom } from './atoms/objectsAtom';
+import { Autosave } from '../autosave/Autosave';
+import { useUtils } from '../../utils';
+import { objectsAtom } from '../../atoms/objectsAtom';
 import isEmpty from 'lodash.isempty';
 import { useAtom } from 'jotai';
+import { DetailsBar } from '../detailsBar/DetailsBar';
 
 const Root = () => {
   const { meterToPx } = useUtils();
@@ -55,8 +55,10 @@ const Root = () => {
 
   return (
     <div className={styles.root}>
-      <Sidebar />
-      <Container />
+      <SidebarLeft />
+      <CanvasContainer />
+      <DetailsBar />
+      {/* Absolute positioned stuff */}
       <Zoom />
       <Autosave />
     </div>

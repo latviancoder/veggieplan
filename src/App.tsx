@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
-import Root from './Root';
+import Root from './components/root/Root';
 
 const queryClient = new QueryClient();
 

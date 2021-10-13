@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { modeAtom, plantsAtom, selectedPlantAtom } from '../../atoms/atoms';
-import styles from './Sidebar.module.css';
+import styles from './SidebarLeft.module.scss';
 import { Modes } from '../../types';
 import { useAtomValue } from 'jotai/utils';
 import {
@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from '@blueprintjs/core';
 
-export const Sidebar = () => {
+export const SidebarLeft = () => {
   const plants = useAtomValue(plantsAtom);
   const [mode, setMode] = useAtom(modeAtom);
   const [selectedPlant, setSelectedPlant] = useAtom(selectedPlantAtom);

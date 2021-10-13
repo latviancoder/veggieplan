@@ -5,7 +5,7 @@ import { GardenObject } from '../types';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { utilsAtom } from './utilsAtom';
 
-export const _objectsAtom = atom<GardenObject[]>([]);
+const _objectsAtom = atom<GardenObject[]>([]);
 
 export const objectsAtom = atom<
   GardenObject[],
