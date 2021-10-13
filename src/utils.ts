@@ -239,7 +239,7 @@ export const isRectangleShape = (obj: GardenObject): obj is RectangleShape => {
   );
 };
 
-export const isPlant = (obj: GardenObject): obj is Plant => {
+export const isPlant = (obj: Partial<GardenObject>): obj is Plant => {
   return obj.objectType === ObjectTypes.Plant;
 };
 

@@ -4,6 +4,7 @@ import { zoomAtom } from '../../atoms/zoomAtom';
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../../constants';
 import { rectangleHandlerMap } from '../../utils/rectangleHandlerMap';
 import { useAtomValue } from 'jotai/utils';
+import { isPlant } from '../../utils';
 
 type Props = (RectangleShape | Plant) & {
   isSelected?: boolean;
@@ -26,9 +27,6 @@ export const Rectangle = memo(
     ...rest
   }: Props) => {
     const zoom = useAtomValue(zoomAtom);
-
-    const isPlant = (obj: Partial<Props>): obj is Plant =>
-      obj.objectType === ObjectTypes.Plant;
 
     let strokeWidth = 2 / zoom;
     let fillOpacity = 0.5;
