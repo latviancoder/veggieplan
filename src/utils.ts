@@ -1,20 +1,22 @@
 import { useAtomValue } from 'jotai/utils';
+
 import {
   canvasAtom,
   offsetAtom,
   plantsAtom,
   plotAtom,
-  plotCanvasAtom,
+  plotCanvasAtom
 } from './atoms/atoms';
 import { zoomAtom } from './atoms/zoomAtom';
 import {
+  GardenObject,
+  ObjectTypes,
+  Plant,
+  PlantDetails,
   Point,
   RectangleCorners,
   RectangleShape,
-  GardenObject,
-  ObjectTypes,
-  ShapeTypes,
-  Plant,
+  ShapeTypes
 } from './types';
 
 export const roundTwoDecimals = (num: number) =>
@@ -28,11 +30,13 @@ export const useUtils = () => {
   const offset = useAtomValue(offsetAtom);
   const plants = useAtomValue(plantsAtom);
 
+  const pxToMeter = (px: number = 0, noZoom = false): number => {
+    const meterInPx = plotCanvas.width / plot.width;
+    return roundTwoDecimals(px / meterInPx / (noZoom ? 1 : zoom));
+  };
+
   return {
-    pxToMeter: (px: number = 0, noZoom = false): number => {
-      const meterInPx = plotCanvas.width / plot.width;
-      return roundTwoDecimals(px / meterInPx / (noZoom ? 1 : zoom));
-    },
+    pxToMeter,
     meterToPx: (meters: number = 0, noZoom = false): number => {
       return ((meters * plotCanvas.width) / plot.width) * (noZoom ? 1 : zoom);
     },
@@ -44,6 +48,29 @@ export const useUtils = () => {
     },
     getPlant: (plantId: number) => {
       return plants.find(({ id }) => id === plantId)!;
+    },
+    // width and height in pixels
+    getPlantAmount: ({
+      plant,
+      width,
+      height,
+    }: {
+      plant: PlantDetails;
+      width: number;
+      height: number;
+    }) => {
+      const widthInMeter = pxToMeter(width, true);
+      const heightInMeter = pxToMeter(height, true);
+
+      const { inRowSpacing, rowSpacing } = plant;
+
+      const smallestSide = Math.min(heightInMeter, widthInMeter);
+      const largestSide = Math.max(heightInMeter, widthInMeter);
+
+      const rows = Math.round(smallestSide / (rowSpacing / 100));
+      const inRow = Math.round(largestSide / (inRowSpacing / 100));
+
+      return { rows, inRow };
     },
   };
 };

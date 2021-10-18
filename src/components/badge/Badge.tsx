@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai/utils';
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { creatableAtom } from '../../atoms/atoms';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { creatableAtom } from '../../atoms/atoms';
 import { hoveredAtom } from '../../atoms/hoveredAtom';
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
@@ -16,7 +16,7 @@ export const Badge = () => {
   const zoom = useAtomValue(zoomAtom);
   const creatable = useAtomValue(creatableAtom);
 
-  const { pxToMeter, getPlant } = useUtils();
+  const { pxToMeter, getPlant, getPlantAmount } = useUtils();
   const [textDimensions, setTextDimensions] = useState({
     width: 0,
     height: 0,
@@ -48,15 +48,13 @@ export const Badge = () => {
   const heightInMeter = pxToMeter(obj?.height, true);
 
   const renderPlantSpecific = useCallback(() => {
-    if (!plant) return;
+    if (!plant || !obj) return;
 
-    const { inRowSpacing, rowSpacing } = plant;
-
-    const smallestSide = Math.min(heightInMeter, widthInMeter);
-    const largestSide = Math.max(heightInMeter, widthInMeter);
-
-    const rows = Math.round(smallestSide / (rowSpacing / 100));
-    const inRow = Math.round(largestSide / (inRowSpacing / 100));
+    const { rows, inRow } = getPlantAmount({
+      plant,
+      width: obj.width,
+      height: obj.height,
+    });
 
     return `${plant.name} - ${rows} x ${inRow} Pflanzen (${
       rows * inRow
@@ -96,7 +94,7 @@ export const Badge = () => {
         ref={textRef}
         x={width / 2}
         y={height / 2}
-        style={{ fontSize: 13 / zoom, fontFamily: 'Inconsolata' }}
+        style={{ fontSize: 13 / zoom, fontFamily: 'Roboto Mono' }}
         dominantBaseline="middle"
         textAnchor="middle"
         transform={

@@ -1,3 +1,5 @@
+@import '~@blueprintjs/core/lib/scss/variables';
+
 .root {
   position: relative;
   overflow: hidden;
@@ -21,5 +23,5 @@
 }
 
 .svg {
-  background: #d5d5d5;
+  background: $light-gray3;
 }

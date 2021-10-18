@@ -1,31 +1,34 @@
 import Hammer from 'hammerjs';
-import { useCallback, useEffect, useRef } from 'react';
-import { update } from '@tweenjs/tween.js';
 import { useAtom } from 'jotai';
-import styles from './CanvasContainer.module.css';
+import { useUpdateAtom } from 'jotai/utils';
+import isEmpty from 'lodash.isempty';
+import { useCallback, useEffect, useRef } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
+
+import { Colors } from '@blueprintjs/core';
+import { update } from '@tweenjs/tween.js';
+
 import {
   canvasAtom,
-  offsetAtom,
-  plotCanvasAtom,
   mousePositionAtom,
+  offsetAtom,
+  plotCanvasAtom
 } from '../../atoms/atoms';
-import { Guides } from '../guides/Guides';
-import { Creatable } from '../creatable/Creatable';
-import { panAtom } from '../../atoms/panAtom';
-import { panStartAtom } from '../../atoms/panStartAtom';
-import { zoomAtom } from '../../atoms/zoomAtom';
-import { Objects } from '../shapes/Objects';
-import { drawableAreaAtom } from '../../atoms/drawableAreaAtom';
-import { tapAtom } from '../../atoms/tapAtom';
-import { useUpdateAtom } from 'jotai/utils';
-import { Info } from '../info/Info';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { copyAtom, pasteAtom } from '../../atoms/clipboardAtom';
 import { deleteAtom } from '../../atoms/deleteAtom';
-import { SnapLines } from '../snapLines/SnapLines';
-import isEmpty from 'lodash.isempty';
+import { drawableAreaAtom } from '../../atoms/drawableAreaAtom';
+import { panAtom } from '../../atoms/panAtom';
+import { panStartAtom } from '../../atoms/panStartAtom';
+import { tapAtom } from '../../atoms/tapAtom';
+import { zoomAtom } from '../../atoms/zoomAtom';
 import { Badge } from '../badge/Badge';
+import { Creatable } from '../creatable/Creatable';
+import { Guides } from '../guides/Guides';
+import { Info } from '../info/Info';
 import { SelectionArea } from '../selectionArea/SelectionArea';
+import { Objects } from '../shapes/Objects';
+import { SnapLines } from '../snapLines/SnapLines';
+import styles from './CanvasContainer.module.scss';
 
 function animate(time: number) {
   requestAnimationFrame(animate);
@@ -183,7 +186,7 @@ export const CanvasContainer = () => {
                 width={plotCanvas.width}
                 height={plotCanvas.height}
                 fill="#fff"
-                stroke="#333"
+                stroke={Colors.GRAY4}
                 strokeWidth={1 / zoom}
                 strokeDasharray={4 / zoom}
               />
