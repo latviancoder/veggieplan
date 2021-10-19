@@ -15,7 +15,7 @@ import { PlantAmountRow } from './PlantAmountRow';
 import { PlantHeader } from './PlantHeader';
 
 export const DetailsBar = () => {
-  const { pxToMeter, getPlant } = useUtils();
+  const { pxToMeter, getPlant: getPlantDetails } = useUtils();
   const objects = useAtomValue(objectsAtom);
   const selectedObjectIds = useAtomValue(selectedObjectIdsAtom);
 
@@ -28,8 +28,8 @@ export const DetailsBar = () => {
 
   if (!isRectangular(selectedObject)) return null;
 
-  const plant = isPlant(selectedObject)
-    ? getPlant(selectedObject.plantId)
+  const plantDetails = isPlant(selectedObject)
+    ? getPlantDetails(selectedObject.plantId)
     : undefined;
 
   const { width, height } = selectedObject;
@@ -40,7 +40,12 @@ export const DetailsBar = () => {
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        {plant && <PlantHeader plant={plant} />}
+        {plantDetails && isPlant(selectedObject) && (
+          <PlantHeader
+            selectedObject={selectedObject}
+            plantDetails={plantDetails}
+          />
+        )}
       </div>
       <div className={styles.threeColumns}>
         <div>
@@ -62,9 +67,9 @@ export const DetailsBar = () => {
           {heightInMeter}m
         </div>
       </div>
-      {plant && (
+      {plantDetails && (
         <PlantAmountRow
-          plant={plant}
+          plant={plantDetails}
           width={selectedObject.width}
           height={selectedObject.height}
         />

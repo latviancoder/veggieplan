@@ -59,7 +59,7 @@ export const Badge = () => {
     return `${plant.name} - ${rows} x ${inRow} Pflanzen (${
       rows * inRow
     }) - ${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}m`;
-  }, [heightInMeter, widthInMeter, plant]);
+  }, [heightInMeter, widthInMeter, plant, getPlantAmount, obj]);
 
   const textOffset = 4;
 

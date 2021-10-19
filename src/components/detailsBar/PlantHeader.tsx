@@ -1,50 +1,75 @@
-import { divide } from 'lodash';
-import { useRef, useState } from 'react';
+import produce from 'immer';
+import { useAtom } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
+import { useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 
-import { Button, Classes, MenuItem } from '@blueprintjs/core';
+import {
+  Button,
+  Classes,
+  MenuItem,
+  Spinner,
+  SpinnerSize
+} from '@blueprintjs/core';
 import { ItemPredicate, ItemRenderer, Suggest } from '@blueprintjs/select';
 
-import { PlantDetails } from '../../types';
+import { objectsAtom } from '../../atoms/objectsAtom';
+import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
+import { Plant, PlantDetails } from '../../types';
+import { isPlant, post } from '../../utils';
 import styles from './PlantHeader.module.scss';
 
 type Props = {
-  plant: PlantDetails;
+  selectedObject: Plant;
+  plantDetails: PlantDetails;
 };
 
-type Item = { title: string };
-export const PlantHeader = ({ plant }: Props) => {
+type Variety = {
+  id?: number;
+  name: string;
+  plantId: number;
+};
+
+export const PlantHeader = ({ plantDetails, selectedObject }: Props) => {
+  const [objects, setObjects] = useAtom(objectsAtom);
+
+  const { data: varieties, refetch } = useQuery<Variety[]>(
+    ['varieties', plantDetails.id],
+    () => fetch(`/api/varieties/${plantDetails.id}`).then((res) => res.json())
+  );
+
+  const { mutate: saveVariety } = useMutation<Variety, string, Variety>(
+    (variety) => post('/api/varieties', variety).then((r) => r.json()),
+    {
+      onSuccess: () => {
+        refetch();
+      },
+    }
+  );
+
   const [showVarietySelect, setShowVarietySelect] = useState(false);
-  const [variety, setVariety] = useState<Item | undefined>();
 
-  const items: Item[] = [
-    { title: 'The Godfather' },
-    { title: 'The Godfather: Part II' },
-    { title: 'The Dark Knight' },
-    { title: '12 Angry Men' },
-    { title: "Schindler's List" },
-  ];
-
-  const itemRenderer: ItemRenderer<Item> = (
+  const itemRenderer: ItemRenderer<Variety> = (
     item,
     { modifiers, handleClick }
   ) => (
     <MenuItem
       active={modifiers.active}
       onClick={handleClick}
-      text={item.title}
-      key={item.title}
+      text={item.name}
+      key={item.name}
     />
   );
 
-  const inputValueRenderer = (inputValue: Item) => inputValue.title;
+  const inputValueRenderer = (inputValue: Variety) => inputValue.name;
 
-  const itemPredicate: ItemPredicate<Item> = (
+  const itemPredicate: ItemPredicate<Variety> = (
     query,
     item,
     index,
     exactMatch
   ) => {
-    const Title = item.title.toLowerCase();
+    const Title = item.name.toLowerCase();
     const Query = query.toLowerCase();
 
     if (exactMatch) {
@@ -68,48 +93,66 @@ export const PlantHeader = ({ plant }: Props) => {
     />
   );
 
+  const onItemSelect = (variety: Variety) => {
+    setShowVarietySelect(false);
+
+    if (!variety.id) {
+      saveVariety(variety);
+    }
+
+    // todo refactor setting of objects? move to atom?
+    setObjects({
+      objects: produce(objects, (draft) => {
+        const i = objects.findIndex(({ id }) => id === selectedObject.id);
+        (draft[i] as Plant).varietyId = variety.id;
+      }),
+    });
+  };
+
+  const varietyName = varieties?.find(
+    ({ id }) => id === selectedObject.varietyId
+  )?.name;
+
   return (
     <div className={styles.header}>
       {!showVarietySelect && (
         <h4 className={Classes.HEADING} style={{ margin: 0 }}>
-          {plant.name}
-          {variety ? `, ${variety.title}` : ''}
+          {plantDetails.name}
+          {varietyName ? `, ${varietyName}` : ''}
         </h4>
       )}
-      {plant &&
-        (showVarietySelect ? (
-          <Suggest
-            createNewItemFromQuery={(variety: string) => {
-              return { title: variety };
-            }}
-            createNewItemRenderer={renderCreateVarietyOption}
-            inputValueRenderer={inputValueRenderer}
-            items={items}
-            itemRenderer={itemRenderer}
-            itemPredicate={itemPredicate}
-            onItemSelect={(value) => {
-              setShowVarietySelect(false);
-              setVariety(value);
-            }}
-            inputProps={{
-              placeholder: 'Auswählen oder neue erstellen..',
-              autoFocus: true,
-            }}
-            popoverProps={{ minimal: true }}
-            fill
-          />
-        ) : (
-          <Button
-            text="Sorte"
-            icon="edit"
-            onClick={() => {
-              setShowVarietySelect(true);
-            }}
-            small
-            minimal
-            intent="primary"
-          />
-        ))}
+      {showVarietySelect ? (
+        <Suggest
+          createNewItemFromQuery={(query: string) => ({
+            name: query,
+            plantId: plantDetails.id,
+          })}
+          createNewItemRenderer={renderCreateVarietyOption}
+          inputValueRenderer={inputValueRenderer}
+          items={varieties}
+          itemRenderer={itemRenderer}
+          itemPredicate={itemPredicate}
+          onItemSelect={onItemSelect}
+          inputProps={{
+            placeholder: 'Auswählen oder neue erstellen..',
+            autoFocus: true,
+          }}
+          popoverProps={{ minimal: true }}
+          itemsEqual={(varA, varB) => varA.name === varB.name}
+          fill
+        />
+      ) : (
+        <Button
+          text="Sorte"
+          icon="edit"
+          onClick={() => {
+            setShowVarietySelect(true);
+          }}
+          small
+          minimal
+          intent="primary"
+        />
+      )}
     </div>
   );
 };

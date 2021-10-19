@@ -1,12 +1,13 @@
+import deepEqual from 'deep-equal';
+import produce from 'immer';
 import { useAtomValue } from 'jotai/utils';
 import { useEffect, useRef } from 'react';
+import { useMutation } from 'react-query';
+
 import { modeAtom } from '../../atoms/atoms';
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { GardenObject, Modes } from '../../types';
-import deepEqual from 'deep-equal';
-import { useMutation } from 'react-query';
-import { useUtils } from '../../utils';
-import produce from 'immer';
+import { post, useUtils } from '../../utils';
 
 // let timeout: NodeJS.Timeout;
 
@@ -14,27 +15,20 @@ export const Autosave = () => {
   const { pxToMeter } = useUtils();
 
   const { mutate: save } = useMutation<
-    {},
+    unknown,
     string,
     { changedObjects: GardenObject[]; deletedObjectIds: string[] | undefined }
   >(({ changedObjects, deletedObjectIds }) =>
-    fetch('/api/save', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        changedObjects: changedObjects.map((obj) =>
-          produce(obj, (draft) => {
-            draft.x = pxToMeter(draft.x, true);
-            draft.y = pxToMeter(draft.y, true);
-            draft.width = pxToMeter(draft.width, true);
-            draft.height = pxToMeter(draft.height, true);
-          })
-        ),
-        deletedObjectIds,
-      }),
+    post('/api/save', {
+      changedObjects: changedObjects.map((obj) =>
+        produce(obj, (draft) => {
+          draft.x = pxToMeter(draft.x, true);
+          draft.y = pxToMeter(draft.y, true);
+          draft.width = pxToMeter(draft.width, true);
+          draft.height = pxToMeter(draft.height, true);
+        })
+      ),
+      deletedObjectIds,
     })
   );
 

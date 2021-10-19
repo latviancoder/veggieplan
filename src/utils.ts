@@ -1,4 +1,5 @@
 import { useAtomValue } from 'jotai/utils';
+import { Object } from 'lodash';
 
 import {
   canvasAtom,
@@ -399,3 +400,13 @@ Clockwise rotation ⇒ 𝜃 = −90°
 𝑥' = √53 cos(−arccos((3 − 1)∕√53) − 90°) + 1 = −6
 𝑦' = √53 sin(−arccos((3 − 1)∕√53) − 90°) + 2 = 0
  */
+
+export const post = (url: string, body: any) =>
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
