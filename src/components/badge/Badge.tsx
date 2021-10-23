@@ -7,7 +7,7 @@ import { objectsAtom } from '../../atoms/objectsAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { ObjectTypes } from '../../types';
-import { useUtils } from '../../utils';
+import { isPlant, useUtils } from '../../utils';
 
 export const Badge = () => {
   const hoveredObjectId = useAtomValue(hoveredAtom);
@@ -16,7 +16,7 @@ export const Badge = () => {
   const zoom = useAtomValue(zoomAtom);
   const creatable = useAtomValue(creatableAtom);
 
-  const { pxToMeter, getPlant, getPlantAmount } = useUtils();
+  const { pxToMeter, getPlantDetails, getPlantAmount } = useUtils();
   const [textDimensions, setTextDimensions] = useState({
     width: 0,
     height: 0,
@@ -29,10 +29,7 @@ export const Badge = () => {
         hoveredObjectId === id || panStart?.interactableObjectId === id
     ) || creatable;
 
-  const plant =
-    obj?.objectType === ObjectTypes.Plant && obj.plantId
-      ? getPlant(obj.plantId)
-      : undefined;
+  const plantDetails = obj && isPlant(obj) ? getPlantDetails(obj) : undefined;
 
   useEffect(() => {
     if (textRef.current) {
@@ -48,18 +45,14 @@ export const Badge = () => {
   const heightInMeter = pxToMeter(obj?.height, true);
 
   const renderPlantSpecific = useCallback(() => {
-    if (!plant || !obj) return;
+    if (!plantDetails || !obj || !isPlant(obj)) return;
 
-    const { rows, inRow } = getPlantAmount({
-      plant,
-      width: obj.width,
-      height: obj.height,
-    });
+    const { rows, inRow } = getPlantAmount(obj);
 
-    return `${plant.name} - ${rows} x ${inRow} Pflanzen (${
+    return `${plantDetails.name} - ${rows} x ${inRow} Pflanzen (${
       rows * inRow
     }) - ${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}m`;
-  }, [heightInMeter, widthInMeter, plant, getPlantAmount, obj]);
+  }, [heightInMeter, widthInMeter, plantDetails, getPlantAmount, obj]);
 
   const textOffset = 4;
 
@@ -101,7 +94,7 @@ export const Badge = () => {
           rotation ? `rotate(${-rotation} ${width / 2} ${height / 2})` : ''
         }
       >
-        {plant
+        {plantDetails
           ? renderPlantSpecific()
           : `${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}m`}
       </text>

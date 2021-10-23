@@ -1,28 +1,15 @@
 import { Classes, Colors } from '@blueprintjs/core';
 
-import { PlantDetails } from '../../types';
+import { Plant } from '../../types';
 import { useUtils } from '../../utils';
-import styles from './DetailsBar.module.scss';
 
-export const PlantAmountRow = ({
-  plant,
-  width,
-  height,
-}: {
-  plant: PlantDetails;
-  width: number;
-  height: number;
-}) => {
+export const PlantAmountRow = ({ obj }: { obj: Plant }) => {
   const { getPlantAmount } = useUtils();
 
-  const { inRow, rows } = getPlantAmount({
-    plant,
-    width: width,
-    height: height,
-  });
+  const { inRow, rows } = getPlantAmount(obj);
 
   return (
-    <div className={styles.threeColumns}>
+    <>
       <div>
         <h6 className={Classes.HEADING} style={{ color: Colors.GRAY3 }}>
           Pflanzen
@@ -35,6 +22,6 @@ export const PlantAmountRow = ({
         </h6>
         {rows}x{inRow}
       </div>
-    </div>
+    </>
   );
 };

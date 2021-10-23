@@ -1,29 +1,35 @@
-import { rotateRectangle, isRectangular, getObjectAtPoint } from './../utils';
 import { atom } from 'jotai';
-import {
-  creatableAtom,
-  modeAtom,
-  offsetAtom,
-  selectedPlantAtom,
-} from './atoms';
+import { nanoid } from 'nanoid';
+
+import { HANDLER_OFFSET, HANDLER_SIZE } from '../constants';
 import {
   GardenObject,
   Modes,
   ObjectTypes,
   Point,
   RectangleCorners,
-  ShapeTypes,
+  ShapeTypes
 } from '../types';
-import { nanoid } from 'nanoid';
-import { isPointInsideCircle, isPointInsideRectangle } from '../utils';
-import { zoomAtom } from './zoomAtom';
-import { HANDLER_OFFSET, HANDLER_SIZE } from '../constants';
+import {
+  getObjectAtPoint,
+  isPointInsideCircle,
+  isPointInsideRectangle,
+  isRectangular,
+  rotateRectangle
+} from '../utils';
 import { rectangleHandlerMap } from '../utils/rectangleHandlerMap';
-import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
+import {
+  creatableAtom,
+  modeAtom,
+  offsetAtom,
+  selectedPlantAtom
+} from './atoms';
 import { objectsAtom } from './objectsAtom';
+import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
+import { selectionAtom } from './selectionAtom';
 import { snapLinesAtom } from './snapLinesAtom';
 import { utilsAtom } from './utilsAtom';
-import { selectionAtom } from './selectionAtom';
+import { zoomAtom } from './zoomAtom';
 
 type PanStart = {
   offset: Point;
@@ -227,7 +233,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
       // Pan end
 
       if (creatable?.id) {
-        set(objectsAtom, { objects: [...objects, creatable] });
+        set(objectsAtom, { type: 'append', payload: creatable });
         set(selectedObjectIdsAtom, { type: 'add', objectIds: [creatable.id] });
       }
 

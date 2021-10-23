@@ -13,9 +13,10 @@ import {
 import styles from './DetailsBar.module.scss';
 import { PlantAmountRow } from './PlantAmountRow';
 import { PlantHeader } from './PlantHeader';
+import { PlantSpacing } from './PlantSpacing';
 
 export const DetailsBar = () => {
-  const { pxToMeter, getPlant: getPlantDetails } = useUtils();
+  const { pxToMeter, getPlantDetails } = useUtils();
   const objects = useAtomValue(objectsAtom);
   const selectedObjectIds = useAtomValue(selectedObjectIdsAtom);
 
@@ -29,7 +30,7 @@ export const DetailsBar = () => {
   if (!isRectangular(selectedObject)) return null;
 
   const plantDetails = isPlant(selectedObject)
-    ? getPlantDetails(selectedObject.plantId)
+    ? getPlantDetails(selectedObject)
     : undefined;
 
   const { width, height } = selectedObject;
@@ -66,12 +67,12 @@ export const DetailsBar = () => {
           </h6>
           {heightInMeter}m
         </div>
+        {isPlant(selectedObject) && <PlantAmountRow obj={selectedObject} />}
       </div>
       {plantDetails && (
-        <PlantAmountRow
-          plant={plantDetails}
-          width={selectedObject.width}
-          height={selectedObject.height}
+        <PlantSpacing
+          plantDetails={plantDetails}
+          objectId={selectedObject.id}
         />
       )}
     </div>

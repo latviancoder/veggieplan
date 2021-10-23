@@ -51,6 +51,8 @@ export type Plant = BaseObject & {
   y: number;
   width: number;
   height: number;
+  inRowSpacing?: number;
+  rowSpacing?: number;
 };
 
 export type GardenObject = Plant | Shape;

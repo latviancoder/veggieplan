@@ -100,12 +100,14 @@ export const PlantHeader = ({ plantDetails, selectedObject }: Props) => {
       saveVariety(variety);
     }
 
-    // todo refactor setting of objects? move to atom?
     setObjects({
-      objects: produce(objects, (draft) => {
-        const i = objects.findIndex(({ id }) => id === selectedObject.id);
-        (draft[i] as Plant).varietyId = variety.id;
-      }),
+      type: 'updateSingle',
+      payload: {
+        object: {
+          varietyId: variety.id,
+        },
+        id: selectedObject.id,
+      },
     });
   };
 

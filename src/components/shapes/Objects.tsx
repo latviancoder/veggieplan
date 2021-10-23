@@ -1,15 +1,15 @@
-import { Rectangle } from './Rectangle';
-import { hoveredAtom } from '../../atoms/hoveredAtom';
-import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
 import { useAtomValue } from 'jotai/utils';
+
+import { hoveredAtom } from '../../atoms/hoveredAtom';
 import { objectsAtom } from '../../atoms/objectsAtom';
-import { isRectangular, useUtils } from '../../utils';
 import { panStartAtom } from '../../atoms/panStartAtom';
-import { ObjectTypes } from '../../types';
+import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
+import { isPlant, isRectangular, useUtils } from '../../utils';
+import { Rectangle } from './Rectangle';
 
 export const Objects = () => {
-  const { getPlant, meterToPx } = useUtils();
+  const { getPlantDetails, meterToPx } = useUtils();
   const hoveredObjectId = useAtomValue(hoveredAtom);
   const selection = useAtomValue(selectedObjectIdsAtom);
   const objects = useAtomValue(objectsAtom);
@@ -22,10 +22,7 @@ export const Objects = () => {
     <>
       {objects.map((obj) => {
         if (isRectangular(obj)) {
-          const plant =
-            obj.objectType === ObjectTypes.Plant && obj.plantId
-              ? getPlant(obj.plantId)
-              : undefined;
+          const plant = isPlant(obj) ? getPlantDetails(obj) : undefined;
 
           return (
             <Rectangle

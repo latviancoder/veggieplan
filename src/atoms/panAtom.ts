@@ -1,16 +1,21 @@
-import { rotatePoint, rotateRectangle, isRectangular } from './../utils';
-import { atom } from 'jotai';
-import { Modes, Point, RectangleCorners } from '../types';
-import { creatableAtom, modeAtom, offsetAtom } from './atoms';
-import { panStartAtom } from './panStartAtom';
-import { zoomAtom } from './zoomAtom';
 import produce from 'immer';
-import { radiansToDegrees } from '../utils';
-import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
+import { atom } from 'jotai';
+
+import { Modes, Point, RectangleCorners } from '../types';
+import {
+  isRectangular,
+  radiansToDegrees,
+  rotatePoint,
+  rotateRectangle
+} from '../utils';
+import { creatableAtom, modeAtom, offsetAtom } from './atoms';
 import { objectsAtom } from './objectsAtom';
+import { panStartAtom } from './panStartAtom';
+import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
+import { selectionAtom } from './selectionAtom';
 import { snapLinesAtom } from './snapLinesAtom';
 import { utilsAtom } from './utilsAtom';
-import { selectionAtom } from './selectionAtom';
+import { zoomAtom } from './zoomAtom';
 
 type Params = {
   deltaX: number;
@@ -153,7 +158,10 @@ export const panAtom = atom(
         });
       }
 
-      set(objectsAtom, { objects: snappedObjects || objectsAfterDelta });
+      set(objectsAtom, {
+        type: 'replaceAll',
+        payload: snappedObjects || objectsAfterDelta,
+      });
     }
 
     if (mode === Modes.RESIZING && panStart.resizingHandler) {
@@ -305,14 +313,14 @@ export const panAtom = atom(
         });
       }
 
-      set(objectsAtom, { objects: snappedObjects || objectsAfterResize });
+      set(objectsAtom, {
+        type: 'replaceAll',
+        payload: snappedObjects || objectsAfterResize,
+      });
     }
 
-    if (mode === Modes.ROTATION) {
+    if (mode === Modes.ROTATION && panStart.interactableObjectId) {
       const obj = panStart.selection?.find(
-        ({ id }) => panStart.interactableObjectId === id
-      )!;
-      const i = objects.findIndex(
         ({ id }) => panStart.interactableObjectId === id
       )!;
 
@@ -331,11 +339,21 @@ export const panAtom = atom(
       );
 
       set(objectsAtom, {
-        objects: produce(objects, (draft) => {
-          // No idea why +90 degree is necessary :shrug:
-          draft[i].rotation = rota + 90;
-        }),
+        type: 'updateSingle',
+        payload: {
+          object: {
+            rotation: rota + 90,
+          },
+          id: panStart.interactableObjectId,
+        },
       });
+
+      // set(objectsAtom, {
+      //   objects: produce(objects, (draft) => {
+      //     // No idea why +90 degree is necessary :shrug:
+      //     draft[i].rotation = rota + 90;
+      //   }),
+      // });
     }
 
     if (mode === Modes.DEFAULT) {

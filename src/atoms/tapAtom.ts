@@ -1,13 +1,13 @@
-import { getObjectAtPoint } from './../utils';
-import { Modes, ObjectTypes, Plant } from './../types';
 import { atom } from 'jotai';
-import { Point } from '../types';
-import { zoomAtom } from './zoomAtom';
-import { selectedPlantAtom, modeAtom } from './atoms';
-import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
-import { objectsAtom } from './objectsAtom';
 import { nanoid } from 'nanoid';
+
+import { Modes, ObjectTypes, Plant, Point } from '../types';
+import { getObjectAtPoint } from '../utils';
+import { modeAtom, selectedPlantAtom } from './atoms';
+import { objectsAtom } from './objectsAtom';
+import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { utilsAtom } from './utilsAtom';
+import { zoomAtom } from './zoomAtom';
 
 type Params = {
   center: Point;
@@ -17,16 +17,20 @@ type Params = {
 export const tapAtom = atom<unknown, Params>(
   null,
   (get, set, { center, shiftPressed }) => {
-    const { absoluteToRelativeX, absoluteToRelativeY, meterToPx, getPlant } =
-      get(utilsAtom);
+    const {
+      absoluteToRelativeX,
+      absoluteToRelativeY,
+      meterToPx,
+      getPlantDetails,
+    } = get(utilsAtom);
     const zoom = get(zoomAtom);
     const objects = get(objectsAtom);
     const selectedObjectIds = get(selectedObjectIdsAtom);
-    const selectedPlant = get(selectedPlantAtom);
+    const selectedPlantId = get(selectedPlantAtom);
 
-    if (selectedPlant) {
-      const plant = getPlant(selectedPlant);
-      const spacingInPx = meterToPx(plant.spacing / 100) / zoom;
+    if (selectedPlantId) {
+      const plantDetails = getPlantDetails(selectedPlantId);
+      const spacingInPx = meterToPx(plantDetails.spacing / 100) / zoom;
 
       const now = new Date();
 
@@ -34,7 +38,7 @@ export const tapAtom = atom<unknown, Params>(
         id: nanoid(),
         rotation: 0,
         objectType: ObjectTypes.Plant,
-        plantId: selectedPlant,
+        plantId: selectedPlantId,
         x: absoluteToRelativeX(center.x) - spacingInPx / 2,
         y: absoluteToRelativeY(center.y) - spacingInPx / 2,
         width: spacingInPx,
@@ -43,7 +47,7 @@ export const tapAtom = atom<unknown, Params>(
         sorting: now.getTime() / Math.pow(10, now.getTime().toString().length),
       };
 
-      set(objectsAtom, { objects: [...objects, creatable] });
+      set(objectsAtom, { type: 'append', payload: creatable });
       set(selectedObjectIdsAtom, {
         type: 'reset-add',
         objectIds: [creatable.id],

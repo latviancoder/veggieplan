@@ -9,7 +9,7 @@ import { objectsAtom } from '../../atoms/objectsAtom';
 import { GardenObject, Modes } from '../../types';
 import { post, useUtils } from '../../utils';
 
-// let timeout: NodeJS.Timeout;
+let timeout: NodeJS.Timeout;
 
 export const Autosave = () => {
   const { pxToMeter } = useUtils();
@@ -37,20 +37,20 @@ export const Autosave = () => {
   const mode = useAtomValue(modeAtom);
   const objects = useAtomValue(objectsAtom);
 
+  // Autosave doesn't get triggered for volatile state changes like movement and resizing.
+  // Additionally there is a debounce.
   useEffect(() => {
     if (
       mode !== Modes.MOVEMENT &&
       mode !== Modes.RESIZING &&
       (!prevObjects.current || !deepEqual(objects, prevObjects.current))
     ) {
-      // Removed object ids
       const deletedObjectIds = prevObjects.current
         ?.filter(
           ({ id }) => !objects.find(({ id: deletedId }) => id === deletedId)
         )
         .map(({ id }) => id);
 
-      // Changed/added objects
       const changedObjects = objects.filter(
         (obj) =>
           !deepEqual(
@@ -60,17 +60,14 @@ export const Autosave = () => {
       );
 
       if (changedObjects.length || deletedObjectIds?.length) {
-        save({ changedObjects, deletedObjectIds });
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+          save({ changedObjects, deletedObjectIds });
+        }, 2000);
       }
 
       prevObjects.current = objects;
-
-      //   clearTimeout(timeout);
-
-      //   timeout = setTimeout(() => {
-      // console.log('save 5 sec after last change in objects');
-      // console.log(objects);
-      //   }, 5000);
     }
   }, [mode, objects, save]);
 

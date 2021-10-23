@@ -1,11 +1,12 @@
 import { atom } from 'jotai';
+
 import { roundTwoDecimals } from '../utils';
 import {
   canvasAtom,
   offsetAtom,
   plantsAtom,
   plotAtom,
-  plotCanvasAtom,
+  plotCanvasAtom
 } from './atoms';
 import { zoomAtom } from './zoomAtom';
 
@@ -37,7 +38,7 @@ export const utilsAtom = atom((get) => {
     meterToPx: (meters: number = 0, noZoom = false): number => {
       return ((meters * plotCanvas.width) / plot.width) * (noZoom ? 1 : zoom);
     },
-    getPlant: (plantId: number) => {
+    getPlantDetails: (plantId: number) => {
       return plants.find(({ id }) => id === plantId)!;
     },
   };

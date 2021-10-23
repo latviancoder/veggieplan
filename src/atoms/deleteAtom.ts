@@ -1,4 +1,5 @@
 import { atom } from 'jotai';
+
 import { objectsAtom } from './objectsAtom';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 
@@ -8,7 +9,8 @@ export const deleteAtom = atom(null, (get, set) => {
   const objects = get(objectsAtom);
 
   set(objectsAtom, {
-    objects: objects.filter(({ id }) => !selectedObjectIds.includes(id)),
+    type: 'replaceAll',
+    payload: objects.filter(({ id }) => !selectedObjectIds.includes(id)),
   });
 
   set(selectedObjectIdsAtom, { type: 'reset' });

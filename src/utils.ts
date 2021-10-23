@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { useAtomValue } from 'jotai/utils';
 import { Object } from 'lodash';
 
@@ -36,6 +37,25 @@ export const useUtils = () => {
     return roundTwoDecimals(px / meterInPx / (noZoom ? 1 : zoom));
   };
 
+  const getPlantDetails = (obj: Plant) => {
+    const plantDetails = plants.find(({ id }) => id === obj.plantId);
+
+    if (!plantDetails) {
+      throw new Error(`Couldn't find plant with ID ${obj.plantId}`);
+    }
+
+    // Plant object can override certain plant params like spacing
+    return produce(plantDetails, (draft) => {
+      if (obj.inRowSpacing) {
+        draft.inRowSpacing = obj.inRowSpacing;
+      }
+
+      if (obj.rowSpacing) {
+        draft.rowSpacing = obj.rowSpacing;
+      }
+    });
+  };
+
   return {
     pxToMeter,
     meterToPx: (meters: number = 0, noZoom = false): number => {
@@ -47,23 +67,13 @@ export const useUtils = () => {
     absoluteToRelativeY: (y: number) => {
       return (y - canvas.y) / zoom + offset.y;
     },
-    getPlant: (plantId: number) => {
-      return plants.find(({ id }) => id === plantId)!;
-    },
-    // width and height in pixels
-    getPlantAmount: ({
-      plant,
-      width,
-      height,
-    }: {
-      plant: PlantDetails;
-      width: number;
-      height: number;
-    }) => {
+    getPlantDetails,
+    getPlantAmount: (obj: Plant) => {
+      const { width, height } = obj;
+      const { inRowSpacing, rowSpacing } = getPlantDetails(obj);
+
       const widthInMeter = pxToMeter(width, true);
       const heightInMeter = pxToMeter(height, true);
-
-      const { inRowSpacing, rowSpacing } = plant;
 
       const smallestSide = Math.min(heightInMeter, widthInMeter);
       const largestSide = Math.max(heightInMeter, widthInMeter);

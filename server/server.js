@@ -69,10 +69,14 @@ app.post('/api/save', async (req, res) => {
   for (const obj of req.body.changedObjects || []) {
     await client.query(
       SQL`INSERT INTO objects 
-        (id, x, y, width, height, rotation, object_type, shape_type, plant_id, variety_id, date_added, sorting) VALUES 
-        (${obj.id}, ${obj.x}, ${obj.y}, ${obj.width}, ${obj.height}, ${obj.rotation}, ${obj.objectType}, ${obj.shapeType}, ${obj.plantId}, ${obj.varietyId}, ${obj.dateAdded}, ${obj.sorting}) 
+        (id, x, y, width, height, rotation, object_type, shape_type, plant_id, variety_id, date_added, sorting, in_row_spacing, row_spacing) VALUES 
+        (${obj.id}, ${obj.x}, ${obj.y}, ${obj.width}, ${obj.height}, ${obj.rotation}, ${obj.objectType}, ${obj.shapeType}, ${obj.plantId}, ${obj.varietyId}, ${obj.dateAdded}, ${obj.sorting}, ${obj.inRowSpacing}, ${obj.rowSpacing}) 
       ON CONFLICT (id) DO UPDATE SET 
-        x = ${obj.x}, y = ${obj.y}, width = ${obj.width}, height = ${obj.height}, rotation = ${obj.rotation}, variety_id=${obj.varietyId}`
+        x = ${obj.x}, y = ${obj.y}, 
+        width = ${obj.width}, height = ${obj.height}, 
+        rotation = ${obj.rotation}, 
+        variety_id=${obj.varietyId}, 
+        in_row_spacing=${obj.inRowSpacing}, row_spacing=${obj.rowSpacing}`
     );
   }
 

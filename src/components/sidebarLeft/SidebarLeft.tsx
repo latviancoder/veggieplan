@@ -1,15 +1,17 @@
 import { useAtom } from 'jotai';
-import { modeAtom, plantsAtom, selectedPlantAtom } from '../../atoms/atoms';
-import styles from './SidebarLeft.module.scss';
-import { Modes } from '../../types';
 import { useAtomValue } from 'jotai/utils';
+
 import {
   Button,
   ButtonGroup,
   Icon,
   Position,
-  Tooltip,
+  Tooltip
 } from '@blueprintjs/core';
+
+import { modeAtom, plantsAtom, selectedPlantAtom } from '../../atoms/atoms';
+import { Modes } from '../../types';
+import styles from './SidebarLeft.module.scss';
 
 export const SidebarLeft = () => {
   const plants = useAtomValue(plantsAtom);
@@ -49,19 +51,19 @@ export const SidebarLeft = () => {
         >
           <Icon icon="tree" />
         </Button>
+        {plants?.map(({ id, name }) => (
+          <Button
+            key={id}
+            onClick={() => {
+              setMode(Modes.CREATION);
+              setSelectedPlant(id);
+            }}
+            active={mode === Modes.CREATION && selectedPlant === id}
+          >
+            {name}
+          </Button>
+        ))}
       </ButtonGroup>
-      {/* {plants?.map(({ id, name }) => (
-        <Button
-          key={id}
-          onClick={() => {
-            setMode(Modes.CREATION);
-            setSelectedPlant(id);
-          }}
-          active={mode === Modes.CREATION && selectedPlant === id}
-        >
-          {name}
-        </Button>
-      ))} */}
     </aside>
   );
 };
