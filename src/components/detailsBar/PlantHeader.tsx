@@ -1,26 +1,17 @@
-import produce from 'immer';
-import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 
-import {
-  Button,
-  Classes,
-  MenuItem,
-  Spinner,
-  SpinnerSize
-} from '@blueprintjs/core';
+import { Button, Classes, MenuItem } from '@blueprintjs/core';
 import { ItemPredicate, ItemRenderer, Suggest } from '@blueprintjs/select';
 
 import { objectsAtom } from '../../atoms/objectsAtom';
-import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
 import { Plant, PlantDetails } from '../../types';
-import { isPlant, post } from '../../utils';
+import { post } from '../../utils';
 import styles from './PlantHeader.module.scss';
 
 type Props = {
-  selectedObject: Plant;
+  plantObject: Plant;
   plantDetails: PlantDetails;
 };
 
@@ -30,8 +21,8 @@ type Variety = {
   plantId: number;
 };
 
-export const PlantHeader = ({ plantDetails, selectedObject }: Props) => {
-  const [objects, setObjects] = useAtom(objectsAtom);
+export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
+  const setObjects = useUpdateAtom(objectsAtom);
 
   const { data: varieties, refetch } = useQuery<Variety[]>(
     ['varieties', plantDetails.id],
@@ -106,13 +97,13 @@ export const PlantHeader = ({ plantDetails, selectedObject }: Props) => {
         object: {
           varietyId: variety.id,
         },
-        id: selectedObject.id,
+        id: plantObject.id,
       },
     });
   };
 
   const varietyName = varieties?.find(
-    ({ id }) => id === selectedObject.varietyId
+    ({ id }) => id === plantObject.varietyId
   )?.name;
 
   return (
@@ -138,6 +129,7 @@ export const PlantHeader = ({ plantDetails, selectedObject }: Props) => {
           inputProps={{
             placeholder: 'Auswählen oder neue erstellen..',
             autoFocus: true,
+            small: true,
           }}
           popoverProps={{ minimal: true }}
           itemsEqual={(varA, varB) => varA.name === varB.name}

@@ -6,7 +6,6 @@ import { hoveredAtom } from '../../atoms/hoveredAtom';
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
-import { ObjectTypes } from '../../types';
 import { isPlant, useUtils } from '../../utils';
 
 export const Badge = () => {

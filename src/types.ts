@@ -32,6 +32,7 @@ type BaseShape = BaseObject & {
   objectType: ObjectTypes.Shape;
   x: number;
   y: number;
+  title?: string;
 };
 
 export type RectangleShape = BaseShape & {

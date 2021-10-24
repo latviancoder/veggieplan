@@ -1,10 +1,11 @@
+import { useAtomValue } from 'jotai/utils';
 import { memo } from 'react';
-import { ObjectTypes, Plant, RectangleShape } from '../../types';
+
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../../constants';
-import { rectangleHandlerMap } from '../../utils/rectangleHandlerMap';
-import { useAtomValue } from 'jotai/utils';
+import { Plant, RectangleShape } from '../../types';
 import { isPlant } from '../../utils';
+import { rectangleHandlerMap } from '../../utils/rectangleHandlerMap';
 
 type Props = (RectangleShape | Plant) & {
   isSelected?: boolean;

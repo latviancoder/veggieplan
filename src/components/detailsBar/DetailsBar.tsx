@@ -4,8 +4,10 @@ import { Classes, Colors } from '@blueprintjs/core';
 
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
+import { ObjectTypes } from '../../types';
 import {
   isPlant,
+  isRectangleShape,
   isRectangular,
   roundTwoDecimals,
   useUtils
@@ -14,6 +16,7 @@ import styles from './DetailsBar.module.scss';
 import { PlantAmountRow } from './PlantAmountRow';
 import { PlantHeader } from './PlantHeader';
 import { PlantSpacing } from './PlantSpacing';
+import { ShapeHeader } from './ShapeHeader';
 
 export const DetailsBar = () => {
   const { pxToMeter, getPlantDetails } = useUtils();
@@ -41,11 +44,15 @@ export const DetailsBar = () => {
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        {plantDetails && isPlant(selectedObject) && (
+        {plantDetails && isPlant(selectedObject) ? (
           <PlantHeader
-            selectedObject={selectedObject}
+            plantObject={selectedObject}
             plantDetails={plantDetails}
           />
+        ) : (
+          selectedObject.objectType === ObjectTypes.Shape && (
+            <ShapeHeader shape={selectedObject} />
+          )
         )}
       </div>
       <div className={styles.threeColumns}>

@@ -1,7 +1,14 @@
 import { useUpdateAtom } from 'jotai/utils';
 import { useEffect, useState } from 'react';
 
-import { Classes, Colors, FormGroup, NumericInput } from '@blueprintjs/core';
+import {
+  Classes,
+  Colors,
+  Divider,
+  FormGroup,
+  NumericInput,
+  Tag
+} from '@blueprintjs/core';
 
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { PlantDetails } from '../../types';
@@ -91,6 +98,7 @@ export const PlantSpacing = ({ plantDetails, objectId }: Props) => {
               fill
               value={inRowSpacing}
               onValueChange={onInRowSpacingChange}
+              rightElement={<Tag minimal>cm</Tag>}
             />
           </FormGroup>
         </div>
@@ -108,6 +116,7 @@ export const PlantSpacing = ({ plantDetails, objectId }: Props) => {
               fill
               value={rowSpacing}
               onValueChange={onRowSpacingChange}
+              rightElement={<Tag minimal>cm</Tag>}
             />
           </FormGroup>
         </div>

@@ -1,6 +1,5 @@
 import produce from 'immer';
 import { useAtomValue } from 'jotai/utils';
-import { Object } from 'lodash';
 
 import {
   canvasAtom,
@@ -14,7 +13,6 @@ import {
   GardenObject,
   ObjectTypes,
   Plant,
-  PlantDetails,
   Point,
   RectangleCorners,
   RectangleShape,
