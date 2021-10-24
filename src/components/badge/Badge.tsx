@@ -6,6 +6,7 @@ import { hoveredAtom } from '../../atoms/hoveredAtom';
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
+import { ObjectTypes } from '../../types';
 import { isPlant, useUtils } from '../../utils';
 
 export const Badge = () => {
@@ -53,6 +54,16 @@ export const Badge = () => {
     }) - ${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}m`;
   }, [heightInMeter, widthInMeter, plantDetails, getPlantAmount, obj]);
 
+  const renderShapeSpecific = useCallback(() => {
+    let ret = `${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}m`;
+
+    if (obj?.objectType === ObjectTypes.Shape && obj.title) {
+      ret = `Beet ${obj.title} - ${ret}`;
+    }
+
+    return ret;
+  }, [heightInMeter, obj, widthInMeter]);
+
   const textOffset = 4;
 
   if (!obj) return null;
@@ -93,9 +104,7 @@ export const Badge = () => {
           rotation ? `rotate(${-rotation} ${width / 2} ${height / 2})` : ''
         }
       >
-        {plantDetails
-          ? renderPlantSpecific()
-          : `${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}m`}
+        {plantDetails ? renderPlantSpecific() : renderShapeSpecific()}
       </text>
     </g>
   );

@@ -3,7 +3,7 @@ import { memo } from 'react';
 
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../../constants';
-import { Plant, RectangleShape } from '../../types';
+import { ObjectTypes, Plant, RectangleShape } from '../../types';
 import { isPlant } from '../../utils';
 import { rectangleHandlerMap } from '../../utils/rectangleHandlerMap';
 
@@ -73,6 +73,14 @@ export const Rectangle = memo(
           rx={isPlant(rest) ? borderRadius : 0}
           ry={isPlant(rest) ? borderRadius : 0}
         />
+
+        {rest.objectType === ObjectTypes.Shape && rest.title && (
+          <>
+            <text textAnchor="end" x={-3} y={10}>
+              {rest.title}
+            </text>
+          </>
+        )}
 
         {!isHovered && !isInteracted && isPlant(rest) && (
           <image

@@ -36,9 +36,9 @@ export const drawableAreaAtom = atom(null, (get, set, { canvas }: any) => {
   set(plotCanvasAtom, plotCanvas);
   set(offsetAtom, offset);
 
-  console.log('canvas', canvas);
-  console.log('plotCanvas', plotCanvas);
-  console.log('offset', offset);
+  // console.log('canvas', canvas);
+  // console.log('plotCanvas', plotCanvas);
+  // console.log('offset', offset);
 
   if (zoom === 1) {
     // set(zoomAtom, { direction: 'zoomOut' });
