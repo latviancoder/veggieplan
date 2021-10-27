@@ -4,6 +4,9 @@
   flex: 0 0 350px;
   padding: 15px;
   border-left: 1px $light-gray1 solid;
+  overflow-y: scroll;
+  overflow-x: none;
+  max-height: 100vh;
 }
 
 .heading {

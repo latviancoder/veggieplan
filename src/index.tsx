@@ -1,8 +1,10 @@
-import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-
 import '@blueprintjs/core/lib/css/blueprint.css';
+import '@blueprintjs/datetime/lib/css/blueprint-datetime.css';
+
+import ReactDOM from 'react-dom';
+
+import App from './App';
 
 const container = document.getElementById('root');
 

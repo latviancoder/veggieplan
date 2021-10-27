@@ -28,6 +28,7 @@ import { Info } from '../info/Info';
 import { SelectionArea } from '../selectionArea/SelectionArea';
 import { Objects } from '../shapes/Objects';
 import { SnapLines } from '../snapLines/SnapLines';
+import { Zoom } from '../zoom/Zoom';
 import styles from './CanvasContainer.module.scss';
 
 function animate(time: number) {
@@ -200,6 +201,7 @@ export const CanvasContainer = () => {
           </>
         )}
       </div>
+      <Zoom />
     </div>
   );
 };

@@ -77,7 +77,9 @@ app.post('/api/save', async (req, res) => {
         rotation = ${obj.rotation}, 
         variety_id=${obj.varietyId}, 
         in_row_spacing=${obj.inRowSpacing}, row_spacing=${obj.rowSpacing},
-        title=${obj.title}`
+        title=${obj.title},
+        date_direct_sow=${obj.dateDirectSow}, date_start_indoors=${obj.dateStartIndoors}, date_transplant=${obj.dateTransplant}, date_first_harvest=${obj.dateFirstHarvest}, date_last_harvest=${obj.dateLastHarvest}
+        `
     );
   }
 

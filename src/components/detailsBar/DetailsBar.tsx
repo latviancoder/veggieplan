@@ -14,6 +14,7 @@ import {
 } from '../../utils';
 import styles from './DetailsBar.module.scss';
 import { PlantAmountRow } from './PlantAmountRow';
+import { PlantDates } from './PlantDates';
 import { PlantHeader } from './PlantHeader';
 import { PlantSpacing } from './PlantSpacing';
 import { ShapeHeader } from './ShapeHeader';
@@ -76,11 +77,17 @@ export const DetailsBar = () => {
         </div>
         {isPlant(selectedObject) && <PlantAmountRow obj={selectedObject} />}
       </div>
-      {plantDetails && (
-        <PlantSpacing
-          plantDetails={plantDetails}
-          objectId={selectedObject.id}
-        />
+      {plantDetails && isPlant(selectedObject) && (
+        <>
+          <PlantSpacing
+            plantDetails={plantDetails}
+            objectId={selectedObject.id}
+          />
+          <PlantDates
+            plantObject={selectedObject}
+            plantDetails={plantDetails}
+          />
+        </>
       )}
     </div>
   );

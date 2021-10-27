@@ -54,6 +54,11 @@ export type Plant = BaseObject & {
   height: number;
   inRowSpacing?: number;
   rowSpacing?: number;
+  dateDirectSow?: string;
+  dateStartIndoors?: string;
+  dateTransplant?: string;
+  dateFirstHarvest?: string;
+  dateLastHarvest?: string;
 };
 
 export type GardenObject = Plant | Shape;

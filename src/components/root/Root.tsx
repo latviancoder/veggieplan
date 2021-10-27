@@ -12,7 +12,6 @@ import { Autosave } from '../autosave/Autosave';
 import { CanvasContainer } from '../canvasContainer/CanvasContainer';
 import { DetailsBar } from '../detailsBar/DetailsBar';
 import { SidebarLeft } from '../sidebarLeft/SidebarLeft';
-import { Zoom } from '../zoom/Zoom';
 import styles from './Root.module.css';
 
 const Root = () => {
@@ -63,7 +62,6 @@ const Root = () => {
       <CanvasContainer />
       <DetailsBar />
       {/* Absolute positioned stuff */}
-      <Zoom />
       <Autosave />
     </div>
   );

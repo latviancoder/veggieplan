@@ -76,7 +76,12 @@ export const Rectangle = memo(
 
         {rest.objectType === ObjectTypes.Shape && rest.title && (
           <>
-            <text textAnchor="end" x={-3} y={10}>
+            <text
+              textAnchor="end"
+              x={-3 / zoom}
+              y={10 / zoom}
+              style={{ fontSize: 13 / zoom }}
+            >
               {rest.title}
             </text>
           </>
