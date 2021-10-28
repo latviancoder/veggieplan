@@ -3,7 +3,7 @@ import dateFnsFormat from 'date-fns/format';
 import dateFnsParse from 'date-fns/parse';
 import { useUpdateAtom } from 'jotai/utils';
 import { ceil } from 'lodash';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Checkbox, Classes, Colors, FormGroup } from '@blueprintjs/core';
 import { DateInput, DateUtils } from '@blueprintjs/datetime';
@@ -35,7 +35,19 @@ const parseDate = (str: string) => {
 
 export const PlantDates = ({ plantDetails, plantObject }: Props) => {
   const setObjects = useUpdateAtom(objectsAtom);
-  const [seedStart, setSeedStart] = useState(true);
+  const [seedStart, setSeedStart] = useState(
+    !!(plantObject.dateStartIndoors || plantObject.dateTransplant)
+  );
+
+  useEffect(() => {
+    setSeedStart(
+      !!(plantObject.dateStartIndoors || plantObject.dateTransplant)
+    );
+  }, [
+    plantObject.dateStartIndoors,
+    plantObject.dateTransplant,
+    plantObject.id,
+  ]);
 
   const maxDate = addYears(Date.now(), 2);
   const minDate = addYears(Date.now(), -1);
@@ -205,7 +217,6 @@ export const PlantDates = ({ plantDetails, plantObject }: Props) => {
                 : null
             }
             onChange={(date, isUserChange) => {
-              console.log(date);
               if (isUserChange) {
                 setObjects({
                   type: 'updateSingle',

@@ -12,6 +12,7 @@ import { post, useUtils } from '../../utils';
 let timeout: NodeJS.Timeout;
 
 export const Autosave = () => {
+  const initialRender = useRef<boolean>(true);
   const { pxToMeter } = useUtils();
 
   const { mutate: save } = useMutation<
@@ -32,10 +33,17 @@ export const Autosave = () => {
     })
   );
 
-  const prevObjects = useRef<GardenObject[]>();
-
   const mode = useAtomValue(modeAtom);
   const objects = useAtomValue(objectsAtom);
+
+  const prevSavedObjects = useRef<GardenObject[]>(objects);
+
+  useEffect(() => {
+    if (objects.length && initialRender.current) {
+      prevSavedObjects.current = objects;
+      initialRender.current = false;
+    }
+  }, [objects]);
 
   // Autosave doesn't get triggered for volatile state changes like movement and resizing.
   // Additionally there is a debounce.
@@ -43,31 +51,30 @@ export const Autosave = () => {
     if (
       mode !== Modes.MOVEMENT &&
       mode !== Modes.RESIZING &&
-      (!prevObjects.current || !deepEqual(objects, prevObjects.current))
+      (!prevSavedObjects.current ||
+        !deepEqual(objects, prevSavedObjects.current))
     ) {
-      const deletedObjectIds = prevObjects.current
-        ?.filter(
-          ({ id }) => !objects.find(({ id: deletedId }) => id === deletedId)
-        )
-        .map(({ id }) => id);
+      clearTimeout(timeout);
 
-      const changedObjects = objects.filter(
-        (obj) =>
-          !deepEqual(
-            obj,
-            prevObjects.current?.find(({ id }) => id === obj.id)
+      timeout = setTimeout(() => {
+        const deletedObjectIds = prevSavedObjects.current
+          ?.filter(
+            ({ id }) => !objects.find(({ id: deletedId }) => id === deletedId)
           )
-      );
+          .map(({ id }) => id);
 
-      if (changedObjects.length || deletedObjectIds?.length) {
-        clearTimeout(timeout);
+        const changedObjects = objects.filter(
+          (obj) =>
+            !deepEqual(
+              obj,
+              prevSavedObjects.current?.find(({ id }) => id === obj.id)
+            )
+        );
 
-        timeout = setTimeout(() => {
-          save({ changedObjects, deletedObjectIds });
-        }, 2000);
-      }
+        save({ changedObjects, deletedObjectIds });
 
-      prevObjects.current = objects;
+        prevSavedObjects.current = objects;
+      }, 2000);
     }
   }, [mode, objects, save]);
 

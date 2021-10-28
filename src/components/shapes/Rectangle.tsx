@@ -31,7 +31,7 @@ export const Rectangle = memo(
 
     let strokeWidth = 2 / zoom;
     let fillOpacity = 0.5;
-    let fill = isPlant(rest) ? '#b6dbb7' : 'transparent';
+    let fill = isPlant(rest) ? '#d3ebd4' : 'transparent';
     let stroke = isPlant(rest) ? 'transparent' : '#ba9c4a';
     if (isSelected) {
       stroke = '#e3938a';

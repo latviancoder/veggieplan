@@ -39,8 +39,8 @@ export const DetailsBar = () => {
 
   const { width, height } = selectedObject;
 
-  const widthInMeter = pxToMeter(width);
-  const heightInMeter = pxToMeter(height);
+  const widthInMeter = pxToMeter(width, true);
+  const heightInMeter = pxToMeter(height, true);
 
   return (
     <div className={styles.root}>
@@ -71,7 +71,7 @@ export const DetailsBar = () => {
         </div>
         <div>
           <h6 className={Classes.HEADING} style={{ color: Colors.GRAY3 }}>
-            Höhe
+            Länge
           </h6>
           {heightInMeter}m
         </div>
