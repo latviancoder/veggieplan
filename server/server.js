@@ -69,8 +69,14 @@ app.post('/api/save', async (req, res) => {
   for (const obj of req.body.changedObjects || []) {
     await client.query(
       SQL`INSERT INTO objects 
-        (id, x, y, width, height, rotation, object_type, shape_type, plant_id, variety_id, date_added, sorting) VALUES 
-        (${obj.id}, ${obj.x}, ${obj.y}, ${obj.width}, ${obj.height}, ${obj.rotation}, ${obj.objectType}, ${obj.shapeType}, ${obj.plantId}, ${obj.varietyId}, ${obj.dateAdded}, ${obj.sorting}) 
+        (id, x, y, width, height, rotation, variety_id, object_type, shape_type, plant_id, 
+          date_added, sorting, in_row_spacing, row_spacing, 
+          date_direct_sow, date_start_indoors, date_transplant, date_first_harvest, date_last_harvest) VALUES 
+        (${obj.id}, ${obj.x}, ${obj.y}, ${obj.width}, ${obj.height}, ${obj.rotation}, 
+          ${obj.varietyId}, ${obj.objectType}, ${obj.shapeType}, ${obj.plantId}, 
+          ${obj.dateAdded}, ${obj.sorting}, ${obj.inRowSpacing}, ${obj.rowSpacing},
+          ${obj.dateDirectSow}, ${obj.dateStartIndoors}, ${obj.dateTransplant}, ${obj.dateFirstHarvest}, ${obj.dateLastHarvest}  
+          ) 
       ON CONFLICT (id) DO UPDATE SET 
         x = ${obj.x}, y = ${obj.y}, 
         width = ${obj.width}, height = ${obj.height}, 
