@@ -1,0 +1,26 @@
+@import '~@blueprintjs/core/lib/scss/variables';
+
+.root {
+  display: flex;
+}
+
+.month {
+  flex: 1;
+  &:last-child .monthTitle {
+    border-right: none;
+  }
+}
+
+.monthTitle {
+  font-size: 11px;
+  border-right: 1px $light-gray1 solid;
+  text-align: center;
+}
+
+.bar {
+  height: 4px;
+}
+
+.barContainer {
+  display: flex;
+}

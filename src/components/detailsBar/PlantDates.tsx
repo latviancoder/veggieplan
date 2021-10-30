@@ -1,8 +1,5 @@
-import addYears from 'date-fns/addYears';
-import dateFnsFormat from 'date-fns/format';
-import dateFnsParse from 'date-fns/parse';
+import { addYears, format, parse } from 'date-fns';
 import { useUpdateAtom } from 'jotai/utils';
-import { ceil } from 'lodash';
 import { useEffect, useState } from 'react';
 
 import { Checkbox, Classes, Colors, FormGroup } from '@blueprintjs/core';
@@ -13,18 +10,19 @@ import { localeUtils } from '../../datepickerLocaleUtils';
 import { Plant, PlantDetails } from '../../types';
 import commonStyles from './DetailsBar.module.scss';
 import styles from './PlantDates.module.scss';
+import { PlantDatesBar } from './PlantDatesBar';
 
 type Props = {
   plantObject: Plant;
   plantDetails: PlantDetails;
 };
 
-const formatDate = (date: Date) => dateFnsFormat(date, 'dd.MM.yyyy');
+const formatDate = (date: Date) => format(date, 'dd.MM.yyyy');
 
 const parseDate = (str: string) => {
   if (!str) return null;
 
-  const parsed = dateFnsParse(str, 'dd.MM.yyyy', new Date());
+  const parsed = parse(str, 'dd.MM.yyyy', new Date());
 
   if (DateUtils.isDateValid(parsed)) {
     return parsed;
@@ -33,22 +31,27 @@ const parseDate = (str: string) => {
   return false;
 };
 
-export const PlantDates = ({ plantDetails, plantObject }: Props) => {
+export const PlantDates = ({
+  plantDetails,
+  plantObject: {
+    id,
+    dateStartIndoors,
+    dateTransplant,
+    dateDirectSow,
+    dateFirstHarvest,
+    dateLastHarvest,
+  },
+}: Props) => {
   const setObjects = useUpdateAtom(objectsAtom);
   const [seedStart, setSeedStart] = useState(
-    !!(plantObject.dateStartIndoors || plantObject.dateTransplant)
+    !!(dateStartIndoors || dateTransplant)
   );
 
   useEffect(() => {
-    setSeedStart(
-      !!(plantObject.dateStartIndoors || plantObject.dateTransplant)
-    );
-  }, [
-    plantObject.dateStartIndoors,
-    plantObject.dateTransplant,
-    plantObject.id,
-  ]);
+    setSeedStart(!!(dateStartIndoors || dateTransplant));
+  }, [dateStartIndoors, dateTransplant, id]);
 
+  // todo proper min-max date logic and setting of dates
   const maxDate = addYears(Date.now(), 2);
   const minDate = addYears(Date.now(), -1);
 
@@ -90,11 +93,7 @@ export const PlantDates = ({ plantDetails, plantObject }: Props) => {
                 {...defaultProps}
                 inputProps={{ id: 'seed-start' }}
                 dayPickerProps={{ fixedWeeks: true }}
-                value={
-                  plantObject.dateStartIndoors
-                    ? new Date(plantObject.dateStartIndoors)
-                    : null
-                }
+                value={dateStartIndoors ? new Date(dateStartIndoors) : null}
                 onChange={(date, isUserChange) => {
                   if (isUserChange) {
                     setObjects({
@@ -105,7 +104,7 @@ export const PlantDates = ({ plantDetails, plantObject }: Props) => {
                             ? date.toISOString()
                             : undefined,
                         },
-                        id: plantObject.id,
+                        id,
                       },
                     });
                   }
@@ -120,11 +119,7 @@ export const PlantDates = ({ plantDetails, plantObject }: Props) => {
               <DateInput
                 {...defaultProps}
                 inputProps={{ id: 'transplant' }}
-                value={
-                  plantObject.dateTransplant
-                    ? new Date(plantObject.dateTransplant)
-                    : null
-                }
+                value={dateTransplant ? new Date(dateTransplant) : null}
                 onChange={(date, isUserChange) => {
                   if (isUserChange) {
                     setObjects({
@@ -133,7 +128,7 @@ export const PlantDates = ({ plantDetails, plantObject }: Props) => {
                         object: {
                           dateTransplant: date ? date.toISOString() : undefined,
                         },
-                        id: plantObject.id,
+                        id,
                       },
                     });
                   }
@@ -152,11 +147,7 @@ export const PlantDates = ({ plantDetails, plantObject }: Props) => {
               <DateInput
                 {...defaultProps}
                 inputProps={{ id: 'sow-outside' }}
-                value={
-                  plantObject.dateDirectSow
-                    ? new Date(plantObject.dateDirectSow)
-                    : null
-                }
+                value={dateDirectSow ? new Date(dateDirectSow) : null}
                 onChange={(date, isUserChange) => {
                   if (isUserChange) {
                     setObjects({
@@ -165,7 +156,7 @@ export const PlantDates = ({ plantDetails, plantObject }: Props) => {
                         object: {
                           dateDirectSow: date ? date.toISOString() : undefined,
                         },
-                        id: plantObject.id,
+                        id,
                       },
                     });
                   }
@@ -183,11 +174,7 @@ export const PlantDates = ({ plantDetails, plantObject }: Props) => {
           <DateInput
             {...defaultProps}
             inputProps={{ id: 'first-harvest' }}
-            value={
-              plantObject.dateFirstHarvest
-                ? new Date(plantObject.dateFirstHarvest)
-                : null
-            }
+            value={dateFirstHarvest ? new Date(dateFirstHarvest) : null}
             onChange={(date, isUserChange) => {
               if (isUserChange) {
                 setObjects({
@@ -196,7 +183,7 @@ export const PlantDates = ({ plantDetails, plantObject }: Props) => {
                     object: {
                       dateFirstHarvest: date ? date.toISOString() : undefined,
                     },
-                    id: plantObject.id,
+                    id,
                   },
                 });
               }
@@ -211,11 +198,7 @@ export const PlantDates = ({ plantDetails, plantObject }: Props) => {
           <DateInput
             {...defaultProps}
             inputProps={{ id: 'last-harvest' }}
-            value={
-              plantObject.dateLastHarvest
-                ? new Date(plantObject.dateLastHarvest)
-                : null
-            }
+            value={dateLastHarvest ? new Date(dateLastHarvest) : null}
             onChange={(date, isUserChange) => {
               if (isUserChange) {
                 setObjects({
@@ -224,7 +207,7 @@ export const PlantDates = ({ plantDetails, plantObject }: Props) => {
                     object: {
                       dateLastHarvest: date ? date.toISOString() : undefined,
                     },
-                    id: plantObject.id,
+                    id,
                   },
                 });
               }
@@ -232,6 +215,13 @@ export const PlantDates = ({ plantDetails, plantObject }: Props) => {
           />
         </FormGroup>
       </div>
+      <PlantDatesBar
+        dateStartIndoors={dateStartIndoors}
+        dateTransplant={dateTransplant}
+        dateDirectSow={dateDirectSow}
+        dateFirstHarvest={dateFirstHarvest}
+        dateLastHarvest={dateLastHarvest}
+      />
     </>
   );
 };
