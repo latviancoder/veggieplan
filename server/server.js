@@ -50,11 +50,11 @@ app.get('/api/varieties/:plantId', async (req, res) => {
 });
 
 app.post('/api/varieties', async (req, res) => {
-  await client.query(
-    SQL`INSERT INTO varieties (plant_id, name) VALUES (${req.body.plantId}, ${req.body.name})`
+  const result = await client.query(
+    SQL`INSERT INTO varieties (plant_id, name) VALUES (${req.body.plantId}, ${req.body.name}) RETURNING id`
   );
 
-  res.send({});
+  res.send({ id: result.rows[0].id });
 });
 
 app.post('/api/save', async (req, res) => {
