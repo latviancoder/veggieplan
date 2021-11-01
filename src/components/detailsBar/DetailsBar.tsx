@@ -7,7 +7,6 @@ import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
 import { ObjectTypes } from '../../types';
 import {
   isPlant,
-  isRectangleShape,
   isRectangular,
   roundTwoDecimals,
   useUtils

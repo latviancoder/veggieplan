@@ -18,6 +18,8 @@ export const SidebarLeft = () => {
   const [mode, setMode] = useAtom(modeAtom);
   const [selectedPlant, setSelectedPlant] = useAtom(selectedPlantAtom);
 
+  // console.log({ plants });
+
   return (
     <aside className={styles.root}>
       <ButtonGroup vertical minimal>
@@ -51,7 +53,7 @@ export const SidebarLeft = () => {
         >
           <Icon icon="tree" />
         </Button>
-        {plants?.map(({ id, name }) => (
+        {/* {plants?.map(({ id, name }) => (
           <Button
             key={id}
             onClick={() => {
@@ -62,7 +64,7 @@ export const SidebarLeft = () => {
           >
             {name}
           </Button>
-        ))}
+        ))} */}
       </ButtonGroup>
     </aside>
   );

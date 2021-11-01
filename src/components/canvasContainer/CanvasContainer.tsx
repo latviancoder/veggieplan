@@ -1,6 +1,6 @@
 import Hammer from 'hammerjs';
 import { useAtom } from 'jotai';
-import { useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
 import { useCallback, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -19,8 +19,10 @@ import { deleteAtom } from '../../atoms/deleteAtom';
 import { drawableAreaAtom } from '../../atoms/drawableAreaAtom';
 import { panAtom } from '../../atoms/panAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
+import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
 import { tapAtom } from '../../atoms/tapAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
+import { Autosave } from '../autosave/Autosave';
 import { Badge } from '../badge/Badge';
 import { Creatable } from '../creatable/Creatable';
 import { Guides } from '../guides/Guides';
@@ -44,6 +46,7 @@ export const CanvasContainer = () => {
   const [offset] = useAtom(offsetAtom);
   const [zoom, setZoom] = useAtom(zoomAtom);
   const [canvas] = useAtom(canvasAtom);
+  const selectedObjectIds = useAtomValue(selectedObjectIdsAtom);
   const setTap = useUpdateAtom(tapAtom);
   const setPan = useUpdateAtom(panAtom);
   const setPanStart = useUpdateAtom(panStartAtom);
@@ -165,7 +168,7 @@ export const CanvasContainer = () => {
     return () => {
       $root?.removeEventListener('resize', recalculateDrawableAreaDimensions);
     };
-  }, [setDrawableArea, recalculateDrawableAreaDimensions]);
+  }, [setDrawableArea, recalculateDrawableAreaDimensions, selectedObjectIds]);
 
   return (
     <div ref={rootRef} className={styles.root}>
@@ -201,6 +204,7 @@ export const CanvasContainer = () => {
           </>
         )}
       </div>
+      <Autosave />
       <Zoom />
     </div>
   );

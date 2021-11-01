@@ -7,6 +7,11 @@ export enum Modes {
   ROTATION = 'ROTATION',
 }
 
+export enum Views {
+  PLAN = 'PLAN',
+  TABLE = 'TABLE',
+}
+
 export enum ObjectTypes {
   Plant,
   Shape,

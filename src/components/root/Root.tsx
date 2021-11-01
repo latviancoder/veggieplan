@@ -1,28 +1,34 @@
 import { useAtom } from 'jotai';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtomValue } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
-import { canvasAtom, plantsAtom, plotCanvasAtom } from '../../atoms/atoms';
+import {
+  canvasAtom,
+  plantsAtom,
+  plotCanvasAtom,
+  viewAtom
+} from '../../atoms/atoms';
 import { objectsAtom } from '../../atoms/objectsAtom';
-import { GardenObject, PlantDetails } from '../../types';
+import { GardenObject, PlantDetails, Views } from '../../types';
 import { useUtils } from '../../utils';
-import { Autosave } from '../autosave/Autosave';
 import { CanvasContainer } from '../canvasContainer/CanvasContainer';
 import { DetailsBar } from '../detailsBar/DetailsBar';
+import { GlobalHeader } from '../header/GlobalHeader';
 import { SidebarLeft } from '../sidebarLeft/SidebarLeft';
 import styles from './Root.module.css';
+
+const Table = lazy(() => import('../table/Table'));
 
 const Root = () => {
   const { meterToPx } = useUtils();
 
+  const view = useAtomValue(viewAtom);
   const canvas = useAtomValue(canvasAtom);
   const plotCanvas = useAtomValue(plotCanvasAtom);
-
   const [plants, setPlants] = useAtom(plantsAtom);
-  const [objects] = useAtom(objectsAtom);
-  const setObjects = useUpdateAtom(objectsAtom);
+  const [objects, setObjects] = useAtom(objectsAtom);
 
   const { isLoading: isPlantsDetailsLoading, data: plantsDetails } = useQuery<
     PlantDetails[]
@@ -33,13 +39,7 @@ const Root = () => {
   >('objects', () => fetch('/api/objects').then((res) => res.json()));
 
   useEffect(() => {
-    if (
-      objectsFromDb &&
-      isEmpty(objects) &&
-      !isEmpty(objectsFromDb) &&
-      !isEmpty(canvas) &&
-      !isEmpty(plotCanvas)
-    ) {
+    if (objectsFromDb && isEmpty(objects) && !isEmpty(objectsFromDb)) {
       // When store is initially hydrated with objects from the DB we skip 'pixels-to-meters' conversion step,
       // because objects stored in DB already use meters.
       setObjects({
@@ -58,11 +58,21 @@ const Root = () => {
 
   return (
     <div className={styles.root}>
-      <SidebarLeft />
-      <CanvasContainer />
-      <DetailsBar />
-      {/* Absolute positioned stuff */}
-      <Autosave />
+      <GlobalHeader />
+      <div className={styles.content}>
+        <SidebarLeft />
+        {view === Views.PLAN && (
+          <>
+            <CanvasContainer />
+            <DetailsBar />
+          </>
+        )}
+        {view === Views.TABLE && (
+          <Suspense fallback={null}>
+            <Table />
+          </Suspense>
+        )}
+      </div>
     </div>
   );
 };

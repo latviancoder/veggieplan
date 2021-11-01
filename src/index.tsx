@@ -1,4 +1,4 @@
-import './index.css';
+import './index.scss';
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/datetime/lib/css/blueprint-datetime.css';
 

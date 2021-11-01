@@ -72,6 +72,7 @@ export const Badge = () => {
 
   return (
     <g
+      style={{ pointerEvents: 'none' }}
       transform={`
         translate(${x} ${y}) 
         rotate(${rotation} ${width / 2} ${height / 2})
@@ -81,7 +82,7 @@ export const Badge = () => {
         <rect
           x={width / 2 - textDimensions.width / zoom / 2 - textOffset / zoom}
           y={height / 2 - textDimensions.height / zoom / 2 - textOffset / zoom}
-          shapeRendering="crispEdges"
+          shapeRendering="none"
           fill="palegoldenrod"
           fillOpacity={0.8}
           stroke="blue"

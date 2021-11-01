@@ -1,6 +1,7 @@
-import { PlantDetails } from './../types';
 import { atom } from 'jotai';
-import { GardenObject, Modes, Point } from '../types';
+import { atomWithStorage } from 'jotai/utils';
+
+import { GardenObject, Modes, PlantDetails, Point, Views } from '../types';
 
 export const modeAtom = atom(Modes.DEFAULT);
 
@@ -37,3 +38,5 @@ export const offsetAtom = atom({ x: 0, y: 0 });
 export const selectedPlantAtom = atom<null | number>(null);
 
 export const plantsAtom = atom<PlantDetails[]>([]);
+
+export const viewAtom = atomWithStorage<Views>('view', Views.PLAN);
