@@ -32,7 +32,17 @@ export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
   const { mutate: saveVariety } = useMutation<Variety, string, Variety>(
     (variety) => post('/api/varieties', variety).then((r) => r.json()),
     {
-      onSuccess: () => {
+      onSuccess: (variety) => {
+        setObjects({
+          type: 'updateSingle',
+          payload: {
+            object: {
+              varietyId: variety.id,
+            },
+            id: plantObject.id,
+          },
+        });
+
         refetch();
       },
     }
@@ -91,15 +101,17 @@ export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
       saveVariety(variety);
     }
 
-    setObjects({
-      type: 'updateSingle',
-      payload: {
-        object: {
-          varietyId: variety.id,
+    if (variety.id) {
+      setObjects({
+        type: 'updateSingle',
+        payload: {
+          object: {
+            varietyId: variety.id,
+          },
+          id: plantObject.id,
         },
-        id: plantObject.id,
-      },
-    });
+      });
+    }
   };
 
   const varietyName = varieties?.find(
