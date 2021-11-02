@@ -168,7 +168,7 @@ export const CanvasContainer = () => {
     return () => {
       $root?.removeEventListener('resize', recalculateDrawableAreaDimensions);
     };
-  }, [setDrawableArea, recalculateDrawableAreaDimensions, selectedObjectIds]);
+  }, [setDrawableArea, recalculateDrawableAreaDimensions]);
 
   return (
     <div ref={rootRef} className={styles.root}>
