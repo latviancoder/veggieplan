@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { creatableAtom } from '../../atoms/atoms';
 import { hoveredAtom } from '../../atoms/hoveredAtom';
-import { objectsAtom } from '../../atoms/objectsAtom';
+import { objectsAtom, objectsInMetersAtom } from '../../atoms/objectsAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { ObjectTypes } from '../../types';
@@ -11,12 +11,12 @@ import { isPlant, useUtils } from '../../utils';
 
 export const Badge = () => {
   const hoveredObjectId = useAtomValue(hoveredAtom);
-  const objects = useAtomValue(objectsAtom);
+  const objects = useAtomValue(objectsInMetersAtom);
   const panStart = useAtomValue(panStartAtom);
   const zoom = useAtomValue(zoomAtom);
   const creatable = useAtomValue(creatableAtom);
 
-  const { pxToMeter, getPlantDetails, getPlantAmount } = useUtils();
+  const { meterToPx, getPlantDetails, getPlantAmount } = useUtils();
   const [textDimensions, setTextDimensions] = useState({
     width: 0,
     height: 0,
@@ -41,9 +41,6 @@ export const Badge = () => {
     }
   }, [obj?.width, obj?.height, zoom]);
 
-  const widthInMeter = pxToMeter(obj?.width, true);
-  const heightInMeter = pxToMeter(obj?.height, true);
-
   const renderPlantSpecific = useCallback(() => {
     if (!plantDetails || !obj || !isPlant(obj)) return;
 
@@ -51,18 +48,18 @@ export const Badge = () => {
 
     return `${plantDetails.name} - ${rows} x ${inRow} Pflanzen (${
       rows * inRow
-    }) - ${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}m`;
-  }, [heightInMeter, widthInMeter, plantDetails, getPlantAmount, obj]);
+    }) - ${obj?.width.toFixed(2)}x${obj?.height.toFixed(2)}m`;
+  }, [plantDetails, getPlantAmount, obj]);
 
   const renderShapeSpecific = useCallback(() => {
-    let ret = `${widthInMeter.toFixed(2)}x${heightInMeter.toFixed(2)}m`;
+    let ret = `${obj?.width.toFixed(2)}x${obj?.height.toFixed(2)}m`;
 
     if (obj?.objectType === ObjectTypes.Shape && obj.title) {
       ret = `Beet ${obj.title} - ${ret}`;
     }
 
     return ret;
-  }, [heightInMeter, obj, widthInMeter]);
+  }, [obj]);
 
   const textOffset = 4;
 
@@ -70,18 +67,27 @@ export const Badge = () => {
 
   const { width, height, rotation, x, y } = obj;
 
+  const widthInPx = meterToPx(width, true);
+  const heightInPx = meterToPx(height, true);
+
   return (
     <g
       style={{ pointerEvents: 'none' }}
       transform={`
-        translate(${x} ${y}) 
-        rotate(${rotation} ${width / 2} ${height / 2})
+        translate(${meterToPx(x, true)} ${meterToPx(y, true)}) 
+        rotate(${rotation} ${widthInPx / 2} ${heightInPx / 2})
     `}
     >
       {textDimensions.width > 0 && (
         <rect
-          x={width / 2 - textDimensions.width / zoom / 2 - textOffset / zoom}
-          y={height / 2 - textDimensions.height / zoom / 2 - textOffset / zoom}
+          x={
+            widthInPx / 2 - textDimensions.width / zoom / 2 - textOffset / zoom
+          }
+          y={
+            heightInPx / 2 -
+            textDimensions.height / zoom / 2 -
+            textOffset / zoom
+          }
           shapeRendering="none"
           fill="palegoldenrod"
           fillOpacity={0.8}
@@ -90,19 +96,23 @@ export const Badge = () => {
           width={(textDimensions.width + textOffset * 2) / zoom}
           height={(textDimensions.height + textOffset * 2 - 1) / zoom}
           transform={
-            rotation ? `rotate(${-rotation} ${width / 2} ${height / 2})` : ''
+            rotation
+              ? `rotate(${-rotation} ${widthInPx / 2} ${heightInPx / 2})`
+              : ''
           }
         />
       )}
       <text
         ref={textRef}
-        x={width / 2}
-        y={height / 2}
+        x={widthInPx / 2}
+        y={heightInPx / 2}
         style={{ fontSize: 13 / zoom, fontFamily: 'Roboto Mono' }}
         dominantBaseline="middle"
         textAnchor="middle"
         transform={
-          rotation ? `rotate(${-rotation} ${width / 2} ${height / 2})` : ''
+          rotation
+            ? `rotate(${-rotation} ${widthInPx / 2} ${heightInPx / 2})`
+            : ''
         }
       >
         {plantDetails ? renderPlantSpecific() : renderShapeSpecific()}

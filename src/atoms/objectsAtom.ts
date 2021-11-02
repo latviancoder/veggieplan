@@ -1,11 +1,9 @@
 import produce from 'immer';
 import { atom } from 'jotai';
 import isArray from 'lodash.isarray';
-import isEmpty from 'lodash.isempty';
 import sortBy from 'lodash.sortby';
 
 import { GardenObject } from '../types';
-import { canvasAtom } from './atoms';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { utilsAtom } from './utilsAtom';
 
@@ -29,24 +27,11 @@ type SetParams = (
     }
 ) & { units?: 'pixels' | 'meters' };
 
-export const objectsAtom = atom<GardenObject[], SetParams>(
+export const objectsInMetersAtom = atom<GardenObject[], SetParams>(
   (get) => {
     const selectedObjectIds = get(selectedObjectIdsAtom);
-    const canvas = get(canvasAtom);
-    const { meterToPx } = get(utilsAtom);
 
     let objects = get(_objectsAtom);
-
-    if (!isEmpty(canvas)) {
-      objects = objects.map((obj) =>
-        produce(obj, (draft) => {
-          draft.x = meterToPx(draft.x, true);
-          draft.y = meterToPx(draft.y, true);
-          draft.width = meterToPx(draft.width, true);
-          draft.height = meterToPx(draft.height, true);
-        })
-      );
-    }
 
     objects = objects.map((obj) =>
       produce(obj, (draft) => {
@@ -118,5 +103,27 @@ export const objectsAtom = atom<GardenObject[], SetParams>(
     } else {
       set(_objectsAtom, newObjects);
     }
+  }
+);
+
+// Internally and in the database object dimensions are using meters,
+// but when working in the app it's convinient to have pixels.
+export const objectsAtom = atom<GardenObject[], SetParams>(
+  (get) => {
+    const { meterToPx } = get(utilsAtom);
+
+    let objects = get(objectsInMetersAtom);
+
+    return objects.map((obj) =>
+      produce(obj, (draft) => {
+        draft.x = meterToPx(draft.x, true);
+        draft.y = meterToPx(draft.y, true);
+        draft.width = meterToPx(draft.width, true);
+        draft.height = meterToPx(draft.height, true);
+      })
+    );
+  },
+  (get, set, params) => {
+    set(objectsInMetersAtom, params);
   }
 );

@@ -46,25 +46,19 @@ export const SidebarLeft = () => {
         >
           <Icon icon="square" />
         </Button>
-        <Button
-          onClick={() => {
-            console.log('lul');
-          }}
-        >
-          <Icon icon="tree" />
-        </Button>
-        {/* {plants?.map(({ id, name }) => (
-          <Button
-            key={id}
-            onClick={() => {
-              setMode(Modes.CREATION);
-              setSelectedPlant(id);
-            }}
-            active={mode === Modes.CREATION && selectedPlant === id}
-          >
-            {name}
-          </Button>
-        ))} */}
+        {plants?.map(({ id, name }) => (
+          <Tooltip key={id} content={name} position={Position.RIGHT}>
+            <Button
+              onClick={() => {
+                setMode(Modes.CREATION);
+                setSelectedPlant(id);
+              }}
+              active={mode === Modes.CREATION && selectedPlant === id}
+            >
+              <Icon icon="tree" />
+            </Button>
+          </Tooltip>
+        ))}
       </ButtonGroup>
     </aside>
   );

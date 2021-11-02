@@ -100,3 +100,9 @@ export type PlantDetails = {
   harvestRelativeToFirstFrost: number;
   perennial: boolean;
 };
+
+export type Variety = {
+  id?: number;
+  name: string;
+  plantId: number;
+};

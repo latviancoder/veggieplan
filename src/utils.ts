@@ -16,6 +16,7 @@ import {
   Point,
   RectangleCorners,
   RectangleShape,
+  Shape,
   ShapeTypes
 } from './types';
 
@@ -67,14 +68,11 @@ export const useUtils = () => {
     },
     getPlantDetails,
     getPlantAmount: (obj: Plant) => {
-      const { width, height } = obj;
+      const { width, height } = obj; // in meters
       const { inRowSpacing, rowSpacing } = getPlantDetails(obj);
 
-      const widthInMeter = pxToMeter(width, true);
-      const heightInMeter = pxToMeter(height, true);
-
-      const smallestSide = Math.min(heightInMeter, widthInMeter);
-      const largestSide = Math.max(heightInMeter, widthInMeter);
+      const smallestSide = Math.min(height, width);
+      const largestSide = Math.max(height, width);
 
       const rows = Math.round(smallestSide / (rowSpacing / 100));
       const inRow = Math.round(largestSide / (inRowSpacing / 100));
@@ -273,6 +271,10 @@ export const isRectangleShape = (obj: GardenObject): obj is RectangleShape => {
     obj.objectType === ObjectTypes.Shape &&
     obj.shapeType === ShapeTypes.Rectangle
   );
+};
+
+export const isShape = (obj: Partial<GardenObject>): obj is Shape => {
+  return obj.objectType === ObjectTypes.Shape;
 };
 
 export const isPlant = (obj: Partial<GardenObject>): obj is Plant => {

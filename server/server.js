@@ -41,6 +41,12 @@ app.get('/api/plants', async (req, res) => {
   res.json(camelCaseObjectDeep(result.rows));
 });
 
+app.get('/api/varieties', async (req, res) => {
+  const result = await client.query(SQL`SELECT * FROM varieties ORDER BY name`);
+
+  res.json(camelCaseObjectDeep(result.rows));
+});
+
 app.get('/api/varieties/:plantId', async (req, res) => {
   const result = await client.query(
     SQL`SELECT * FROM varieties WHERE plant_id=${req.params.plantId} ORDER BY name`

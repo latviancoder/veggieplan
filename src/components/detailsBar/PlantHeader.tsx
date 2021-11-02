@@ -6,19 +6,13 @@ import { Button, Classes, MenuItem } from '@blueprintjs/core';
 import { ItemPredicate, ItemRenderer, Suggest } from '@blueprintjs/select';
 
 import { objectsAtom } from '../../atoms/objectsAtom';
-import { Plant, PlantDetails } from '../../types';
+import { Plant, PlantDetails, Variety } from '../../types';
 import { post } from '../../utils';
 import styles from './PlantHeader.module.scss';
 
 type Props = {
   plantObject: Plant;
   plantDetails: PlantDetails;
-};
-
-type Variety = {
-  id?: number;
-  name: string;
-  plantId: number;
 };
 
 export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
@@ -123,7 +117,7 @@ export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
       {!showVarietySelect && (
         <h4 className={Classes.HEADING} style={{ margin: 0 }}>
           {plantDetails.name}
-          {varietyName ? `, ${varietyName}` : ''}
+          {varietyName ? ` (${varietyName})` : ''}
         </h4>
       )}
       {showVarietySelect ? (

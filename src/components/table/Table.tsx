@@ -2,50 +2,144 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import './Table.scss';
 
+import { ColDef } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import { useAtomValue } from 'jotai/utils';
+import { filter } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
+import { useQuery } from 'react-query';
 
-import { objectsAtom } from '../../atoms/objectsAtom';
+import { objectsInMetersAtom } from '../../atoms/objectsAtom';
+import { Plant, Variety } from '../../types';
+import {
+  convertRectangleToPolygon,
+  doPolygonsIntersect,
+  isPlant,
+  isRectangleShape,
+  isRectangular,
+  useUtils
+} from '../../utils';
 
-const columnDefs = [
+const defaultColDef: ColDef = {
+  resizable: true,
+  sortable: true,
+};
+
+const columnDefs: ColDef[] = [
   {
-    headerName: 'Make',
-    field: 'make',
     filter: true,
-    resizable: true,
+    headerName: 'Pflanze',
+    minWidth: 250,
+    valueGetter: ({ data }: { data: Row }) => {
+      let cell = data.plantName;
+
+      if (data.varietyName) {
+        cell += ` (${data.varietyName})`;
+      }
+
+      return cell;
+    },
   },
   {
-    headerName: 'Model',
-    field: 'model',
+    headerName: 'Beet',
+    width: 90,
     filter: true,
-    resizable: true,
-    flex: 1,
+    valueGetter: ({ data }: { data: Row }) => {
+      return data.bedName || '';
+    },
   },
   {
-    headerName: 'Price',
-    field: 'price',
-    filter: true,
-    resizable: true,
+    headerName: 'Anzahl',
+    width: 90,
+    sortable: false,
+    valueGetter: ({ data }: { data: Row }) => {
+      return `${data.rows * data.inRow}`;
+    },
+  },
+  {
+    headerName: 'Abstand',
+    width: 100,
+    sortable: false,
+    valueGetter: ({ data }: { data: Row }) => {
+      return `${data.inRowSpacing}x${data.rowSpacing}`;
+    },
   },
 ];
 
+type Row = Plant & {
+  plantName: string;
+  varietyName?: string;
+  bedId?: string;
+  bedName?: string;
+  inRow: number;
+  rows: number;
+};
+
 const Table = () => {
-  // Canvas doesn't exist on this page.
-  // The x/y/width/height values aren't converted to pixels
-  const objects = useAtomValue(objectsAtom);
+  const { getPlantDetails, getPlantAmount } = useUtils();
+
+  const { data: varieties } = useQuery<Variety[]>('varieties', () =>
+    fetch(`/api/varieties`).then((res) => res.json())
+  );
+
+  const tableRows: Row[] = [];
+
+  const objects = useAtomValue(objectsInMetersAtom);
+
+  const shapeObjects = objects.filter(isRectangleShape);
+  const plantObjects = objects.filter(isPlant);
+
+  plantObjects.forEach((plantObject) => {
+    let row: Row = { ...plantObject } as Row;
+
+    if (plantObject.varietyId && varieties) {
+      row.varietyName = varieties?.find(
+        ({ id }) => id === plantObject.varietyId
+      )?.name;
+    }
+
+    // Check if plant is within shape
+    const inBed = shapeObjects.find((shapeObject) => {
+      if (isRectangular(shapeObject)) {
+        const rectanglePolygon = convertRectangleToPolygon({
+          rectangle: shapeObject,
+        });
+
+        const plantPolygon = convertRectangleToPolygon({
+          rectangle: plantObject,
+        });
+
+        if (doPolygonsIntersect(plantPolygon, rectanglePolygon)) {
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+    if (inBed) {
+      row.bedId = inBed.id;
+      row.bedName = inBed.title;
+    }
+
+    const plantDetails = getPlantDetails(plantObject);
+    const { inRow, rows } = getPlantAmount(plantObject);
+
+    row.inRowSpacing = plantDetails.inRowSpacing;
+    row.rowSpacing = plantDetails.rowSpacing;
+    row.plantName = plantDetails.name;
+
+    row.inRow = inRow;
+    row.rows = rows;
+
+    tableRows.push(row);
+  });
 
   const [size, setSize] = useState<{ width: number; height: number } | null>(
     null
   );
 
   const container = useRef<HTMLDivElement | null>(null);
-
-  const rowData = [
-    { make: 'Toyota', model: 'Celica', price: 35000 },
-    { make: 'Ford', model: 'Mondeo', price: 32000 },
-    { make: 'Porsche', model: 'Boxter', price: 72000 },
-  ];
 
   useEffect(() => {
     if (container.current) {
@@ -65,7 +159,11 @@ const Table = () => {
             className="ag-theme-alpine"
             style={{ height: size.height, width: size.width }}
           >
-            <AgGridReact rowData={rowData} columnDefs={columnDefs} />
+            <AgGridReact
+              rowData={tableRows}
+              columnDefs={columnDefs}
+              defaultColDef={defaultColDef}
+            />
           </div>
         )}
       </div>
