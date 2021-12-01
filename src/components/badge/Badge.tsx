@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { creatableAtom } from '../../atoms/atoms';
 import { hoveredAtom } from '../../atoms/hoveredAtom';
-import { objectsAtom, objectsInMetersAtom } from '../../atoms/objectsAtom';
+import { objectsInMetersAtom } from '../../atoms/objectsAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { ObjectTypes } from '../../types';

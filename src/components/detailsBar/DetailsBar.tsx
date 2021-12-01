@@ -3,7 +3,7 @@ import { memo } from 'react';
 
 import { Classes, Colors } from '@blueprintjs/core';
 
-import { objectsAtom, objectsInMetersAtom } from '../../atoms/objectsAtom';
+import { objectsInMetersAtom } from '../../atoms/objectsAtom';
 import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
 import { GardenObject, ObjectTypes, PlantDetails } from '../../types';
 import {

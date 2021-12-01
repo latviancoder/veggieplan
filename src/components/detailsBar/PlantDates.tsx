@@ -8,9 +8,9 @@ import { DateInput, DateUtils } from '@blueprintjs/datetime';
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { localeUtils } from '../../datepickerLocaleUtils';
 import { Plant, PlantDetails } from '../../types';
+import { PlantDatesBar } from '../plantDatesBar/PlantDatesBar';
 import commonStyles from './DetailsBar.module.scss';
 import styles from './PlantDates.module.scss';
-import { PlantDatesBar } from './PlantDatesBar';
 
 type Props = {
   plantObject: Plant;
@@ -221,6 +221,7 @@ export const PlantDates = ({
         dateDirectSow={dateDirectSow}
         dateFirstHarvest={dateFirstHarvest}
         dateLastHarvest={dateLastHarvest}
+        showMonthTitle={true}
       />
     </>
   );
