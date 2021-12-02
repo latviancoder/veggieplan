@@ -30,7 +30,7 @@ import {
 import styles from './Table.module.scss';
 
 const defaultColDef: ColDef = {
-  resizable: true,
+  resizable: false,
   sortable: true,
 };
 
@@ -166,6 +166,12 @@ const Table = () => {
     setApi(api);
   };
 
+  useEffect(() => {
+    if (gridApi) {
+      gridApi.sizeColumnsToFit();
+    }
+  }, [gridApi]);
+
   const PlantingDatesRenderer = ({ data }: { data: Row }) => {
     return (
       <div className={styles.plantDates}>
@@ -214,38 +220,39 @@ const Table = () => {
                 }}
               />
               <AgGridColumn
+                suppressSizeToFit
                 filter
                 headerName="Beet"
-                width={size.width * 0.1}
+                width={size.width * 0.07}
+                minWidth={80}
                 valueGetter={({ data }) => data.bedName || ''}
               />
               <AgGridColumn
+                suppressSizeToFit
                 headerName="Anzahl"
-                width={size.width * 0.1}
+                width={size.width * 0.07}
+                minWidth={80}
                 sortable={false}
                 valueGetter={({ data }) => `${data.rows * data.inRow}`}
               />
               <AgGridColumn
+                suppressSizeToFit
                 headerName="Abstand"
-                width={size.width * 0.1}
+                width={size.width * 0.07}
+                minWidth={80}
                 sortable={false}
                 valueGetter={({ data }) =>
                   `${data.inRowSpacing}x${data.rowSpacing}`
                 }
               />
               <AgGridColumn
-                resizable={false}
                 sortable={false}
-                width={size.width * 0.5 - 2}
+                width={size.width * 0.59 - 2}
                 cellRenderer="plantingDatesRenderer"
                 headerComponentFramework={() => (
                   <div className={styles.header}>
                     {months.map(({ title }) => (
-                      <div
-                        className={styles.month}
-                        key={title}
-                        style={{ width: (size.width * 0.5) / months.length }}
-                      >
+                      <div className={styles.month} key={title}>
                         {title}
                       </div>
                     ))}
