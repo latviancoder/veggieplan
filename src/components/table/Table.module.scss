@@ -24,3 +24,18 @@
   left: 0;
   right: 0;
 }
+
+.dateTooltip {
+  width: 220px;
+}
+
+.dateTooltipRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.notes {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

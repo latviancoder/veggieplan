@@ -46,7 +46,6 @@ export const CanvasContainer = () => {
   const [offset] = useAtom(offsetAtom);
   const [zoom, setZoom] = useAtom(zoomAtom);
   const [canvas] = useAtom(canvasAtom);
-  const selectedObjectIds = useAtomValue(selectedObjectIdsAtom);
   const setTap = useUpdateAtom(tapAtom);
   const setPan = useUpdateAtom(panAtom);
   const setPanStart = useUpdateAtom(panStartAtom);

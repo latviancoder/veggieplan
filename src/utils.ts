@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import produce from 'immer';
 import { useAtomValue } from 'jotai/utils';
 
@@ -420,3 +421,11 @@ export const post = (url: string, body: any) =>
     },
     body: JSON.stringify(body),
   });
+
+export const formatDate = (date: Date | string, f = 'dd.MM.yyyy'): string => {
+  if (typeof date === 'string') {
+    date = new Date(date);
+  }
+
+  return format(date, f);
+};

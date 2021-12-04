@@ -1,6 +1,7 @@
-import { addYears, format, parse } from 'date-fns';
+import { addYears, parse } from 'date-fns';
 import { useUpdateAtom } from 'jotai/utils';
 import { useEffect, useState } from 'react';
+import { formatDate } from 'utils';
 
 import { Checkbox, Classes, Colors, FormGroup } from '@blueprintjs/core';
 import { DateInput, DateUtils } from '@blueprintjs/datetime';
@@ -16,8 +17,6 @@ type Props = {
   plantObject: Plant;
   plantDetails: PlantDetails;
 };
-
-const formatDate = (date: Date) => format(date, 'dd.MM.yyyy');
 
 const parseDate = (str: string) => {
   if (!str) return null;

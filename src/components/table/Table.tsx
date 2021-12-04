@@ -13,15 +13,18 @@ import {
   startOfMonth
 } from 'date-fns';
 import { useAtomValue } from 'jotai/utils';
-import { compact, max, min } from 'lodash';
+import { compact, max, min, sortBy } from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from 'react-query';
+
+import { Position, Tooltip } from '@blueprintjs/core';
 
 import { objectsInMetersAtom } from '../../atoms/objectsAtom';
 import { Plant, Variety } from '../../types';
 import {
   convertRectangleToPolygon,
   doPolygonsIntersect,
+  formatDate,
   isPlant,
   isRectangleShape,
   isRectangular,
@@ -41,6 +44,7 @@ type Row = Plant & {
   bedName?: string;
   inRow: number;
   rows: number;
+  earliestDate?: Date;
 };
 
 const Table = () => {
@@ -57,7 +61,7 @@ const Table = () => {
   const plantObjects = objects.filter(isPlant);
 
   const tableRows = useMemo(() => {
-    const r: Row[] = [];
+    let r: Row[] = [];
 
     plantObjects.forEach((plantObject) => {
       let row: Row = { ...plantObject } as Row;
@@ -102,8 +106,20 @@ const Table = () => {
       row.inRow = inRow;
       row.rows = rows;
 
+      const { dateStartIndoors, dateTransplant, dateDirectSow } = row;
+
+      const si = dateStartIndoors ? new Date(dateStartIndoors) : undefined;
+      const tp = dateTransplant ? new Date(dateTransplant) : undefined;
+      const ds = dateDirectSow ? new Date(dateDirectSow) : undefined;
+
+      const earliestDate = min(compact([si, tp, ds]));
+
+      row.earliestDate = earliestDate;
+
       r.push(row);
     });
+
+    r = sortBy(r, ({ earliestDate }) => earliestDate);
 
     return r;
   }, [getPlantAmount, getPlantDetails, plantObjects, shapeObjects, varieties]);
@@ -172,21 +188,73 @@ const Table = () => {
     }
   }, [gridApi]);
 
-  const PlantingDatesRenderer = ({ data }: { data: Row }) => {
+  const PlantingDatesRenderer = ({
+    data: {
+      dateStartIndoors,
+      dateTransplant,
+      dateDirectSow,
+      dateFirstHarvest,
+      dateLastHarvest,
+    },
+  }: {
+    data: Row;
+  }) => {
     return (
-      <div className={styles.plantDates}>
-        <PlantDatesBar
-          dateStartIndoors={data.dateStartIndoors}
-          dateTransplant={data.dateTransplant}
-          dateDirectSow={data.dateDirectSow}
-          dateFirstHarvest={data.dateFirstHarvest}
-          dateLastHarvest={data.dateLastHarvest}
-          months={months}
-          showMonthTitle={false}
-          barHeight={6}
-        />
-      </div>
+      <Tooltip
+        content={
+          <div className={styles.dateTooltip}>
+            {dateStartIndoors && (
+              <div className={styles.dateTooltipRow}>
+                <span>Voranzucht:</span>{' '}
+                <strong>{formatDate(dateStartIndoors, 'd MMM')}</strong>
+              </div>
+            )}
+            {dateTransplant && (
+              <div className={styles.dateTooltipRow}>
+                <span>Auspflanzen:</span>{' '}
+                <strong>{formatDate(dateTransplant, 'd MMM')}</strong>
+              </div>
+            )}
+            {dateDirectSow && (
+              <div className={styles.dateTooltipRow}>
+                <span>Aussaat ins Freiland:</span>{' '}
+                <strong>{formatDate(dateDirectSow, 'd MMM')}</strong>
+              </div>
+            )}
+            {dateFirstHarvest && (
+              <div className={styles.dateTooltipRow}>
+                <span>Erste Ernte:</span>{' '}
+                <strong>{formatDate(dateFirstHarvest, 'd MMM')}</strong>
+              </div>
+            )}
+            {dateLastHarvest && (
+              <div className={styles.dateTooltipRow}>
+                <span>Letze Ernte:</span>{' '}
+                <strong>{formatDate(dateLastHarvest, 'd MMM')}</strong>
+              </div>
+            )}
+          </div>
+        }
+        position={Position.LEFT}
+      >
+        <div className={styles.plantDates}>
+          <PlantDatesBar
+            dateStartIndoors={dateStartIndoors}
+            dateTransplant={dateTransplant}
+            dateDirectSow={dateDirectSow}
+            dateFirstHarvest={dateFirstHarvest}
+            dateLastHarvest={dateLastHarvest}
+            months={months}
+            showMonthTitle={false}
+            barHeight={6}
+          />
+        </div>
+      </Tooltip>
     );
+  };
+
+  const NotesRenderer = () => {
+    return <div className={styles.notes}>akjahdskjhdkjashdkjahlsdkjl</div>;
   };
 
   return (
@@ -203,6 +271,7 @@ const Table = () => {
               defaultColDef={defaultColDef}
               frameworkComponents={{
                 plantingDatesRenderer: PlantingDatesRenderer,
+                notesRenderer: NotesRenderer,
               }}
             >
               <AgGridColumn
@@ -247,17 +316,23 @@ const Table = () => {
               />
               <AgGridColumn
                 sortable={false}
-                width={size.width * 0.59 - 2}
+                width={size.width * 0.49 - 2}
                 cellRenderer="plantingDatesRenderer"
                 headerComponentFramework={() => (
                   <div className={styles.header}>
-                    {months.map(({ title }) => (
-                      <div className={styles.month} key={title}>
+                    {months.map(({ title }, i) => (
+                      <div className={styles.month} key={i}>
                         {title}
                       </div>
                     ))}
                   </div>
                 )}
+              />
+              <AgGridColumn
+                sortable={false}
+                width={size.width * 0.1}
+                headerName="Notizen"
+                cellRenderer="notesRenderer"
               />
             </AgGridReact>
           </div>
