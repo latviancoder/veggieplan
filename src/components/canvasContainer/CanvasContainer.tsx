@@ -1,6 +1,6 @@
 import Hammer from 'hammerjs';
 import { useAtom } from 'jotai';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useUpdateAtom } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
 import { useCallback, useEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -19,10 +19,9 @@ import { deleteAtom } from '../../atoms/deleteAtom';
 import { drawableAreaAtom } from '../../atoms/drawableAreaAtom';
 import { panAtom } from '../../atoms/panAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
-import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
 import { tapAtom } from '../../atoms/tapAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
-import { Autosave } from '../autosave/Autosave';
+import { useAutosave, useUndoRedo } from '../autosave/Autosave';
 import { Badge } from '../badge/Badge';
 import { Creatable } from '../creatable/Creatable';
 import { Guides } from '../guides/Guides';
@@ -40,6 +39,9 @@ function animate(time: number) {
 requestAnimationFrame(animate);
 
 export const CanvasContainer = () => {
+  useAutosave();
+  useUndoRedo();
+
   const rootRef = useRef<HTMLDivElement>(null);
 
   const [plotCanvas] = useAtom(plotCanvasAtom);
@@ -203,7 +205,6 @@ export const CanvasContainer = () => {
           </>
         )}
       </div>
-      <Autosave />
       <Zoom />
     </div>
   );

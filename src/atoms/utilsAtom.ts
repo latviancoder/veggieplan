@@ -36,7 +36,9 @@ export const utilsAtom = atom((get) => {
       return roundTwoDecimals(px / meterInPx / (noZoom ? 1 : zoom));
     },
     meterToPx: (meters: number = 0, noZoom = false): number => {
-      return ((meters * plotCanvas.width) / plot.width) * (noZoom ? 1 : zoom);
+      return roundTwoDecimals(
+        ((meters * plotCanvas.width) / plot.width) * (noZoom ? 1 : zoom)
+      );
     },
     getPlantDetails: (plantId: number) => {
       return plants.find(({ id }) => id === plantId)!;

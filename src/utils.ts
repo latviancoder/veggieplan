@@ -59,7 +59,9 @@ export const useUtils = () => {
   return {
     pxToMeter,
     meterToPx: (meters: number = 0, noZoom = false): number => {
-      return ((meters * plotCanvas.width) / plot.width) * (noZoom ? 1 : zoom);
+      return roundTwoDecimals(
+        ((meters * plotCanvas.width) / plot.width) * (noZoom ? 1 : zoom)
+      );
     },
     absoluteToRelativeX: (x: number) => {
       return (x - canvas.x) / zoom + offset.x;
