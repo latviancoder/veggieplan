@@ -1,4 +1,6 @@
 import Hammer from 'hammerjs';
+import { useAutosave } from 'hooks/useAutoSave';
+import { useUndoRedo } from 'hooks/useUndoRedo';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
@@ -21,7 +23,6 @@ import { panAtom } from '../../atoms/panAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
 import { tapAtom } from '../../atoms/tapAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
-import { useAutosave, useUndoRedo } from '../autosave/Autosave';
 import { Badge } from '../badge/Badge';
 import { Creatable } from '../creatable/Creatable';
 import { Guides } from '../guides/Guides';
