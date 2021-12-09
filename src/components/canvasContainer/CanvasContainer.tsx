@@ -163,14 +163,33 @@ export const CanvasContainer = () => {
   useEffect(() => {
     const $root = rootRef.current;
 
-    recalculateDrawableAreaDimensions();
+    if ($root) {
+      recalculateDrawableAreaDimensions();
 
-    window.addEventListener('resize', recalculateDrawableAreaDimensions);
+      const observer = new ResizeObserver(recalculateDrawableAreaDimensions);
 
-    return () => {
-      $root?.removeEventListener('resize', recalculateDrawableAreaDimensions);
-    };
+      observer.observe($root);
+
+      return () => {
+        observer.disconnect();
+      };
+    }
   }, [setDrawableArea, recalculateDrawableAreaDimensions]);
+
+  useEffect(() => {
+    if (rootRef.current) {
+      const observer = new ResizeObserver((a) => {
+        console.log(a);
+      });
+
+      // Start observing the target node for configured mutations
+      observer.observe(rootRef.current);
+
+      return () => {
+        observer.disconnect();
+      };
+    }
+  }, []);
 
   return (
     <div ref={rootRef} className={styles.root}>
