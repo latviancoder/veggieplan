@@ -1,6 +1,8 @@
 import { useAtomValue } from 'jotai/utils';
 import { memo } from 'react';
 
+import { Colors } from '@blueprintjs/core';
+
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../../constants';
 import { ObjectTypes, Plant, RectangleShape } from '../../types';
@@ -31,19 +33,19 @@ export const Rectangle = memo(
 
     let strokeWidth = 2 / zoom;
     let fillOpacity = 0.5;
-    let fill = isPlant(rest) ? '#d3ebd4' : 'transparent';
-    let stroke = isPlant(rest) ? 'transparent' : '#ba9c4a';
+    let fill = isPlant(rest) ? Colors.SEPIA3 : 'transparent';
+    let stroke = isPlant(rest) ? 'transparent' : Colors.SEPIA2;
     if (isSelected) {
-      stroke = '#e3938a';
+      stroke = Colors.VIOLET1;
     }
     if (isInteracted) {
-      stroke = '#8a9fe3';
+      stroke = Colors.COBALT1;
     }
 
     if (isHovered) {
-      stroke = '#8ce38a';
+      stroke = Colors.COBALT1;
       if (isPlant(rest)) {
-        fill = '#a5d4a7';
+        fill = Colors.SEPIA1;
       } else {
         fill = 'transparent';
         fillOpacity = 1;
@@ -107,7 +109,7 @@ export const Rectangle = memo(
               ([key, { x, y }]) => (
                 <rect
                   key={key}
-                  fill="green"
+                  fill={Colors.COBALT1}
                   width={HANDLER_SIZE / zoom}
                   height={HANDLER_SIZE / zoom}
                   transform={`translate(${x} ${y})`}
@@ -115,7 +117,7 @@ export const Rectangle = memo(
               )
             )}
             <circle
-              fill="green"
+              fill={Colors.COBALT1}
               cx={width / 2}
               cy={HANDLER_SIZE / zoom / 2 - HANDLER_OFFSET / zoom}
               r={HANDLER_SIZE / zoom / 2}

@@ -9,6 +9,7 @@ import {
   Tooltip
 } from '@blueprintjs/core';
 
+import { ReactComponent as BroccoliIcon } from '../../assets/broccoli.svg';
 import { modeAtom, plantsAtom, selectedPlantAtom } from '../../atoms/atoms';
 import { Modes } from '../../types';
 import styles from './SidebarLeft.module.scss';
@@ -24,7 +25,7 @@ export const SidebarLeft = () => {
     <aside className={styles.root}>
       <ButtonGroup vertical minimal>
         <Tooltip
-          content={<span>Selection tool</span>}
+          content={<span>Auswahlwerkzeug</span>}
           position={Position.RIGHT}
         >
           <Button
@@ -37,28 +38,38 @@ export const SidebarLeft = () => {
             <Icon icon="select" />
           </Button>
         </Tooltip>
-        <Button
-          onClick={() => {
-            setMode(Modes.CREATION);
-            setSelectedPlant(null);
-          }}
-          active={mode === Modes.CREATION && !selectedPlant}
-        >
-          <Icon icon="square" />
-        </Button>
+        <Tooltip content={<span>Beet</span>} position={Position.RIGHT}>
+          <Button
+            onClick={() => {
+              setMode(Modes.CREATION);
+              setSelectedPlant(null);
+            }}
+            active={mode === Modes.CREATION && !selectedPlant}
+          >
+            <Icon icon="square" />
+          </Button>
+        </Tooltip>
         {plants?.map(({ id, name }) => (
-          <Tooltip key={id} content={name} position={Position.RIGHT}>
+          <Tooltip key={id} content="Gemüse" position={Position.RIGHT}>
+            <Button style={{ padding: '5px 7px' }} onClick={() => {}}>
+              <BroccoliIcon width={16} height={16} fill="#5c7080" />
+            </Button>
+          </Tooltip>
+        ))}
+        {/* {plants?.map(({ id, name }) => (
+          <Tooltip key={id} content="Gemüse" position={Position.RIGHT}>
             <Button
+              style={{ padding: '5px 7px' }}
               onClick={() => {
                 setMode(Modes.CREATION);
                 setSelectedPlant(id);
               }}
               active={mode === Modes.CREATION && selectedPlant === id}
             >
-              <Icon icon="tree" />
+              <BroccoliIcon width={16} height={16} fill="#5c7080" />
             </Button>
           </Tooltip>
-        ))}
+        ))} */}
       </ButtonGroup>
     </aside>
   );

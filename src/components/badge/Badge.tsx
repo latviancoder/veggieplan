@@ -91,8 +91,8 @@ export const Badge = () => {
           shapeRendering="none"
           fill="palegoldenrod"
           fillOpacity={0.8}
-          stroke="blue"
-          strokeWidth={1 / zoom}
+          // stroke="blue"
+          // strokeWidth={1 / zoom}
           width={(textDimensions.width + textOffset * 2) / zoom}
           height={(textDimensions.height + textOffset * 2 - 1) / zoom}
           transform={
