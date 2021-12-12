@@ -17,7 +17,7 @@ type StateSnapshot = {
 const MAX_UNDO_STACK = 30;
 
 export const useUndoRedo = () => {
-  const { pxToMeter, meterToPx } = useUtils();
+  const { pxToMeterObject, meterToPxObject } = useUtils();
   const setObjects = useUpdateAtom(objectsAtom);
   const [undoStack, setUndoStack] = useState<StateSnapshot[]>([]);
   const initialRender = useRef<boolean>(true);
@@ -36,12 +36,7 @@ export const useUndoRedo = () => {
 
       if (prevState.objects) {
         prevObjects.current = prevState.objects.map((obj) =>
-          produce(obj, (draft) => {
-            draft.x = meterToPx(draft.x, true);
-            draft.y = meterToPx(draft.y, true);
-            draft.width = meterToPx(draft.width, true);
-            draft.height = meterToPx(draft.height, true);
-          })
+          meterToPxObject(obj)
         );
 
         setObjects({
@@ -55,16 +50,9 @@ export const useUndoRedo = () => {
 
   const createStateSnapshot = useCallback(
     (): StateSnapshot => ({
-      objects: objects.map((obj) =>
-        produce(obj, (draft) => {
-          draft.x = pxToMeter(draft.x, true);
-          draft.y = pxToMeter(draft.y, true);
-          draft.width = pxToMeter(draft.width, true);
-          draft.height = pxToMeter(draft.height, true);
-        })
-      ),
+      objects: objects.map((obj) => pxToMeterObject(obj)),
     }),
-    [objects, pxToMeter]
+    [objects, pxToMeterObject]
   );
 
   useHotkeys('ctrl+z, cmd+z', () => void undo(), [undoStack]);
@@ -106,5 +94,5 @@ export const useUndoRedo = () => {
 
       prevObjects.current = objects;
     }
-  }, [createStateSnapshot, mode, objects, pxToMeter, undoStack]);
+  }, [createStateSnapshot, mode, objects, undoStack]);
 };

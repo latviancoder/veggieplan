@@ -3,33 +3,32 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { creatableAtom } from '../../atoms/atoms';
 import { hoveredAtom } from '../../atoms/hoveredAtom';
-import { objectsInMetersAtom } from '../../atoms/objectsAtom';
+import { objectsAtom } from '../../atoms/objectsAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
-import { ObjectTypes } from '../../types';
+import { ObjectTypes, Plant, Shape } from '../../types';
 import { isPlant, useUtils } from '../../utils';
 
 export const Badge = () => {
   const hoveredObjectId = useAtomValue(hoveredAtom);
-  const objects = useAtomValue(objectsInMetersAtom);
+  const objects = useAtomValue(objectsAtom);
   const panStart = useAtomValue(panStartAtom);
   const zoom = useAtomValue(zoomAtom);
   const creatable = useAtomValue(creatableAtom);
 
-  const { meterToPx, getPlantDetails, getPlantAmount } = useUtils();
+  const { getPlantDetails, getPlantAmount, pxToMeterObject } = useUtils();
+
   const [textDimensions, setTextDimensions] = useState({
     width: 0,
     height: 0,
   });
   const textRef = useRef<SVGTextElement>(null);
 
-  const obj =
+  let obj =
     objects.find(
       ({ id }) =>
         hoveredObjectId === id || panStart?.interactableObjectId === id
     ) || creatable;
-
-  const plantDetails = obj && isPlant(obj) ? getPlantDetails(obj) : undefined;
 
   useEffect(() => {
     if (textRef.current) {
@@ -41,25 +40,35 @@ export const Badge = () => {
     }
   }, [obj?.width, obj?.height, zoom]);
 
-  const renderPlantSpecific = useCallback(() => {
-    if (!plantDetails || !obj || !isPlant(obj)) return;
+  const renderPlantSpecific = useCallback(
+    (plant: Plant) => {
+      plant = pxToMeterObject(plant);
 
-    const { rows, inRow } = getPlantAmount(obj);
+      const plantDetails = getPlantDetails(plant);
 
-    return `${plantDetails.name} - ${rows} x ${inRow} Pflanzen (${
-      rows * inRow
-    }) - ${obj?.width.toFixed(2)}x${obj?.height.toFixed(2)}m`;
-  }, [plantDetails, getPlantAmount, obj]);
+      const { rows, inRow } = getPlantAmount(plant);
 
-  const renderShapeSpecific = useCallback(() => {
-    let ret = `${obj?.width.toFixed(2)}x${obj?.height.toFixed(2)}m`;
+      return `${plantDetails.name} - ${rows} x ${inRow} Pflanzen (${
+        rows * inRow
+      }) - ${plant.width.toFixed(2)}x${plant.height.toFixed(2)}m`;
+    },
+    [getPlantAmount, getPlantDetails, pxToMeterObject]
+  );
 
-    if (obj?.objectType === ObjectTypes.Shape && obj.title) {
-      ret = `Beet ${obj.title} - ${ret}`;
-    }
+  const renderShapeSpecific = useCallback(
+    (shape: Shape) => {
+      shape = pxToMeterObject(shape);
 
-    return ret;
-  }, [obj]);
+      let ret = `${shape.width.toFixed(2)}x${shape.height.toFixed(2)}m`;
+
+      if (shape.objectType === ObjectTypes.Shape && shape.title) {
+        ret = `Beet ${shape.title} - ${ret}`;
+      }
+
+      return ret;
+    },
+    [pxToMeterObject]
+  );
 
   const textOffset = 4;
 
@@ -67,27 +76,18 @@ export const Badge = () => {
 
   const { width, height, rotation, x, y } = obj;
 
-  const widthInPx = meterToPx(width, true);
-  const heightInPx = meterToPx(height, true);
-
   return (
     <g
       style={{ pointerEvents: 'none' }}
       transform={`
-        translate(${meterToPx(x, true)} ${meterToPx(y, true)}) 
-        rotate(${rotation} ${widthInPx / 2} ${heightInPx / 2})
+        translate(${x} ${y})  
+        rotate(${rotation} ${width / 2} ${height / 2})
     `}
     >
       {textDimensions.width > 0 && (
         <rect
-          x={
-            widthInPx / 2 - textDimensions.width / zoom / 2 - textOffset / zoom
-          }
-          y={
-            heightInPx / 2 -
-            textDimensions.height / zoom / 2 -
-            textOffset / zoom
-          }
+          x={width / 2 - textDimensions.width / zoom / 2 - textOffset / zoom}
+          y={height / 2 - textDimensions.height / zoom / 2 - textOffset / zoom}
           shapeRendering="none"
           fill="palegoldenrod"
           fillOpacity={0.8}
@@ -96,26 +96,22 @@ export const Badge = () => {
           width={(textDimensions.width + textOffset * 2) / zoom}
           height={(textDimensions.height + textOffset * 2 - 1) / zoom}
           transform={
-            rotation
-              ? `rotate(${-rotation} ${widthInPx / 2} ${heightInPx / 2})`
-              : ''
+            rotation ? `rotate(${-rotation} ${width / 2} ${height / 2})` : ''
           }
         />
       )}
       <text
         ref={textRef}
-        x={widthInPx / 2}
-        y={heightInPx / 2}
+        x={width / 2}
+        y={height / 2}
         style={{ fontSize: 13 / zoom, fontFamily: 'Roboto Mono' }}
         dominantBaseline="middle"
         textAnchor="middle"
         transform={
-          rotation
-            ? `rotate(${-rotation} ${widthInPx / 2} ${heightInPx / 2})`
-            : ''
+          rotation ? `rotate(${-rotation} ${width / 2} ${height / 2})` : ''
         }
       >
-        {plantDetails ? renderPlantSpecific() : renderShapeSpecific()}
+        {isPlant(obj) ? renderPlantSpecific(obj) : renderShapeSpecific(obj)}
       </text>
     </g>
   );

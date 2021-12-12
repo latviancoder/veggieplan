@@ -37,6 +37,36 @@ export const useUtils = () => {
     return roundTwoDecimals(px / meterInPx / (noZoom ? 1 : zoom));
   };
 
+  const meterToPx = (meters: number = 0, noZoom = false): number => {
+    return roundTwoDecimals(
+      ((meters * plotCanvas.width) / plot.width) * (noZoom ? 1 : zoom)
+    );
+  };
+
+  const meterToPxObject = <T extends GardenObject>(
+    obj: T,
+    noZoom = false
+  ): T => {
+    return produce(obj, (draft) => {
+      draft.x = meterToPx(draft.x, noZoom);
+      draft.y = meterToPx(draft.y, noZoom);
+      draft.width = meterToPx(draft.width, noZoom);
+      draft.height = meterToPx(draft.height, noZoom);
+    });
+  };
+
+  const pxToMeterObject = <T extends GardenObject>(
+    obj: T,
+    noZoom = false
+  ): T => {
+    return produce(obj, (draft) => {
+      draft.x = pxToMeter(draft.x, noZoom);
+      draft.y = pxToMeter(draft.y, noZoom);
+      draft.width = pxToMeter(draft.width, noZoom);
+      draft.height = pxToMeter(draft.height, noZoom);
+    });
+  };
+
   const getPlantDetails = (obj: Plant) => {
     const plantDetails = plants.find(({ id }) => id === obj.plantId);
 
@@ -58,11 +88,9 @@ export const useUtils = () => {
 
   return {
     pxToMeter,
-    meterToPx: (meters: number = 0, noZoom = false): number => {
-      return roundTwoDecimals(
-        ((meters * plotCanvas.width) / plot.width) * (noZoom ? 1 : zoom)
-      );
-    },
+    pxToMeterObject,
+    meterToPx,
+    meterToPxObject,
     absoluteToRelativeX: (x: number) => {
       return (x - canvas.x) / zoom + offset.x;
     },

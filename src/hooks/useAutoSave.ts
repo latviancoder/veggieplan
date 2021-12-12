@@ -16,7 +16,7 @@ export const useAutosave = () => {
   const canvas = useAtomValue(canvasAtom);
   const mode = useAtomValue(modeAtom);
   const objects = useAtomValue(objectsAtom);
-  const { pxToMeter, meterToPx } = useUtils();
+  const { pxToMeterObject, meterToPxObject } = useUtils();
 
   const {
     isLoading: isObjectsLoading,
@@ -28,14 +28,7 @@ export const useAutosave = () => {
 
   const prevObjects = useRef<GardenObject[] | undefined>();
 
-  prevObjects.current = objectsFromDb?.map((obj) =>
-    produce(obj, (draft) => {
-      draft.x = meterToPx(draft.x, true);
-      draft.y = meterToPx(draft.y, true);
-      draft.width = meterToPx(draft.width, true);
-      draft.height = meterToPx(draft.height, true);
-    })
-  );
+  prevObjects.current = objectsFromDb?.map((obj) => meterToPxObject(obj));
 
   const { mutate: save } = useMutation<
     unknown,
@@ -44,14 +37,7 @@ export const useAutosave = () => {
   >(
     ({ changedObjects, deletedObjectIds }) =>
       post('/api/save', {
-        changedObjects: changedObjects.map((obj) =>
-          produce(obj, (draft) => {
-            draft.x = pxToMeter(draft.x, true);
-            draft.y = pxToMeter(draft.y, true);
-            draft.width = pxToMeter(draft.width, true);
-            draft.height = pxToMeter(draft.height, true);
-          })
-        ),
+        changedObjects: changedObjects.map((obj) => pxToMeterObject(obj)),
         deletedObjectIds,
       }),
     {
