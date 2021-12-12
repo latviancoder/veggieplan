@@ -4,6 +4,7 @@ import deepEqual from 'deep-equal';
 import produce from 'immer';
 import { useAtomValue } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
+import sortBy from 'lodash.sortby';
 import { useEffect, useRef } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { GardenObject, Modes } from 'types';
@@ -69,8 +70,14 @@ export const useAutosave = () => {
       mode !== Modes.ROTATION &&
       (!prevObjects ||
         !deepEqual(
-          objects.map((obj) => ({ ...obj, zIndex: undefined })),
-          prevObjects.current?.map((obj) => ({ ...obj, zIndex: undefined }))
+          sortBy(
+            objects.map((obj) => ({ ...obj, zIndex: undefined })),
+            'id'
+          ),
+          sortBy(
+            prevObjects.current?.map((obj) => ({ ...obj, zIndex: undefined })),
+            'id'
+          )
         ))
     ) {
       clearTimeout(timeout);
