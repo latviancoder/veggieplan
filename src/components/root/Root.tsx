@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import { useAtomValue } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
 import { lazy, Suspense, useEffect } from 'react';
 import { useQuery } from 'react-query';
@@ -27,16 +27,16 @@ const Root = () => {
   const view = useAtomValue(viewAtom);
   const canvas = useAtomValue(canvasAtom);
   const plotCanvas = useAtomValue(plotCanvasAtom);
-  const [plants, setPlants] = useAtom(plantsAtom);
+  const setPlants = useUpdateAtom(plantsAtom);
   const [objects, setObjects] = useAtom(objectsAtom);
 
-  const { isLoading: isPlantsDetailsLoading, data: plantsDetails } = useQuery<
-    PlantDetails[]
-  >('plants', () => fetch('/api/plants').then((res) => res.json()));
+  const { data: plantsDetails } = useQuery<PlantDetails[]>('plants', () =>
+    fetch('/api/plants').then((res) => res.json())
+  );
 
-  const { isLoading: isObjectsLoading, data: objectsFromDb } = useQuery<
-    GardenObject[]
-  >('objects', () => fetch('/api/objects').then((res) => res.json()));
+  const { data: objectsFromDb } = useQuery<GardenObject[]>('objects', () =>
+    fetch('/api/objects').then((res) => res.json())
+  );
 
   useEffect(() => {
     if (objectsFromDb && isEmpty(objects) && !isEmpty(objectsFromDb)) {
@@ -54,15 +54,13 @@ const Root = () => {
     if (plantsDetails) setPlants(plantsDetails);
   }, [plantsDetails, setPlants]);
 
-  if (isPlantsDetailsLoading || isObjectsLoading || !plants.length) return null;
-
   return (
     <div className={styles.root}>
       <GlobalHeader />
       <div className={styles.content}>
-        <SidebarLeft />
         {view === Views.PLAN && (
           <>
+            <SidebarLeft />
             <CanvasContainer />
             <DetailsBarConnected />
           </>
