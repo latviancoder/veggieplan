@@ -1,0 +1,69 @@
+@import '~@blueprintjs/core/lib/scss/variables';
+
+.plantsSearch {
+  border-right: 1px $light-gray1 solid;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+.search {
+  padding: 12px 15px;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.add {
+  margin-left: 10px;
+}
+
+.overflow {
+  padding: 0;
+  flex: 1;
+  overflow: hidden;
+  overflow-y: auto;
+  position: relative;
+}
+
+.list {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.plant {
+  cursor: pointer;
+  border-bottom: 1px $light-gray4 solid;
+  display: flex;
+  align-items: center;
+  height: 50px;
+  padding: 0 15px;
+  &:hover {
+    background: $light-gray5;
+  }
+}
+
+.plantSelected {
+  background: $light-gray3;
+  &:hover {
+    background: $light-gray3;
+  }
+}
+
+.icon {
+  flex: 0 0 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.name {
+  flex: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

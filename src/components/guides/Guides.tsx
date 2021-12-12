@@ -1,5 +1,7 @@
 import { scaleLinear } from 'd3-scale';
 import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai/utils';
+import { useCallback, useMemo } from 'react';
 
 import { Colors } from '@blueprintjs/core';
 
@@ -13,52 +15,49 @@ import { infoAtom } from '../../atoms/infoAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
 
 export const Guides = () => {
-  const [offset] = useAtom(offsetAtom);
-  const [info] = useAtom(infoAtom);
-  const [zoom] = useAtom(zoomAtom);
-  const [plot] = useAtom(plotAtom);
-  const [plotCanvas] = useAtom(plotCanvasAtom);
-  const [canvas] = useAtom(canvasAtom);
+  const offset = useAtomValue(offsetAtom);
+  const info = useAtomValue(infoAtom);
+  const zoom = useAtomValue(zoomAtom);
+  const plot = useAtomValue(plotAtom);
+  const plotCanvas = useAtomValue(plotCanvasAtom);
+  const canvas = useAtomValue(canvasAtom);
 
   const guideSize = 20;
   const guideFill = Colors.LIGHT_GRAY5;
 
+  const calculateTicks = useCallback(
+    (plotCanvasSize: number, canvasSize: number, plotSize: number) => {
+      const plotCanvasScreenPercentage = (plotCanvasSize / canvasSize) * zoom;
+      const ticksCount = Math.max(12 * plotCanvasScreenPercentage, 4);
+
+      const ticks = scaleLinear().domain([0, plotSize]).ticks(ticksCount);
+
+      if (!ticks.includes(0)) {
+        ticks.push(0);
+      }
+
+      if (!ticks.includes(plotSize)) {
+        ticks.push(plotSize);
+      }
+
+      return ticks;
+    },
+    [zoom]
+  );
+
+  const horizontalTicks = useMemo(
+    () => calculateTicks(plotCanvas.width, canvas.width, plot.width),
+    [calculateTicks, plotCanvas.width, canvas.width, plot.width]
+  );
+
+  const verticalTicks = useMemo(
+    () => calculateTicks(plotCanvas.height, canvas.height, plot.height),
+    [calculateTicks, plotCanvas.height, canvas.height, plot.height]
+  );
+
   if (!info) {
     return null;
   }
-
-  const calculateTicks = (
-    plotCanvasSize: number,
-    canvasSize: number,
-    plotSize: number
-  ) => {
-    const plotCanvasScreenPercentage = (plotCanvasSize / canvasSize) * zoom;
-    const ticksCount = Math.max(12 * plotCanvasScreenPercentage, 4);
-
-    const ticks = scaleLinear().domain([0, plotSize]).ticks(ticksCount);
-
-    if (!ticks.includes(0)) {
-      ticks.push(0);
-    }
-
-    if (!ticks.includes(plotSize)) {
-      ticks.push(plotSize);
-    }
-
-    return ticks;
-  };
-
-  const horizontalTicks = calculateTicks(
-    plotCanvas.width,
-    canvas.width,
-    plot.width
-  );
-
-  const verticalTicks = calculateTicks(
-    plotCanvas.height,
-    canvas.height,
-    plot.height
-  );
 
   return (
     <g transform={`translate(${offset.x} ${offset.y}) scale(${1 / zoom})`}>

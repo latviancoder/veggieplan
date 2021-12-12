@@ -4,7 +4,7 @@ import { useUndoRedo } from 'hooks/useUndoRedo';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
 import { Colors } from '@blueprintjs/core';
@@ -160,12 +160,10 @@ export const CanvasContainer = () => {
     }
   }, [setDrawableArea]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const $root = rootRef.current;
 
     if ($root) {
-      recalculateDrawableAreaDimensions();
-
       const observer = new ResizeObserver(recalculateDrawableAreaDimensions);
 
       observer.observe($root);
@@ -175,21 +173,6 @@ export const CanvasContainer = () => {
       };
     }
   }, [setDrawableArea, recalculateDrawableAreaDimensions]);
-
-  useEffect(() => {
-    if (rootRef.current) {
-      const observer = new ResizeObserver((a) => {
-        console.log(a);
-      });
-
-      // Start observing the target node for configured mutations
-      observer.observe(rootRef.current);
-
-      return () => {
-        observer.disconnect();
-      };
-    }
-  }, []);
 
   return (
     <div ref={rootRef} className={styles.root}>

@@ -20,7 +20,10 @@ export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
 
   const { data: varieties, refetch } = useQuery<Variety[]>(
     ['varieties', plantDetails.id],
-    () => fetch(`/api/varieties/${plantDetails.id}`).then((res) => res.json())
+    () => fetch(`/api/varieties/${plantDetails.id}`).then((res) => res.json()),
+    {
+      suspense: false,
+    }
   );
 
   const { mutate: saveVariety } = useMutation<Variety, string, Variety>(

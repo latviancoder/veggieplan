@@ -13,7 +13,6 @@ export const GlobalHeader = () => {
     <div className={styles.root}>
       <ButtonGroup minimal>
         <Button
-          icon="map"
           small
           active={view === Views.PLAN}
           onClick={() => setView(Views.PLAN)}
@@ -21,7 +20,6 @@ export const GlobalHeader = () => {
           Plan
         </Button>
         <Button
-          icon="calendar"
           small
           active={view === Views.TABLE}
           onClick={() => setView(Views.TABLE)}

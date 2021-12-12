@@ -1,7 +1,12 @@
 @import '~@blueprintjs/core/lib/scss/variables';
 
-.root {
+.nav {
   padding: 5px;
   border-right: 1px $light-gray1 solid;
+}
+
+.sidebar {
   flex: none;
+  display: flex;
+  align-items: stretch;
 }

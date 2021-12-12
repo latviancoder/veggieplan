@@ -1,18 +1,17 @@
 import { atom } from 'jotai';
+
 import { roundTwoDecimals } from '../utils';
 import {
   canvasAtom,
   mousePositionAtom,
   plotAtom,
-  plotCanvasAtom,
+  plotCanvasAtom
 } from './atoms';
 import { utilsAtom } from './utilsAtom';
 
 export const infoAtom = atom((get) => {
-  const { absoluteToRelativeX, absoluteToRelativeY, meterToPx } =
-    get(utilsAtom);
+  const { meterToPx } = get(utilsAtom);
 
-  const mousePosition = get(mousePositionAtom);
   const plot = get(plotAtom);
   const canvas = get(canvasAtom);
   const plotCanvas = get(plotCanvasAtom);
@@ -29,9 +28,9 @@ export const infoAtom = atom((get) => {
     realWidth,
     realHeight,
     meterInPx,
-    mousePositionRelative: mousePosition && {
-      x: absoluteToRelativeX(mousePosition.x),
-      y: absoluteToRelativeY(mousePosition.y),
-    },
+    // mousePositionRelative: mousePosition && {
+    //   x: absoluteToRelativeX(mousePosition.x),
+    //   y: absoluteToRelativeY(mousePosition.y),
+    // },
   };
 });

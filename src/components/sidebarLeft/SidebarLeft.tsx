@@ -1,76 +1,60 @@
-import { useAtom } from 'jotai';
-import { useAtomValue } from 'jotai/utils';
+import { useUpdateAtom } from 'jotai/utils';
+import { useState } from 'react';
 
-import {
-  Button,
-  ButtonGroup,
-  Icon,
-  Position,
-  Tooltip
-} from '@blueprintjs/core';
+import { Button, ButtonGroup, Position, Tooltip } from '@blueprintjs/core';
 
-import { ReactComponent as BroccoliIcon } from '../../assets/broccoli.svg';
-import { modeAtom, plantsAtom, selectedPlantAtom } from '../../atoms/atoms';
+import { ReactComponent as LeafIcon } from '../../assets/leaf.svg';
+import { modeAtom, selectedPlantAtom } from '../../atoms/atoms';
 import { Modes } from '../../types';
+import { PlantsSearch } from './plantsSearch/PlantsSearch';
 import styles from './SidebarLeft.module.scss';
 
 export const SidebarLeft = () => {
-  const plants = useAtomValue(plantsAtom);
-  const [mode, setMode] = useAtom(modeAtom);
-  const [selectedPlant, setSelectedPlant] = useAtom(selectedPlantAtom);
+  const setMode = useUpdateAtom(modeAtom);
+  const setSelectedPlant = useUpdateAtom(selectedPlantAtom);
 
-  // console.log({ plants });
+  const [plantsSearch, setPlantsSearch] = useState(false);
 
   return (
-    <aside className={styles.root}>
-      <ButtonGroup vertical minimal>
-        <Tooltip
-          content={<span>Auswahlwerkzeug</span>}
-          position={Position.RIGHT}
-        >
-          <Button
-            active={mode === Modes.SELECTION}
-            onClick={() => {
-              setMode(Modes.SELECTION);
-              setSelectedPlant(null);
-            }}
+    <aside className={styles.sidebar}>
+      <nav className={styles.nav}>
+        <ButtonGroup vertical minimal>
+          <Tooltip
+            content={<span>Auswahlwerkzeug</span>}
+            position={Position.RIGHT}
           >
-            <Icon icon="select" />
-          </Button>
-        </Tooltip>
-        <Tooltip content={<span>Beet</span>} position={Position.RIGHT}>
-          <Button
-            onClick={() => {
-              setMode(Modes.CREATION);
-              setSelectedPlant(null);
-            }}
-            active={mode === Modes.CREATION && !selectedPlant}
-          >
-            <Icon icon="square" />
-          </Button>
-        </Tooltip>
-        {plants?.map(({ id, name }) => (
-          <Tooltip key={id} content="Gemüse" position={Position.RIGHT}>
-            <Button style={{ padding: '5px 7px' }} onClick={() => {}}>
-              <BroccoliIcon width={16} height={16} fill="#5c7080" />
-            </Button>
-          </Tooltip>
-        ))}
-        {/* {plants?.map(({ id, name }) => (
-          <Tooltip key={id} content="Gemüse" position={Position.RIGHT}>
             <Button
-              style={{ padding: '5px 7px' }}
+              icon="select"
+              onClick={() => {
+                setMode(Modes.SELECTION);
+                setSelectedPlant(null);
+              }}
+            />
+          </Tooltip>
+          <Tooltip content={<span>Beet</span>} position={Position.RIGHT}>
+            <Button
+              icon="square"
               onClick={() => {
                 setMode(Modes.CREATION);
-                setSelectedPlant(id);
+                setSelectedPlant(null);
               }}
-              active={mode === Modes.CREATION && selectedPlant === id}
+            />
+          </Tooltip>
+          <Tooltip content="Kulturen" position={Position.RIGHT}>
+            <Button
+              style={{ padding: '5px 7px' }}
+              onClick={() => setPlantsSearch(!plantsSearch)}
             >
-              <BroccoliIcon width={16} height={16} fill="#5c7080" />
+              <LeafIcon width={16} height={16} fill="#5c7080" />
             </Button>
           </Tooltip>
-        ))} */}
-      </ButtonGroup>
+        </ButtonGroup>
+      </nav>
+      {plantsSearch && (
+        <>
+          <PlantsSearch />
+        </>
+      )}
     </aside>
   );
 };
