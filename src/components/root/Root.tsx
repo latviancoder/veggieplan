@@ -13,8 +13,8 @@ import {
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { GardenObject, PlantDetails, Views } from '../../types';
 import { useUtils } from '../../utils';
-import { CanvasContainer } from '../canvasContainer/CanvasContainer';
 import { DetailsBarConnected } from '../detailsBar/DetailsBar';
+import { DrawableArea } from '../drawableArea/DrawableArea';
 import { GlobalHeader } from '../header/GlobalHeader';
 import { SidebarLeft } from '../sidebarLeft/SidebarLeft';
 import styles from './Root.module.css';
@@ -61,7 +61,7 @@ const Root = () => {
         {view === Views.PLAN && (
           <>
             <SidebarLeft />
-            <CanvasContainer />
+            <DrawableArea />
             <DetailsBarConnected />
           </>
         )}

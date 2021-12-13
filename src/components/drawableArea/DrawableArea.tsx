@@ -31,7 +31,7 @@ import { SelectionArea } from '../selectionArea/SelectionArea';
 import { Objects } from '../shapes/Objects';
 import { SnapLines } from '../snapLines/SnapLines';
 import { Zoom } from '../zoom/Zoom';
-import styles from './CanvasContainer.module.scss';
+import styles from './DrawableArea.module.scss';
 
 function animate(time: number) {
   requestAnimationFrame(animate);
@@ -39,7 +39,7 @@ function animate(time: number) {
 }
 requestAnimationFrame(animate);
 
-export const CanvasContainer = () => {
+export const DrawableArea = () => {
   useAutosave();
   useUndoRedo();
 

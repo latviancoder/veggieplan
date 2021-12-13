@@ -1,7 +1,6 @@
 import { canvasAtom, modeAtom } from 'atoms/atoms';
 import { objectsAtom } from 'atoms/objectsAtom';
 import deepEqual from 'deep-equal';
-import produce from 'immer';
 import { useAtomValue } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
 import sortBy from 'lodash.sortby';
