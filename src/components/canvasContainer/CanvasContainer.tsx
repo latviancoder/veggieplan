@@ -154,7 +154,6 @@ export const CanvasContainer = () => {
   const recalculateDrawableAreaDimensions = useCallback(() => {
     if (rootRef.current) {
       const { width, height, x, y } = rootRef.current.getBoundingClientRect();
-      console.log({ width, height, x, y });
       setDrawableArea({
         canvas: { width, height, x, y },
       });

@@ -66,7 +66,7 @@ const Root = () => {
           </>
         )}
         {view === Views.TABLE && (
-          <Suspense fallback={null}>
+          <Suspense fallback="Tabelle wird geladen..">
             <Table />
           </Suspense>
         )}
