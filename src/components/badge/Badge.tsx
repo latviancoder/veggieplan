@@ -42,7 +42,7 @@ export const Badge = () => {
 
   const renderPlantSpecific = useCallback(
     (plant: Plant) => {
-      plant = pxToMeterObject(plant);
+      plant = pxToMeterObject(plant, true);
 
       const plantDetails = getPlantDetails(plant);
 
@@ -57,7 +57,7 @@ export const Badge = () => {
 
   const renderShapeSpecific = useCallback(
     (shape: Shape) => {
-      shape = pxToMeterObject(shape);
+      shape = pxToMeterObject(shape, true);
 
       let ret = `${shape.width.toFixed(2)}x${shape.height.toFixed(2)}m`;
 
