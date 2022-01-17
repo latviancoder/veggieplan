@@ -16,6 +16,7 @@ import { useUtils } from '../../utils';
 import { DetailsBarConnected } from '../detailsBar/DetailsBar';
 import { DrawableArea } from '../drawableArea/DrawableArea';
 import { GlobalHeader } from '../header/GlobalHeader';
+import { MonthsSelectorContainer } from '../monthsSelector/MonthsSelector';
 import { SidebarLeft } from '../sidebarLeft/SidebarLeft';
 import styles from './Root.module.css';
 
@@ -61,7 +62,17 @@ const Root = () => {
         {view === Views.PLAN && (
           <>
             <SidebarLeft />
-            <DrawableArea />
+            <div
+              style={{
+                position: 'relative',
+                flex: '1',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <DrawableArea />
+              <MonthsSelectorContainer />
+            </div>
             <DetailsBarConnected />
           </>
         )}

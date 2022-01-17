@@ -113,7 +113,7 @@ export const DrawableArea = () => {
         setPanStart(null);
       });
 
-      mc.on('pan', ({ deltaX, deltaY, center, offsetDirection }) => {
+      mc.on('pan', ({ deltaX, deltaY, center, offsetDirection, target }) => {
         setPan({ deltaX, deltaY, center, direction: offsetDirection });
       });
 

@@ -12,6 +12,7 @@ import {
   format,
   startOfMonth
 } from 'date-fns';
+import { de } from 'date-fns/locale';
 import { useAtomValue } from 'jotai/utils';
 import { compact, max, min, sortBy } from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -106,16 +107,6 @@ const Table = () => {
       row.inRow = inRow;
       row.rows = rows;
 
-      const { dateStartIndoors, dateTransplant, dateDirectSow } = row;
-
-      const si = dateStartIndoors ? new Date(dateStartIndoors) : undefined;
-      const tp = dateTransplant ? new Date(dateTransplant) : undefined;
-      const ds = dateDirectSow ? new Date(dateDirectSow) : undefined;
-
-      const earliestDate = min(compact([si, tp, ds]));
-
-      row.earliestDate = earliestDate;
-
       r.push(row);
     });
 
@@ -169,7 +160,7 @@ const Table = () => {
       const monthsCount = differenceInMonths(latestDate, earliestDate);
 
       return [...Array(monthsCount + 1).keys()].map((i) => ({
-        title: format(addMonths(earliestDate, i), 'MMM'),
+        title: format(addMonths(earliestDate, i), 'MMM', { locale: de }),
         start: startOfMonth(addMonths(earliestDate, i)),
         end: endOfMonth(addMonths(earliestDate, i)),
       }));

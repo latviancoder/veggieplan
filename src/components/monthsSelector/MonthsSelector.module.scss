@@ -1,0 +1,35 @@
+@import '~@blueprintjs/core/lib/scss/variables';
+
+.container {
+  // padding: 5px;
+}
+
+.inner {
+  position: relative;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
+.handler {
+  display: block;
+  cursor: pointer;
+  background: red;
+  opacity: 0.3;
+  border: none;
+  outline: none;
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
+}
+
+.month {
+  text-align: center;
+  color: #000;
+}
+
+.monthSelected {
+  background-color: red;
+}

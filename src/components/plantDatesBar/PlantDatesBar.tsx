@@ -11,6 +11,7 @@ import {
   min,
   startOfMonth
 } from 'date-fns';
+import { de } from 'date-fns/locale';
 import compact from 'lodash.compact';
 
 import { Colors } from '@blueprintjs/core';
@@ -70,7 +71,7 @@ export const PlantDatesBar = ({
     const monthsCount = differenceInMonths(latestDate, earliestDate);
 
     months = [...Array(monthsCount + 1).keys()].map((i) => ({
-      title: format(addMonths(earliestDate, i), 'MMM'),
+      title: format(addMonths(earliestDate, i), 'MMM', { locale: de }),
       start: startOfMonth(addMonths(earliestDate, i)),
       end: endOfMonth(addMonths(earliestDate, i)),
     }));

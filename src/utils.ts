@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import { de } from 'date-fns/locale';
 import produce from 'immer';
 import { useAtomValue } from 'jotai/utils';
 
@@ -457,5 +458,5 @@ export const formatDate = (date: Date | string, f = 'dd.MM.yyyy'): string => {
     date = new Date(date);
   }
 
-  return format(date, f);
+  return format(date, f, { locale: de });
 };
