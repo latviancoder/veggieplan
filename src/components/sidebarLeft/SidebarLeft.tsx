@@ -13,7 +13,7 @@ export const SidebarLeft = () => {
   const setMode = useUpdateAtom(modeAtom);
   const setSelectedPlant = useUpdateAtom(selectedPlantAtom);
 
-  const [plantsSearch, setPlantsSearch] = useState(false);
+  const [plantsSearch, setPlantsSearch] = useState(true);
 
   return (
     <aside className={styles.sidebar}>
@@ -44,6 +44,7 @@ export const SidebarLeft = () => {
             <Button
               style={{ padding: '5px 7px' }}
               onClick={() => setPlantsSearch(!plantsSearch)}
+              active={plantsSearch}
             >
               <LeafIcon width={16} height={16} fill="#5c7080" />
             </Button>
