@@ -26,11 +26,6 @@ export const PlantsSearch = () => {
   const [selectedPlant, setSelectedPlant] = useAtom(selectedPlantAtom);
   const plants = useAtomValue(plantsAtom);
 
-  // console.log(Fuse);
-  useEffect(() => {
-    searchRef.current?.focus();
-  }, []);
-
   useEffect(() => {
     fuseRef.current = new Fuse(plants, {
       threshold: 0.1,
@@ -46,7 +41,9 @@ export const PlantsSearch = () => {
   }, [plants]);
 
   let searchResult = searchQuery
-    ? fuseRef.current?.search(searchQuery).map(({ item }) => item)
+    ? fuseRef.current?.search(searchQuery).map(({ item, matches }) => {
+        return item;
+      })
     : plants;
 
   return (
@@ -97,7 +94,18 @@ export const PlantsSearch = () => {
                 alt={name}
                 className={styles.icon}
               />
-              <div className={styles.name}>{name}</div>
+              <div
+                className={styles.name}
+                dangerouslySetInnerHTML={{
+                  __html:
+                    searchQuery.length > 1
+                      ? name.replace(
+                          new RegExp(`(${searchQuery})`, 'gi'),
+                          `<strong>$1</strong>`
+                        )
+                      : name,
+                }}
+              />
             </div>
           ))}
         </div>
