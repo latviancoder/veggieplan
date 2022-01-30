@@ -1,5 +1,5 @@
 import { useUpdateAtom } from 'jotai/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 import { Button, Classes, MenuItem } from '@blueprintjs/core';
@@ -18,7 +18,7 @@ type Props = {
 export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
   const setObjects = useUpdateAtom(objectsAtom);
 
-  const { data: varieties, refetch } = useQuery<Variety[]>(
+  const { data: varieties = [], refetch } = useQuery<Variety[] | undefined>(
     ['varieties', plantDetails.id],
     () => fetch(`/api/varieties/${plantDetails.id}`).then((res) => res.json()),
     {
@@ -46,6 +46,10 @@ export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
   );
 
   const [showVarietySelect, setShowVarietySelect] = useState(false);
+
+  useEffect(() => {
+    return () => setShowVarietySelect(false);
+  }, [plantObject.id]);
 
   const itemRenderer: ItemRenderer<Variety> = (
     item,
