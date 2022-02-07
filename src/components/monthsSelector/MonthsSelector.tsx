@@ -153,7 +153,6 @@ export const MonthsSelector = ({
   translate: number;
   months: Month[];
 }) => {
-  const stepsTraveled = translate / GRID_SIZE;
   const { attributes, listeners, setNodeRef } = useDraggable({
     id: 'unique-id',
   });
