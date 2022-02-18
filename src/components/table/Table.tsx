@@ -1,22 +1,26 @@
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import './Table.scss';
 
-import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
-import { AgGridColumn, AgGridReact } from 'ag-grid-react';
+import {
+  Column,
+  Table2,
+  Cell,
+  ICellProps,
+  SelectionModes,
+} from '@blueprintjs/table';
+
 import { Month, PlantDatesBar } from 'components/plantDatesBar/PlantDatesBar';
 import {
   addMonths,
   differenceInMonths,
   endOfMonth,
   format,
-  startOfMonth
+  startOfMonth,
 } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { useAtomValue } from 'jotai/utils';
 import { compact, max, min, sortBy } from 'lodash';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useQuery } from 'react-query';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { useQuery, UseQueryOptions } from 'react-query';
 
 import { Position, Tooltip } from '@blueprintjs/core';
 
@@ -29,16 +33,14 @@ import {
   isPlant,
   isRectangleShape,
   isRectangular,
-  useUtils
+  useUtils,
 } from '../../utils';
+import { NotesCell } from './cells/NotesCell';
 import styles from './Table.module.scss';
+import { CustomCell } from './cells/CustomCell';
+import { PlantingDatesCell } from './cells/PlantingDatesCell';
 
-const defaultColDef: ColDef = {
-  resizable: false,
-  sortable: true,
-};
-
-type Row = Plant & {
+export type Row = Plant & {
   plantName: string;
   varietyName?: string;
   bedId?: string;
@@ -48,13 +50,16 @@ type Row = Plant & {
   earliestDate?: Date;
 };
 
+const fetchVarieties = () => fetch(`/api/varieties`).then((res) => res.json());
+
+export const useFetchVarieties = (options?: UseQueryOptions<Variety[]>) => {
+  return useQuery<Variety[]>('varieties', fetchVarieties, options);
+};
+
 const Table = () => {
-  const [gridApi, setApi] = useState<GridApi | null>(null);
   const { getPlantDetails, getPlantAmount } = useUtils();
 
-  const { data: varieties } = useQuery<Variety[]>('varieties', () =>
-    fetch(`/api/varieties`).then((res) => res.json())
-  );
+  const { data: varieties } = useFetchVarieties();
 
   const objects = useAtomValue(objectsInMetersAtom);
 
@@ -169,164 +174,76 @@ const Table = () => {
     return [];
   }, [tableRows]);
 
-  const onGridReady = ({ api }: GridReadyEvent) => {
-    setApi(api);
-  };
-
-  useEffect(() => {
-    if (gridApi) {
-      gridApi.sizeColumnsToFit();
-    }
-  }, [gridApi]);
-
-  const PlantingDatesRenderer = ({
-    data: {
-      dateStartIndoors,
-      dateTransplant,
-      dateDirectSow,
-      dateFirstHarvest,
-      dateLastHarvest,
-    },
-  }: {
-    data: Row;
-  }) => {
-    return (
-      <Tooltip
-        content={
-          <div className={styles.dateTooltip}>
-            {dateStartIndoors && (
-              <div className={styles.dateTooltipRow}>
-                <span>Voranzucht:</span>{' '}
-                <strong>{formatDate(dateStartIndoors, 'd MMM')}</strong>
-              </div>
-            )}
-            {dateTransplant && (
-              <div className={styles.dateTooltipRow}>
-                <span>Auspflanzen:</span>{' '}
-                <strong>{formatDate(dateTransplant, 'd MMM')}</strong>
-              </div>
-            )}
-            {dateDirectSow && (
-              <div className={styles.dateTooltipRow}>
-                <span>Aussaat ins Freiland:</span>{' '}
-                <strong>{formatDate(dateDirectSow, 'd MMM')}</strong>
-              </div>
-            )}
-            {dateFirstHarvest && (
-              <div className={styles.dateTooltipRow}>
-                <span>Erste Ernte:</span>{' '}
-                <strong>{formatDate(dateFirstHarvest, 'd MMM')}</strong>
-              </div>
-            )}
-            {dateLastHarvest && (
-              <div className={styles.dateTooltipRow}>
-                <span>Letze Ernte:</span>{' '}
-                <strong>{formatDate(dateLastHarvest, 'd MMM')}</strong>
-              </div>
-            )}
-          </div>
-        }
-        position={Position.LEFT}
-      >
-        <div className={styles.plantDates}>
-          <PlantDatesBar
-            dateStartIndoors={dateStartIndoors}
-            dateTransplant={dateTransplant}
-            dateDirectSow={dateDirectSow}
-            dateFirstHarvest={dateFirstHarvest}
-            dateLastHarvest={dateLastHarvest}
-            months={months}
-            showMonthTitle={false}
-            barHeight={6}
-          />
-        </div>
-      </Tooltip>
-    );
-  };
-
-  const NotesRenderer = () => {
-    return <div className={styles.notes}>akjahdskjhdkjashdkjahlsdkjl</div>;
-  };
-
   return (
     <div style={{ padding: '20px', flex: '1' }}>
       <div ref={container} style={{ height: '100%' }}>
         {size?.height && (
-          <div
-            className="ag-theme-alpine"
-            style={{ height: size.height, width: size.width }}
+          <Table2
+            enableRowHeader={false}
+            numRows={tableRows.length}
+            rowHeights={[40, 40]}
+            columnWidths={[
+              size.width * 0.2,
+              size.width * 0.06,
+              size.width * 0.06,
+              size.width * 0.5,
+              size.width * 0.18,
+            ]}
           >
-            <AgGridReact
-              onGridReady={onGridReady}
-              rowData={tableRows}
-              defaultColDef={defaultColDef}
-              frameworkComponents={{
-                plantingDatesRenderer: PlantingDatesRenderer,
-                notesRenderer: NotesRenderer,
-              }}
-            >
-              <AgGridColumn
-                filter
-                headerName="Pflanze"
-                width={size.width * 0.2}
-                valueGetter={({ data }) => {
-                  let cell = data.plantName;
+            <Column
+              name="Pflanze"
+              cellRenderer={(i) => {
+                const data = tableRows[i];
 
-                  if (data.varietyName) {
-                    cell += ` (${data.varietyName})`;
-                  }
+                let cell = data.plantName;
 
-                  return cell;
-                }}
-              />
-              <AgGridColumn
-                suppressSizeToFit
-                filter
-                headerName="Beet"
-                width={size.width * 0.07}
-                minWidth={80}
-                valueGetter={({ data }) => data.bedName || ''}
-              />
-              <AgGridColumn
-                suppressSizeToFit
-                headerName="Anzahl"
-                width={size.width * 0.07}
-                minWidth={80}
-                sortable={false}
-                valueGetter={({ data }) => `${data.rows * data.inRow}`}
-              />
-              <AgGridColumn
-                suppressSizeToFit
-                headerName="Abstand"
-                width={size.width * 0.07}
-                minWidth={80}
-                sortable={false}
-                valueGetter={({ data }) =>
-                  `${data.inRowSpacing}x${data.rowSpacing}`
+                if (data.varietyName) {
+                  cell += ` (${data.varietyName})`;
                 }
-              />
-              <AgGridColumn
-                sortable={false}
-                width={size.width * 0.49 - 2}
-                cellRenderer="plantingDatesRenderer"
-                headerComponentFramework={() => (
-                  <div className={styles.header}>
-                    {months.map(({ title }, i) => (
-                      <div className={styles.month} key={i}>
-                        {title}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              />
-              <AgGridColumn
-                sortable={false}
-                width={size.width * 0.1}
-                headerName="Notizen"
-                cellRenderer="notesRenderer"
-              />
-            </AgGridReact>
-          </div>
+
+                return <CustomCell>{cell}</CustomCell>;
+              }}
+            />
+            <Column
+              name="Beet"
+              cellRenderer={(i) => (
+                <CustomCell>{tableRows[i].bedName || ''}</CustomCell>
+              )}
+            />
+            <Column
+              name="Abstand"
+              cellRenderer={(i) => {
+                const data = tableRows[i];
+                return (
+                  <CustomCell>{`${data.inRowSpacing}x${data.rowSpacing}`}</CustomCell>
+                );
+              }}
+            />
+            <Column
+              nameRenderer={() => (
+                <div className={styles.header}>
+                  {months.map(({ title }, i) => (
+                    <div className={styles.month} key={i}>
+                      {title}
+                    </div>
+                  ))}
+                </div>
+              )}
+              cellRenderer={(i) => (
+                <CustomCell>
+                  <PlantingDatesCell months={months} data={tableRows[i]} />
+                </CustomCell>
+              )}
+            />
+            <Column
+              name="Notizen"
+              cellRenderer={(i) => (
+                <CustomCell>
+                  <NotesCell data={tableRows[i]} />
+                </CustomCell>
+              )}
+            />
+          </Table2>
         )}
       </div>
     </div>

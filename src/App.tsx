@@ -1,3 +1,4 @@
+import { HotkeysProvider } from '@blueprintjs/core';
 import { Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
@@ -13,9 +14,11 @@ const queryClient = new QueryClient({
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <Suspense fallback="Loading...">
-      <Root />
-    </Suspense>
+    <HotkeysProvider>
+      <Suspense fallback="Loading...">
+        <Root />
+      </Suspense>
+    </HotkeysProvider>
   </QueryClientProvider>
 );
 

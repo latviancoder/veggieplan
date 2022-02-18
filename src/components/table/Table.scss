@@ -1,13 +1,2 @@
 @import '~@blueprintjs/core/lib/scss/variables';
-
-.ag-theme-alpine {
-  .ag-root-wrapper {
-    border-color: $light-gray1;
-  }
-  .ag-header {
-    border-color: $light-gray1;
-  }
-  .ag-row {
-    border-color: $light-gray1;
-  }
-}
+@import '~@blueprintjs/table/lib/css/table.css';

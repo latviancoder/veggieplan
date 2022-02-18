@@ -1,9 +1,4 @@
 .header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   display: flex;
   align-items: center;
 }
@@ -21,8 +16,8 @@
   justify-content: center;
   top: 0;
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 10px;
+  right: 10px;
 }
 
 .dateTooltip {
@@ -38,4 +33,10 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+:global(.bp3-table-container) {
+  &:focus {
+    outline: none;
+  }
 }

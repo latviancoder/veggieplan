@@ -9,7 +9,7 @@ import {
   isWithinInterval,
   max,
   min,
-  startOfMonth
+  startOfMonth,
 } from 'date-fns';
 import { de } from 'date-fns/locale';
 import compact from 'lodash.compact';
@@ -178,7 +178,9 @@ export const PlantDatesBar = ({
               );
             }
 
-            return <div key={`${title}-${type}`} className={styles.bar} />;
+            return (
+              <div key={`${title}-${type}`} style={{ height: barHeight }} />
+            );
           })}
         </div>
       ))}
