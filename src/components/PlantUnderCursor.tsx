@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai/utils';
 
 import { mousePositionAtom, selectedPlantAtom } from '../atoms/atoms';
 import { panStartAtom } from '../atoms/panStartAtom';
-import { useUtils } from '../utils';
+import { useUtils } from '../utils/utils';
 
 export const PlantUnderCursor = () => {
   // const { meterToPx, absoluteToRelativeX, absoluteToRelativeY, getPlantDetails } =

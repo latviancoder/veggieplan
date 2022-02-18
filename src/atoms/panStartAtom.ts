@@ -8,21 +8,21 @@ import {
   ObjectTypes,
   Point,
   RectangleCorners,
-  ShapeTypes
+  ShapeTypes,
 } from '../types';
 import {
   getObjectAtPoint,
   isPointInsideCircle,
   isPointInsideRectangle,
   isRectangular,
-  rotateRectangle
-} from '../utils';
+  rotateRectangle,
+} from '../utils/utils';
 import { rectangleHandlerMap } from '../utils/rectangleHandlerMap';
 import {
   creatableAtom,
   modeAtom,
   offsetAtom,
-  selectedPlantAtom
+  selectedPlantAtom,
 } from './atoms';
 import { objectsAtom } from './objectsAtom';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';

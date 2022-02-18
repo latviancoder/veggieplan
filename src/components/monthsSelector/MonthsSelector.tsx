@@ -6,14 +6,14 @@ import {
   format,
   isValid,
   max,
-  min
+  min,
 } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { useAtomValue } from 'jotai/utils';
 import { divide } from 'lodash';
 import compact from 'lodash.compact';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { isPlant } from 'utils';
+import { isPlant } from 'utils/utils';
 
 import {
   DndContext,
@@ -25,7 +25,7 @@ import {
   TouchSensor,
   useDraggable,
   useSensor,
-  useSensors
+  useSensors,
 } from '@dnd-kit/core';
 
 import styles from './MonthsSelector.module.scss';

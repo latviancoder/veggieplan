@@ -8,9 +8,9 @@ import {
   offsetAtom,
   plantsAtom,
   plotAtom,
-  plotCanvasAtom
-} from './atoms/atoms';
-import { zoomAtom } from './atoms/zoomAtom';
+  plotCanvasAtom,
+} from '../atoms/atoms';
+import { zoomAtom } from '../atoms/zoomAtom';
 import {
   GardenObject,
   ObjectTypes,
@@ -19,8 +19,8 @@ import {
   RectangleCorners,
   RectangleShape,
   Shape,
-  ShapeTypes
-} from './types';
+  ShapeTypes,
+} from '../types';
 
 export const roundTwoDecimals = (num: number) =>
   Math.round((num + Number.EPSILON) * 100) / 100;

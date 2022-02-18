@@ -34,7 +34,7 @@ import {
   isRectangleShape,
   isRectangular,
   useUtils,
-} from '../../utils';
+} from '../../utils/utils';
 import { NotesCell } from './cells/NotesCell';
 import styles from './Table.module.scss';
 import { CustomCell } from './cells/CustomCell';

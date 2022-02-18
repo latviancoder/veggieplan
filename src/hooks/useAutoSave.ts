@@ -7,7 +7,7 @@ import sortBy from 'lodash.sortby';
 import { useEffect, useRef } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { GardenObject, Modes } from 'types';
-import { post, useUtils } from 'utils';
+import { post, useUtils } from 'utils/utils';
 
 let timeout: NodeJS.Timeout;
 

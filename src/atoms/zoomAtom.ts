@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { roundTwoDecimals } from '../utils';
+import { roundTwoDecimals } from '../utils/utils';
 import { Easing, Tween } from '@tweenjs/tween.js';
 import { canvasAtom, offsetAtom } from './atoms';
 import { Point } from '../types';

@@ -1,7 +1,7 @@
 import { addYears, parse } from 'date-fns';
 import { useUpdateAtom } from 'jotai/utils';
 import { useEffect, useState } from 'react';
-import { formatDate } from 'utils';
+import { formatDate } from 'utils/utils';
 
 import { Checkbox, Classes, Colors, FormGroup } from '@blueprintjs/core';
 import { DateInput, DateUtils } from '@blueprintjs/datetime';

@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 import { nanoid } from 'nanoid';
 
 import { Modes, ObjectTypes, Plant, Point } from '../types';
-import { getObjectAtPoint } from '../utils';
+import { getObjectAtPoint } from '../utils/utils';
 import { modeAtom, selectedPlantAtom } from './atoms';
 import { objectsAtom } from './objectsAtom';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';

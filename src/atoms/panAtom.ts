@@ -6,8 +6,8 @@ import {
   isRectangular,
   radiansToDegrees,
   rotatePoint,
-  rotateRectangle
-} from '../utils';
+  rotateRectangle,
+} from '../utils/utils';
 import { creatableAtom, modeAtom, offsetAtom } from './atoms';
 import { objectsAtom } from './objectsAtom';
 import { panStartAtom } from './panStartAtom';

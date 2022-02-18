@@ -1,7 +1,7 @@
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
-import { isRectangular, doPolygonsIntersect } from './../utils';
+import { isRectangular, doPolygonsIntersect } from '../utils/utils';
 import { atom } from 'jotai';
-import { convertRectangleToPolygon } from '../utils';
+import { convertRectangleToPolygon } from '../utils/utils';
 import { objectsAtom } from './objectsAtom';
 
 type Selection = {

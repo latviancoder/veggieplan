@@ -1,11 +1,11 @@
 import { atom } from 'jotai';
 
-import { roundTwoDecimals } from '../utils';
+import { roundTwoDecimals } from '../utils/utils';
 import {
   canvasAtom,
   mousePositionAtom,
   plotAtom,
-  plotCanvasAtom
+  plotCanvasAtom,
 } from './atoms';
 import { utilsAtom } from './utilsAtom';
 

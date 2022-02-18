@@ -10,8 +10,8 @@ import {
   isPlant,
   isRectangular,
   roundTwoDecimals,
-  useUtils
-} from '../../utils';
+  useUtils,
+} from '../../utils/utils';
 import styles from './DetailsBar.module.scss';
 import { PlantAmountRow } from './PlantAmountRow';
 import { PlantDates } from './PlantDates';

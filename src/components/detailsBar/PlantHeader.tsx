@@ -7,7 +7,7 @@ import { ItemPredicate, ItemRenderer, Suggest } from '@blueprintjs/select';
 
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { Plant, PlantDetails, Variety } from '../../types';
-import { post } from '../../utils';
+import { post } from '../../utils/utils';
 import styles from './PlantHeader.module.scss';
 
 type Props = {

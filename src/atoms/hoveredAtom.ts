@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 import { zoomAtom } from './zoomAtom';
 import { Modes } from '../types';
-import { getObjectAtPoint } from '../utils';
+import { getObjectAtPoint } from '../utils/utils';
 import { modeAtom, mousePositionAtom } from './atoms';
 import { objectsAtom } from './objectsAtom';
 import { utilsAtom } from './utilsAtom';

@@ -5,7 +5,7 @@ import { objectsAtom } from '../../atoms/objectsAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
 import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
 import { zoomAtom } from '../../atoms/zoomAtom';
-import { isPlant, isRectangular, useUtils } from '../../utils';
+import { isPlant, isRectangular, useUtils } from '../../utils/utils';
 import { Rectangle } from './Rectangle';
 
 export const Objects = () => {

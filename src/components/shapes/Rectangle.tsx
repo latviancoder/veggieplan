@@ -6,7 +6,7 @@ import { Colors } from '@blueprintjs/core';
 import { zoomAtom } from '../../atoms/zoomAtom';
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../../constants';
 import { ObjectTypes, Plant, RectangleShape } from '../../types';
-import { isPlant } from '../../utils';
+import { isPlant } from '../../utils/utils';
 import { rectangleHandlerMap } from '../../utils/rectangleHandlerMap';
 
 type Props = (RectangleShape | Plant) & {

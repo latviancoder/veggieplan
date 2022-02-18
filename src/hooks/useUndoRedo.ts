@@ -7,7 +7,7 @@ import sortBy from 'lodash.sortby';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { GardenObject, Modes } from 'types';
-import { useUtils } from 'utils';
+import { useUtils } from 'utils/utils';
 
 type StateSnapshot = {
   objects?: GardenObject[];

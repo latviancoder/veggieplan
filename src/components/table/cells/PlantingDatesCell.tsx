@@ -1,6 +1,6 @@
 import { Tooltip, Position } from '@blueprintjs/core';
 import { Month, PlantDatesBar } from 'components/plantDatesBar/PlantDatesBar';
-import { formatDate } from 'utils';
+import { formatDate } from 'utils/utils';
 import { Row } from '../Table';
 import styles from '../Table.module.scss';
 

@@ -8,11 +8,11 @@ import {
   canvasAtom,
   plantsAtom,
   plotCanvasAtom,
-  viewAtom
+  viewAtom,
 } from '../../atoms/atoms';
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { GardenObject, PlantDetails, Views } from '../../types';
-import { useUtils } from '../../utils';
+import { useUtils } from '../../utils/utils';
 import { DetailsBarConnected } from '../detailsBar/DetailsBar';
 import { DrawableArea } from '../drawableArea/DrawableArea';
 import { GlobalHeader } from '../header/GlobalHeader';

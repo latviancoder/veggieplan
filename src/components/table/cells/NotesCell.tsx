@@ -14,6 +14,8 @@ type Props = {
 export const NotesCell = ({ data }: Props) => {
   const { data: varieties } = useFetchVarieties();
 
+  console.log(varieties?.find(({ id }) => id === data.varietyId)?.name);
+
   const [isOpen, setOpen] = useState(false);
 
   return (
