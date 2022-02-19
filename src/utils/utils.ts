@@ -460,3 +460,13 @@ export const formatDate = (date: Date | string, f = 'dd.MM.yyyy'): string => {
 
   return format(date, f, { locale: de });
 };
+
+export const getPlantName = (name: string, variety?: string): string => {
+  let res = name;
+
+  if (variety) {
+    res += ` (${variety})`;
+  }
+
+  return res;
+};

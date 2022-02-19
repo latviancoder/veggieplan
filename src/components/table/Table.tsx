@@ -1,14 +1,8 @@
 import './Table.scss';
 
-import {
-  Column,
-  Table2,
-  Cell,
-  ICellProps,
-  SelectionModes,
-} from '@blueprintjs/table';
+import { Column, Table2 } from '@blueprintjs/table';
 
-import { Month, PlantDatesBar } from 'components/plantDatesBar/PlantDatesBar';
+import { Month } from 'components/plantDatesBar/PlantDatesBar';
 import {
   addMonths,
   differenceInMonths,
@@ -19,17 +13,15 @@ import {
 import { de } from 'date-fns/locale';
 import { useAtomValue } from 'jotai/utils';
 import { compact, max, min, sortBy } from 'lodash';
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery, UseQueryOptions } from 'react-query';
-
-import { Position, Tooltip } from '@blueprintjs/core';
 
 import { objectsInMetersAtom } from '../../atoms/objectsAtom';
 import { Plant, Variety } from '../../types';
 import {
   convertRectangleToPolygon,
   doPolygonsIntersect,
-  formatDate,
+  getPlantName,
   isPlant,
   isRectangleShape,
   isRectangular,
@@ -195,13 +187,11 @@ const Table = () => {
               cellRenderer={(i) => {
                 const data = tableRows[i];
 
-                let cell = data.plantName;
-
-                if (data.varietyName) {
-                  cell += ` (${data.varietyName})`;
-                }
-
-                return <CustomCell>{cell}</CustomCell>;
+                return (
+                  <CustomCell>
+                    {getPlantName(data.plantName, data.varietyName)}
+                  </CustomCell>
+                );
               }}
             />
             <Column

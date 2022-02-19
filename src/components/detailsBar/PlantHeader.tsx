@@ -7,7 +7,7 @@ import { ItemPredicate, ItemRenderer, Suggest } from '@blueprintjs/select';
 
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { Plant, PlantDetails, Variety } from '../../types';
-import { post } from '../../utils/utils';
+import { getPlantName, post } from '../../utils/utils';
 import styles from './PlantHeader.module.scss';
 
 type Props = {
@@ -123,8 +123,7 @@ export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
     <div className={styles.header}>
       {!showVarietySelect && (
         <h4 className={Classes.HEADING} style={{ margin: 0 }}>
-          {plantDetails.name}
-          {varietyName ? ` (${varietyName})` : ''}
+          {getPlantName(plantDetails.name, varietyName)}
         </h4>
       )}
       {showVarietySelect ? (

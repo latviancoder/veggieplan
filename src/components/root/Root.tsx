@@ -1,3 +1,4 @@
+import { useAutosave } from 'hooks/useAutoSave';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
@@ -23,6 +24,8 @@ import styles from './Root.module.css';
 const Table = lazy(() => import('../table/Table'));
 
 const Root = () => {
+  useAutosave();
+
   const { meterToPx } = useUtils();
 
   const view = useAtomValue(viewAtom);

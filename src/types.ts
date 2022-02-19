@@ -31,6 +31,7 @@ type BaseObject = {
   rotation: number;
   sorting: number;
   dateAdded: string;
+  notes?: string;
 };
 
 type BaseShape = BaseObject & {

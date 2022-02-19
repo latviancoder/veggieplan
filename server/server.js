@@ -63,6 +63,18 @@ app.post('/api/varieties', async (req, res) => {
   res.send({ id: result.rows[0].id });
 });
 
+app.post('/api/objects/:objectId/save', async (req, res) => {
+  const query = SQL`UPDATE objects SET`;
+
+  query.append(SQL` notes=${req.body.notes} `);
+
+  query.append(SQL` WHERE id=${req.params.objectId}`);
+
+  await client.query(query);
+
+  res.send();
+});
+
 app.post('/api/save', async (req, res) => {
   // Deleted objects
   if (req.body.deletedObjectIds?.length) {

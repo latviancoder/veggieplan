@@ -15,7 +15,7 @@ const queryClient = new QueryClient({
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HotkeysProvider>
-      <Suspense fallback="Loading...">
+      <Suspense fallback="Es wird geladen...">
         <Root />
       </Suspense>
     </HotkeysProvider>

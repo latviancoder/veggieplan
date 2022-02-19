@@ -1,5 +1,4 @@
 import Hammer from 'hammerjs';
-import { useAutosave } from 'hooks/useAutoSave';
 import { useUndoRedo } from 'hooks/useUndoRedo';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
@@ -14,7 +13,7 @@ import {
   canvasAtom,
   mousePositionAtom,
   offsetAtom,
-  plotCanvasAtom
+  plotCanvasAtom,
 } from '../../atoms/atoms';
 import { copyAtom, pasteAtom } from '../../atoms/clipboardAtom';
 import { deleteAtom } from '../../atoms/deleteAtom';
@@ -40,7 +39,6 @@ function animate(time: number) {
 requestAnimationFrame(animate);
 
 export const DrawableArea = () => {
-  useAutosave();
   useUndoRedo();
 
   const rootRef = useRef<HTMLDivElement>(null);
