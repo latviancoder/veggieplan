@@ -27,11 +27,13 @@ export const useUndoRedo = () => {
 
   const prevObjects = useRef<GardenObject[]>(objects);
 
+  console.log(undoStack);
+
   const undo = () => {
     // console.log({ undoStack });
-    if (undoStack.length > 1) {
+    if (undoStack.length > 0) {
       undoStack.pop();
-      const prevState = undoStack[undoStack.length - 1];
+      const prevState = undoStack[undoStack.length - 1] || { objects: [] };
 
       if (prevState.objects) {
         prevObjects.current = prevState.objects.map((obj) =>

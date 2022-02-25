@@ -12,7 +12,7 @@ import {
   Icon,
   InputGroup,
   Position,
-  Tooltip
+  Tooltip,
 } from '@blueprintjs/core';
 
 import styles from './PlantsSearch.module.scss';
@@ -75,7 +75,7 @@ export const PlantsSearch = () => {
       </div>
       <div className={styles.overflow}>
         <div className={styles.list}>
-          {searchResult?.map(({ name, id }) => (
+          {searchResult?.map(({ name, id, hasPicture }) => (
             <div
               tabIndex={0}
               role="button"
@@ -88,11 +88,14 @@ export const PlantsSearch = () => {
                 setMode(Modes.CREATION);
               }}
             >
-              <img
-                draggable={false}
-                src={`image/${id}.png`}
-                alt={name}
+              <div
+                title={name}
                 className={styles.icon}
+                style={{
+                  backgroundImage: hasPicture
+                    ? `url(image/${id}.png)`
+                    : 'url(image/plant.png)',
+                }}
               />
               <div
                 className={styles.name}

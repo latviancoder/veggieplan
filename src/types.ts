@@ -100,6 +100,7 @@ export type PlantDetails = {
   timeToMaturity: number;
   harvestRelativeToFirstFrost: number;
   perennial: boolean;
+  hasPicture: boolean;
 };
 
 export type Variety = {

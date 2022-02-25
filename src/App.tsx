@@ -1,6 +1,7 @@
 import { HotkeysProvider } from '@blueprintjs/core';
-import { Suspense } from 'react';
+import { ReactElement, Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { useAtomsDevtools } from 'jotai/devtools';
 
 import Root from './components/root/Root';
 
@@ -11,6 +12,11 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+const AtomsDevtools = ({ children }: { children: ReactElement }) => {
+  useAtomsDevtools('app');
+  return children;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

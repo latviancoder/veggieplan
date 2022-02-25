@@ -173,7 +173,7 @@ const Table = () => {
           <Table2
             enableRowHeader={false}
             numRows={tableRows.length}
-            rowHeights={[40, 40]}
+            rowHeights={tableRows.map(() => 40)}
             columnWidths={[
               size.width * 0.2,
               size.width * 0.06,

@@ -1,5 +1,5 @@
-import { useAutosave } from 'hooks/useAutoSave';
 import { useAtom } from 'jotai';
+import { useAtomDevtools } from 'jotai/devtools';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
 import { lazy, Suspense, useEffect } from 'react';
@@ -24,7 +24,7 @@ import styles from './Root.module.css';
 const Table = lazy(() => import('../table/Table'));
 
 const Root = () => {
-  useAutosave();
+  // useAutosave();
 
   const { meterToPx } = useUtils();
 
@@ -33,6 +33,8 @@ const Root = () => {
   const plotCanvas = useAtomValue(plotCanvasAtom);
   const setPlants = useUpdateAtom(plantsAtom);
   const [objects, setObjects] = useAtom(objectsAtom);
+
+  useAtomDevtools(objectsAtom);
 
   const { data: plantsDetails } = useQuery<PlantDetails[]>('plants', () =>
     fetch('/api/plants').then((res) => res.json())

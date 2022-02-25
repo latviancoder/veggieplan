@@ -11,6 +11,7 @@ import { post, useUtils } from 'utils/utils';
 
 let timeout: NodeJS.Timeout;
 
+// TODO works like shit
 export const useAutosave = () => {
   const canvas = useAtomValue(canvasAtom);
   const mode = useAtomValue(modeAtom);
@@ -65,7 +66,6 @@ export const useAutosave = () => {
           )
         ))
     ) {
-      console.log('lul');
       clearTimeout(timeout);
 
       timeout = setTimeout(() => {
