@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 import { useAtomDevtools } from 'jotai/devtools';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useLayoutEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
 
 import {
@@ -25,6 +25,7 @@ const Table = lazy(() => import('../table/Table'));
 
 const Root = () => {
   // useAutosave();
+  const hydrated = useRef(false);
 
   const { meterToPx } = useUtils();
 
@@ -44,8 +45,12 @@ const Root = () => {
     fetch('/api/objects').then((res) => res.json())
   );
 
-  useEffect(() => {
-    if (objectsFromDb && isEmpty(objects) && !isEmpty(objectsFromDb)) {
+  useLayoutEffect(() => {
+    if (hydrated.current) {
+      return;
+    }
+
+    if (objectsFromDb && !isEmpty(objectsFromDb)) {
       // When store is initially hydrated with objects from the DB we skip 'pixels-to-meters' conversion step,
       // because objects stored in DB already use meters.
       setObjects({
@@ -53,10 +58,12 @@ const Root = () => {
         payload: objectsFromDb,
         units: 'meters',
       });
+
+      hydrated.current = true;
     }
   }, [objectsFromDb, plotCanvas, canvas, setObjects, meterToPx, objects]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (plantsDetails) setPlants(plantsDetails);
   }, [plantsDetails, setPlants]);
 

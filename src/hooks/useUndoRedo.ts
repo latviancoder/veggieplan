@@ -22,24 +22,25 @@ export const useUndoRedo = () => {
   const initialRender = useRef<boolean>(true);
   const canvas = useAtomValue(canvasAtom);
 
+  console.log(undoStack);
+
   const mode = useAtomValue(modeAtom);
   const objects = useAtomValue(objectsAtom);
 
   const prevObjects = useRef<GardenObject[]>(objects);
 
-  console.log(undoStack);
-
   const undo = () => {
     // console.log({ undoStack });
-    if (undoStack.length > 0) {
+    if (undoStack.length > 1) {
       undoStack.pop();
-      const prevState = undoStack[undoStack.length - 1] || { objects: [] };
+      const prevState = undoStack[undoStack.length - 1];
 
       if (prevState.objects) {
         prevObjects.current = prevState.objects.map((obj) =>
           meterToPxObject(obj)
         );
 
+        console.log('11111');
         setObjects({
           type: 'replaceAll',
           payload: prevState.objects,
@@ -59,7 +60,8 @@ export const useUndoRedo = () => {
   useHotkeys('ctrl+z, cmd+z', () => void undo(), [undoStack]);
 
   useEffect(() => {
-    if (objects.length && initialRender.current && !isEmpty(canvas)) {
+    if (initialRender.current && !isEmpty(canvas)) {
+      console.log('set undo stack 1');
       prevObjects.current = objects;
       initialRender.current = false;
       setUndoStack([createStateSnapshot()]);
@@ -68,6 +70,7 @@ export const useUndoRedo = () => {
 
   useEffect(() => {
     if (
+      !isEmpty(canvas) &&
       !initialRender.current &&
       mode !== Modes.MOVEMENT &&
       mode !== Modes.RESIZING &&
@@ -83,7 +86,8 @@ export const useUndoRedo = () => {
         )
       )
     ) {
-      // console.log('set undo');
+      console.log({ prev: prevObjects.current, next: objects });
+      console.log('set undo stack 2');
       // console.log({ prev: prevObjects.current, objects });
       setUndoStack((currentStack) => {
         if (currentStack.length > MAX_UNDO_STACK) {
