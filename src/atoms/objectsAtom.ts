@@ -79,8 +79,6 @@ export const objectsInMetersAtom = atom<GardenObject[], SetParams>(
       });
     }
 
-    console.log({ params });
-    console.log({ newObjects });
     /*
     Internally and in the database object dimensions are using meters, 
     but when working in the app it's convinient to have pixels.

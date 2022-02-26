@@ -13,5 +13,5 @@ export const deleteAtom = atom(null, (get, set) => {
     payload: objects.filter(({ id }) => !selectedObjectIds.includes(id)),
   });
 
-  // set(selectedObjectIdsAtom, { type: 'reset' });
+  set(selectedObjectIdsAtom, { type: 'reset' });
 });

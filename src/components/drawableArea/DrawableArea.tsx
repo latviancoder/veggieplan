@@ -39,7 +39,7 @@ function animate(time: number) {
 requestAnimationFrame(animate);
 
 export const DrawableArea = () => {
-  // useUndoRedo();
+  useUndoRedo();
 
   const rootRef = useRef<HTMLDivElement>(null);
 

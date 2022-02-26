@@ -22,15 +22,12 @@ export const useUndoRedo = () => {
   const initialRender = useRef<boolean>(true);
   const canvas = useAtomValue(canvasAtom);
 
-  console.log(undoStack);
-
   const mode = useAtomValue(modeAtom);
   const objects = useAtomValue(objectsAtom);
 
   const prevObjects = useRef<GardenObject[]>(objects);
 
   const undo = () => {
-    // console.log({ undoStack });
     if (undoStack.length > 1) {
       undoStack.pop();
       const prevState = undoStack[undoStack.length - 1];
@@ -40,7 +37,6 @@ export const useUndoRedo = () => {
           meterToPxObject(obj)
         );
 
-        console.log('11111');
         setObjects({
           type: 'replaceAll',
           payload: prevState.objects,
@@ -70,7 +66,6 @@ export const useUndoRedo = () => {
 
   useEffect(() => {
     if (
-      !isEmpty(canvas) &&
       !initialRender.current &&
       mode !== Modes.MOVEMENT &&
       mode !== Modes.RESIZING &&
@@ -87,8 +82,7 @@ export const useUndoRedo = () => {
       )
     ) {
       console.log({ prev: prevObjects.current, next: objects });
-      console.log('set undo stack 2');
-      // console.log({ prev: prevObjects.current, objects });
+      console.log('set undo stack');
       setUndoStack((currentStack) => {
         if (currentStack.length > MAX_UNDO_STACK) {
           currentStack.shift();
