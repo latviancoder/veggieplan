@@ -35,6 +35,7 @@ const Root = () => {
   const setPlants = useUpdateAtom(plantsAtom);
   const [objects, setObjects] = useAtom(objectsAtom);
 
+  // @ts-ignore
   useAtomDevtools(objectsAtom);
 
   const { data: plantsDetails } = useQuery<PlantDetails[]>('plants', () =>

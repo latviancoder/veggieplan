@@ -61,7 +61,7 @@ export const PlantDates = ({
     formatDate,
     parseDate,
     localeUtils,
-    placeholder: 'DD.MM.YYYY',
+    placeholder: 'TT.MM.JJJJ',
   };
 
   return (
