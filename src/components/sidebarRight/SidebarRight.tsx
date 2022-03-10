@@ -12,7 +12,7 @@ import {
   roundTwoDecimals,
   useUtils,
 } from '../../utils/utils';
-import styles from './DetailsBar.module.scss';
+import styles from './SidebarRight.module.scss';
 import { PlantAmountRow } from './PlantAmountRow';
 import { PlantDates } from './PlantDates';
 import { PlantHeader } from './PlantHeader';
@@ -24,7 +24,7 @@ type Props = {
   plantDetails?: PlantDetails;
 };
 
-const DetailsBar = memo(({ selectedObject, plantDetails }: Props) => {
+const SidebarRight = memo(({ selectedObject, plantDetails }: Props) => {
   const { width, height } = selectedObject;
 
   return (
@@ -78,9 +78,9 @@ const DetailsBar = memo(({ selectedObject, plantDetails }: Props) => {
   );
 });
 
-DetailsBar.displayName = 'DetailsBar';
+SidebarRight.displayName = 'SidebarRight';
 
-export const DetailsBarConnected = () => {
+export const SidebarRightConnected = () => {
   const { getPlantDetails } = useUtils();
   const objects = useAtomValue(objectsInMetersAtom);
   const selectedObjectIds = useAtomValue(selectedObjectIdsAtom);
@@ -98,6 +98,6 @@ export const DetailsBarConnected = () => {
     : undefined;
 
   return (
-    <DetailsBar plantDetails={plantDetails} selectedObject={selectedObject} />
+    <SidebarRight plantDetails={plantDetails} selectedObject={selectedObject} />
   );
 };

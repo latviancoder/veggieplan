@@ -10,7 +10,7 @@ import { objectsAtom } from '../../atoms/objectsAtom';
 import { localeUtils } from '../../datepickerLocaleUtils';
 import { Plant, PlantDetails } from '../../types';
 import { PlantDatesBar } from '../plantDatesBar/PlantDatesBar';
-import commonStyles from './DetailsBar.module.scss';
+import commonStyles from './SidebarRight.module.scss';
 import styles from './PlantDates.module.scss';
 
 type Props = {

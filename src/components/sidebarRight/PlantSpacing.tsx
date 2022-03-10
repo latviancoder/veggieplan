@@ -6,12 +6,12 @@ import {
   Colors,
   FormGroup,
   NumericInput,
-  Tag
+  Tag,
 } from '@blueprintjs/core';
 
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { PlantDetails } from '../../types';
-import styles from './DetailsBar.module.scss';
+import styles from './SidebarRight.module.scss';
 
 type Props = {
   objectId: string;

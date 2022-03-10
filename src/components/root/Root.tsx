@@ -14,7 +14,7 @@ import {
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { GardenObject, PlantDetails, Views } from '../../types';
 import { useUtils } from '../../utils/utils';
-import { DetailsBarConnected } from '../detailsBar/DetailsBar';
+import { SidebarRightConnected } from '../sidebarRight/SidebarRight';
 import { DrawableArea } from '../drawableArea/DrawableArea';
 import { GlobalHeader } from '../header/GlobalHeader';
 import { MonthsSelectorContainer } from '../monthsSelector/MonthsSelector';
@@ -86,7 +86,7 @@ const Root = () => {
               <DrawableArea />
               <MonthsSelectorContainer />
             </div>
-            <DetailsBarConnected />
+            <SidebarRightConnected />
           </>
         )}
         {view === Views.TABLE && (
