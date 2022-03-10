@@ -14,6 +14,7 @@ type Props = (RectangleShape | Plant) & {
   isInteracted?: boolean;
   isHovered?: boolean;
   borderRadius?: number;
+  hasPicture?: boolean;
 };
 
 export const Rectangle = memo(
@@ -27,6 +28,7 @@ export const Rectangle = memo(
     isHovered,
     rotation,
     borderRadius,
+    hasPicture,
     ...rest
   }: Props) => {
     const zoom = useAtomValue(zoomAtom);
@@ -91,7 +93,7 @@ export const Rectangle = memo(
 
         {!isHovered && !isInteracted && isPlant(rest) && (
           <image
-            href={`image/${rest.plantId}.png`}
+            href={hasPicture ? `image/${rest.plantId}.png` : 'image/plant.png'}
             height={plantIconSize > 1 ? plantIconSize : 1}
             width={plantIconSize > 1 ? plantIconSize : 1}
             x={width / 2 - plantIconSize / 2}

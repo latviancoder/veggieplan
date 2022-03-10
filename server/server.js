@@ -36,7 +36,7 @@ app.get('/api/objects', async (req, res) => {
 app.get('/api/plants', async (req, res) => {
   const result = await client.query(
     `SELECT plants.*, families.name AS family_name, families.latin_name AS family_latin_name 
-    FROM plants INNER JOIN families ON (plants.family_id = families.id) ORDER BY plants.name ASC`
+    FROM plants LEFT OUTER JOIN families ON (plants.family_id = families.id) ORDER BY plants.name ASC`
   );
   res.json(camelCaseObjectDeep(result.rows));
 });

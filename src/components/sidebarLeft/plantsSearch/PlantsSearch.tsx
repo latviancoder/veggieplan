@@ -31,10 +31,13 @@ export const PlantsSearch = () => {
       threshold: 0.1,
       includeMatches: true,
       keys: [
-        'name',
+        {
+          name: 'name',
+          weight: 500,
+        },
         {
           name: 'alternativeNames',
-          weight: 2,
+          weight: 1,
         },
       ],
     });

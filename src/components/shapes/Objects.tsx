@@ -32,6 +32,7 @@ export const Objects = () => {
               isHovered={obj.id === hoveredObjectId}
               isInteracted={obj.id === panStart?.interactableObjectId}
               borderRadius={plant ? meterToPx(plant.spacing / 100) / zoom : 0}
+              hasPicture={plant?.hasPicture}
             />
           );
         }
