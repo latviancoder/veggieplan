@@ -141,3 +141,5 @@ export const Rectangle = memo(
     );
   }
 );
+
+Rectangle.displayName = 'Rectangle';
