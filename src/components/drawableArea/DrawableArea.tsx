@@ -46,7 +46,7 @@ export const DrawableArea = () => {
   const [plotCanvas] = useAtom(plotCanvasAtom);
   const [offset] = useAtom(offsetAtom);
   const [zoom, setZoom] = useAtom(zoomAtom);
-  const [canvas] = useAtom(canvasAtom);
+  const [canvas, setCanvas] = useAtom(canvasAtom);
   const setTap = useUpdateAtom(tapAtom);
   const setPan = useUpdateAtom(panAtom);
   const setPanStart = useUpdateAtom(panStartAtom);
@@ -152,11 +152,10 @@ export const DrawableArea = () => {
   const recalculateDrawableAreaDimensions = useCallback(() => {
     if (rootRef.current) {
       const { width, height, x, y } = rootRef.current.getBoundingClientRect();
-      setDrawableArea({
-        canvas: { width, height, x, y },
-      });
+      setCanvas({ width, height, x, y });
+      setDrawableArea();
     }
-  }, [setDrawableArea]);
+  }, [setDrawableArea, setCanvas]);
 
   useLayoutEffect(() => {
     const $root = rootRef.current;

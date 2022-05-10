@@ -21,7 +21,7 @@ export const canvasAtom = atom<{
 
 // In meters
 export const plotAtom = atom({
-  width: 10,
+  width: 20,
   height: 10,
 });
 

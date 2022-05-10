@@ -18,6 +18,7 @@ import { PlantDates } from './PlantDates';
 import { PlantHeader } from './PlantHeader';
 import { PlantSpacing } from './PlantSpacing';
 import { ShapeHeader } from './ShapeHeader';
+import { PlotDetails } from './PlotDetails';
 
 type Props = {
   selectedObject: GardenObject;
@@ -89,7 +90,7 @@ export const SidebarRightConnected = () => {
 
   const selectedObject = objects.find(({ id }) => id === lastSelectedId);
 
-  if (!selectedObject) return <div className={styles.root} />;
+  if (!selectedObject) return <PlotDetails />;
 
   if (!isRectangular(selectedObject)) return null;
 

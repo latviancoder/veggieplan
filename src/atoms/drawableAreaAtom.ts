@@ -4,9 +4,10 @@ import { canvasAtom, offsetAtom, plotAtom, plotCanvasAtom } from './atoms';
 import { zoomAtom } from './zoomAtom';
 
 // On initial app load position plot canvas in the middle of canvas
-export const drawableAreaAtom = atom(null, (get, set, { canvas }: any) => {
+export const drawableAreaAtom = atom(null, (get, set) => {
   const plot = get(plotAtom);
   const zoom = get(zoomAtom);
+  const canvas = get(canvasAtom);
 
   const plotCanvas = {
     width: 0,
@@ -32,9 +33,10 @@ export const drawableAreaAtom = atom(null, (get, set, { canvas }: any) => {
     offset.x = -guidesSize;
   }
 
-  set(canvasAtom, canvas);
   set(plotCanvasAtom, plotCanvas);
   set(offsetAtom, offset);
+
+  console.log({ plotCanvas });
 
   // console.log('canvas', canvas);
   // console.log('plotCanvas', plotCanvas);
