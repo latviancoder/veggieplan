@@ -3,7 +3,7 @@ import { atom } from 'jotai';
 import { canvasAtom, offsetAtom, plotAtom, plotCanvasAtom } from './atoms';
 import { zoomAtom } from './zoomAtom';
 
-// On initial app load position plot canvas in the middle of canvas
+// Position plot canvas in the middle of canvas
 export const drawableAreaAtom = atom(null, (get, set) => {
   const plot = get(plotAtom);
   const zoom = get(zoomAtom);
@@ -35,12 +35,6 @@ export const drawableAreaAtom = atom(null, (get, set) => {
 
   set(plotCanvasAtom, plotCanvas);
   set(offsetAtom, offset);
-
-  console.log({ plotCanvas });
-
-  // console.log('canvas', canvas);
-  // console.log('plotCanvas', plotCanvas);
-  // console.log('offset', offset);
 
   if (zoom === 1) {
     // set(zoomAtom, { direction: 'zoomOut' });
