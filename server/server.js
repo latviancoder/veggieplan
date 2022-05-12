@@ -28,6 +28,12 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
+app.get('/api/config', async (req, res) => {
+  const result = await client.query(`SELECT * FROM config`);
+
+  res.json(camelCaseObjectDeep(result.rows[0]));
+});
+
 app.get('/api/objects', async (req, res) => {
   const result = await client.query(`SELECT objects.* FROM objects`);
   res.json(camelCaseObjectDeep(result.rows));
@@ -75,7 +81,7 @@ app.post('/api/objects/:objectId/save', async (req, res) => {
   res.send();
 });
 
-app.post('/api/save', async (req, res) => {
+app.post('/api/objects/save', async (req, res) => {
   // Deleted objects
   if (req.body.deletedObjectIds?.length) {
     await client.query(`DELETE FROM objects WHERE id = ANY($1)`, [

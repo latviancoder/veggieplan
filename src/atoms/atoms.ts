@@ -20,10 +20,9 @@ export const canvasAtom = atom<{
 );
 
 // In meters
-export const plotAtom = atom({
-  width: 20,
-  height: 10,
-});
+export const plotAtom = atom<{ width: number; height: number; name?: string }>(
+  {} as { width: number; height: number; name?: string }
+);
 
 export const plotCanvasAtom = atom<{ width: number; height: number }>(
   {} as { width: number; height: number }

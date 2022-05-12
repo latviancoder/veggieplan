@@ -9,7 +9,7 @@ import { plotAtom } from 'atoms/atoms';
 import { drawableAreaAtom } from 'atoms/drawableAreaAtom';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { roundTwoDecimals } from 'utils/utils';
 import sidebarStyles from './SidebarRight.module.scss';
 
@@ -17,12 +17,15 @@ export const PlotDetails = () => {
   const updateDrawablaArea = useUpdateAtom(drawableAreaAtom);
   const [plot, setPlot] = useAtom(plotAtom);
 
-  const [width, setWidth] = useState<string | undefined>(String(plot.width));
-  const [height, setHeight] = useState<string | undefined>(String(plot.height));
+  const [width, setWidth] = useState<string | undefined>();
+  const [height, setHeight] = useState<string | undefined>();
+
+  useEffect(() => {
+    setWidth(String(plot.width));
+    setHeight(String(plot.height));
+  }, [plot]);
 
   const onBlur = () => {
-    // if (width === 0) setWidth(10);
-    // if (height === 0) setHeight(10);
     setPlot({
       width: Number(width),
       height: Number(height),
