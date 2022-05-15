@@ -8,7 +8,6 @@ import sortBy from 'lodash.sortby';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { GardenObject, Modes } from 'types';
-import { useUtils } from 'utils/utils';
 
 type StateSnapshot = {
   objects?: GardenObject[];
@@ -55,7 +54,7 @@ export const useUndoRedo = () => {
 
   useEffect(() => {
     if (initialRender.current && !isEmpty(canvas)) {
-      console.log('set undo stack 1');
+      // console.log('set undo stack 1');
       prevObjects.current = objects;
       initialRender.current = false;
       setUndoStack([createStateSnapshot()]);
@@ -79,7 +78,7 @@ export const useUndoRedo = () => {
         )
       )
     ) {
-      console.log('+ undo stack');
+      // console.log('+ undo stack');
       setUndoStack((currentStack) => {
         if (currentStack.length > MAX_UNDO_STACK) {
           currentStack.shift();
