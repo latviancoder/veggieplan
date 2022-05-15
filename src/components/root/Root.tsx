@@ -19,7 +19,8 @@ import { useAutosave } from 'hooks/useAutoSave';
 const Table = lazy(() => import('../table/Table'));
 
 const Root = () => {
-  // useAutosave();
+  useAutosave();
+
   const hydrated = useRef(false);
 
   const view = useAtomValue(viewAtom);
@@ -70,7 +71,7 @@ const Root = () => {
     hydrated.current = true;
   }, [objectsFromDb, setObjects, plantsDetails, setPlants, config, setPlot]);
 
-  if (!hydrated) <div className={styles.root} />;
+  if (!hydrated.current) return <div className={styles.root} />;
 
   return (
     <div className={styles.root}>

@@ -9,7 +9,7 @@ import { plotAtom } from 'atoms/atoms';
 import { drawableAreaAtom } from 'atoms/drawableAreaAtom';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { roundTwoDecimals } from 'utils/utils';
 import sidebarStyles from './SidebarRight.module.scss';
 
@@ -17,21 +17,29 @@ export const PlotDetails = () => {
   const updateDrawablaArea = useUpdateAtom(drawableAreaAtom);
   const [plot, setPlot] = useAtom(plotAtom);
 
-  const [width, setWidth] = useState<string | undefined>();
-  const [height, setHeight] = useState<string | undefined>();
+  const [widthString, setWidthString] = useState<string>(String(plot.width));
+  const [heightString, setHeightString] = useState<string>(String(plot.height));
 
-  useEffect(() => {
-    setWidth(String(plot.width));
-    setHeight(String(plot.height));
+  const [widthNumber, setWidthNumber] = useState<number>(plot.width);
+  const [heightNumber, setHeightNumber] = useState<number>(plot.height);
+
+  useLayoutEffect(() => {
+    setWidthString(String(plot.width));
+    setHeightString(String(plot.height));
+
+    setWidthNumber(plot.width);
+    setHeightNumber(plot.height);
   }, [plot]);
 
   const onBlur = () => {
-    setPlot({
-      width: Number(width),
-      height: Number(height),
-    });
+    if (widthString && heightString && widthNumber > 0 && heightNumber > 0) {
+      setPlot({
+        width: widthNumber,
+        height: heightNumber,
+      });
 
-    updateDrawablaArea();
+      updateDrawablaArea();
+    }
   };
 
   return (
@@ -51,18 +59,19 @@ export const PlotDetails = () => {
             placeholder="m"
             locale="de-DE"
             fill
-            value={width}
+            value={widthString}
+            minorStepSize={null}
+            intent={!widthString ? 'danger' : 'none'}
             onValueChange={(valueAsNumber, valueAsString) => {
               if (!valueAsString) {
-                setWidth('');
+                setWidthString('');
                 return;
               }
 
-              const value = Math.round(valueAsNumber);
+              if (!valueAsString.match(/^\d+$/)) return;
 
-              if (isNaN(value) || value < 0) return;
-
-              setWidth(valueAsString);
+              setWidthString(valueAsString);
+              setWidthNumber(valueAsNumber);
             }}
             onBlur={onBlur}
             rightElement={<Tag minimal>m</Tag>}
@@ -75,18 +84,18 @@ export const PlotDetails = () => {
             placeholder="m"
             locale="de-DE"
             fill
-            value={height}
+            value={heightString}
+            intent={!heightString ? 'danger' : 'none'}
             onValueChange={(valueAsNumber, valueAsString) => {
               if (!valueAsString) {
-                setHeight('');
+                setHeightString('');
                 return;
               }
 
-              const value = Math.round(valueAsNumber);
+              if (!valueAsString.match(/^\d+$/)) return;
 
-              if (isNaN(value) || value < 0) return;
-
-              setHeight(valueAsString);
+              setHeightString(valueAsString);
+              setHeightNumber(valueAsNumber);
             }}
             onBlur={onBlur}
             rightElement={<Tag minimal>m</Tag>}
@@ -98,7 +107,10 @@ export const PlotDetails = () => {
           <h6 className={Classes.HEADING} style={{ color: Colors.GRAY3 }}>
             Fläche
           </h6>
-          {roundTwoDecimals(Number(width || '0') * Number(height || '0'))}m
+          {roundTwoDecimals(
+            Number(widthString || '0') * Number(heightString || '0')
+          )}
+          m
         </div>
       </div>
     </div>

@@ -81,8 +81,6 @@ export const useUndoRedo = () => {
         )
       )
     ) {
-      console.log({ prev: prevObjects.current, next: objects });
-      console.log('set undo stack');
       setUndoStack((currentStack) => {
         if (currentStack.length > MAX_UNDO_STACK) {
           currentStack.shift();

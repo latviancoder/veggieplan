@@ -34,6 +34,14 @@ app.get('/api/config', async (req, res) => {
   res.json(camelCaseObjectDeep(result.rows[0]));
 });
 
+app.post('/api/config/save', async (req, res) => {
+  await client.query(
+    SQL`UPDATE config set width=${req.body.width}, height=${req.body.height}`
+  );
+
+  res.send();
+});
+
 app.get('/api/objects', async (req, res) => {
   const result = await client.query(`SELECT objects.* FROM objects`);
   res.json(camelCaseObjectDeep(result.rows));

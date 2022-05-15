@@ -1,7 +1,14 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
-import { GardenObject, Modes, PlantDetails, Point, Views } from '../types';
+import {
+  Config,
+  GardenObject,
+  Modes,
+  PlantDetails,
+  Point,
+  Views,
+} from '../types';
 
 export const modeAtom = atom(Modes.DEFAULT);
 
@@ -20,9 +27,7 @@ export const canvasAtom = atom<{
 );
 
 // In meters
-export const plotAtom = atom<{ width: number; height: number; name?: string }>(
-  {} as { width: number; height: number; name?: string }
-);
+export const plotAtom = atom<Config>({} as Config);
 
 export const plotCanvasAtom = atom<{ width: number; height: number }>(
   {} as { width: number; height: number }

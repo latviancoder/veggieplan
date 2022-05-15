@@ -108,3 +108,9 @@ export type Variety = {
   name: string;
   plantId: number;
 };
+
+export type Config = {
+  width: number;
+  height: number;
+  name?: string;
+};

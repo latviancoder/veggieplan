@@ -1,12 +1,13 @@
-import { canvasAtom, modeAtom } from 'atoms/atoms';
+import { objectsInMetersAtom } from './../atoms/objectsAtom';
+import { canvasAtom, modeAtom, plotAtom } from 'atoms/atoms';
 import { objectsAtom } from 'atoms/objectsAtom';
 import deepEqual from 'deep-equal';
 import { useAtomValue } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
 import sortBy from 'lodash.sortby';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { GardenObject, Modes } from 'types';
+import { Config, GardenObject, Modes } from 'types';
 import { post, useUtils } from 'utils/utils';
 
 let timeout: NodeJS.Timeout;
@@ -15,35 +16,54 @@ let timeout: NodeJS.Timeout;
 export const useAutosave = () => {
   const canvas = useAtomValue(canvasAtom);
   const mode = useAtomValue(modeAtom);
-  const objects = useAtomValue(objectsAtom);
+  const objects = useAtomValue(objectsInMetersAtom);
+  const config = useAtomValue(plotAtom);
+
   const { pxToMeterObject, meterToPxObject } = useUtils();
 
-  const {
-    isLoading: isObjectsLoading,
-    data: objectsFromDb,
-    refetch,
-  } = useQuery<GardenObject[]>('objects', () =>
-    fetch('/api/objects').then((res) => res.json())
+  const { isLoading: isObjectsLoading, data: objectsFromDb } = useQuery<
+    GardenObject[]
+  >('objects', () => fetch('/api/objects').then((res) => res.json()));
+
+  const { isLoading: isConfigLoading, data: configFromDb } = useQuery<Config>(
+    'config',
+    () => fetch('/api/config').then((res) => res.json())
   );
 
   const prevObjects = useRef<GardenObject[] | undefined>();
+  const prevConfig = useRef<Config | undefined>();
 
-  prevObjects.current = objectsFromDb?.map((obj) => meterToPxObject(obj));
+  useLayoutEffect(() => {
+    prevObjects.current = objectsFromDb;
+    prevConfig.current = configFromDb;
+  }, [objectsFromDb, configFromDb]);
 
-  const { mutate: save } = useMutation<
+  const { mutate: saveObjects } = useMutation<
     unknown,
     string,
     { changedObjects: GardenObject[]; deletedObjectIds: string[] | undefined }
-  >(
-    ({ changedObjects, deletedObjectIds }) =>
-      post('/api/save', {
-        changedObjects: changedObjects.map((obj) => pxToMeterObject(obj)),
-        deletedObjectIds,
-      }),
-    {
-      onSuccess: () => refetch(),
+    // @ts-ignore
+  >(({ changedObjects, deletedObjectIds }) => {
+    // console.log('save');
+    // return post('/api/objects/save', {
+    //   changedObjects,
+    //   deletedObjectIds,
+    // });
+  });
+
+  const { mutate: saveConfig } = useMutation<unknown, string, Config>(
+    (config) => {
+      return post('/api/config/save', config);
     }
   );
+
+  useEffect(() => {
+    if (!isEmpty(config) && !deepEqual(prevConfig.current, config)) {
+      saveConfig(config);
+
+      prevConfig.current = config;
+    }
+  }, [config, saveConfig]);
 
   // Autosave doesn't get triggered for volatile state changes like movement and resizing.
   // Additionally there is a debounce.
@@ -66,6 +86,7 @@ export const useAutosave = () => {
           )
         ))
     ) {
+      // console.log(prevObjects?.current?.[0], objects[0]);
       clearTimeout(timeout);
 
       timeout = setTimeout(() => {
@@ -91,10 +112,11 @@ export const useAutosave = () => {
           return false;
         });
 
+        // console.log('set prev', objects);
         prevObjects.current = objects;
 
-        save({ changedObjects, deletedObjectIds });
+        saveObjects({ changedObjects, deletedObjectIds });
       }, 2000);
     }
-  }, [mode, objects, save, isObjectsLoading, prevObjects, canvas]);
+  }, [mode, objects, saveObjects, isObjectsLoading, prevObjects, canvas]);
 };
