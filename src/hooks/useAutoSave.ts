@@ -1,6 +1,5 @@
 import { objectsInMetersAtom } from './../atoms/objectsAtom';
 import { canvasAtom, modeAtom, plotAtom } from 'atoms/atoms';
-import { objectsAtom } from 'atoms/objectsAtom';
 import deepEqual from 'deep-equal';
 import { useAtomValue } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
@@ -8,7 +7,7 @@ import sortBy from 'lodash.sortby';
 import { useEffect, useRef, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { Config, GardenObject, Modes } from 'types';
-import { post, useUtils } from 'utils/utils';
+import { post } from 'utils/utils';
 
 let timeout: NodeJS.Timeout;
 
@@ -19,15 +18,12 @@ export const useAutosave = () => {
   const objects = useAtomValue(objectsInMetersAtom);
   const config = useAtomValue(plotAtom);
 
-  const { pxToMeterObject, meterToPxObject } = useUtils();
-
   const { isLoading: isObjectsLoading, data: objectsFromDb } = useQuery<
     GardenObject[]
   >('objects', () => fetch('/api/objects').then((res) => res.json()));
 
-  const { isLoading: isConfigLoading, data: configFromDb } = useQuery<Config>(
-    'config',
-    () => fetch('/api/config').then((res) => res.json())
+  const { data: configFromDb } = useQuery<Config>('config', () =>
+    fetch('/api/config').then((res) => res.json())
   );
 
   const prevObjects = useRef<GardenObject[] | undefined>();
@@ -44,11 +40,10 @@ export const useAutosave = () => {
     { changedObjects: GardenObject[]; deletedObjectIds: string[] | undefined }
     // @ts-ignore
   >(({ changedObjects, deletedObjectIds }) => {
-    // console.log('save');
-    // return post('/api/objects/save', {
-    //   changedObjects,
-    //   deletedObjectIds,
-    // });
+    return post('/api/objects/save', {
+      changedObjects,
+      deletedObjectIds,
+    });
   });
 
   const { mutate: saveConfig } = useMutation<unknown, string, Config>(
@@ -112,7 +107,6 @@ export const useAutosave = () => {
           return false;
         });
 
-        // console.log('set prev', objects);
         prevObjects.current = objects;
 
         saveObjects({ changedObjects, deletedObjectIds });
