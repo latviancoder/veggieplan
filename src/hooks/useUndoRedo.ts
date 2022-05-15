@@ -1,3 +1,4 @@
+import { objectsInMetersAtom } from './../atoms/objectsAtom';
 import { canvasAtom, modeAtom } from 'atoms/atoms';
 import { objectsAtom } from 'atoms/objectsAtom';
 import deepEqual from 'deep-equal';
@@ -16,14 +17,13 @@ type StateSnapshot = {
 const MAX_UNDO_STACK = 30;
 
 export const useUndoRedo = () => {
-  const { pxToMeterObject, meterToPxObject } = useUtils();
   const setObjects = useUpdateAtom(objectsAtom);
   const [undoStack, setUndoStack] = useState<StateSnapshot[]>([]);
   const initialRender = useRef<boolean>(true);
   const canvas = useAtomValue(canvasAtom);
 
   const mode = useAtomValue(modeAtom);
-  const objects = useAtomValue(objectsAtom);
+  const objects = useAtomValue(objectsInMetersAtom);
 
   const prevObjects = useRef<GardenObject[]>(objects);
 
@@ -33,9 +33,7 @@ export const useUndoRedo = () => {
       const prevState = undoStack[undoStack.length - 1];
 
       if (prevState.objects) {
-        prevObjects.current = prevState.objects.map((obj) =>
-          meterToPxObject(obj)
-        );
+        prevObjects.current = prevState.objects;
 
         setObjects({
           type: 'replaceAll',
@@ -48,9 +46,9 @@ export const useUndoRedo = () => {
 
   const createStateSnapshot = useCallback(
     (): StateSnapshot => ({
-      objects: objects.map((obj) => pxToMeterObject(obj)),
+      objects,
     }),
-    [objects, pxToMeterObject]
+    [objects]
   );
 
   useHotkeys('ctrl+z, cmd+z', () => void undo(), [undoStack]);
@@ -81,6 +79,7 @@ export const useUndoRedo = () => {
         )
       )
     ) {
+      console.log('+ undo stack');
       setUndoStack((currentStack) => {
         if (currentStack.length > MAX_UNDO_STACK) {
           currentStack.shift();
