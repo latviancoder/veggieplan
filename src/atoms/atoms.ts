@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
+import isEmpty from 'lodash.isempty';
 
 import {
   Config,
@@ -29,15 +30,37 @@ export const canvasAtom = atom<{
 // In meters
 export const plotAtom = atom<Config>({} as Config);
 
-export const plotCanvasAtom = atom<{ width: number; height: number }>(
-  {} as { width: number; height: number }
-);
+export const plotCanvasAtom = atom<{ width: number; height: number }>((get) => {
+  const plot = get(plotAtom);
+  const canvas = get(canvasAtom);
+
+  const plotCanvas = {
+    width: 0,
+    height: 0,
+  };
+
+  if (isEmpty(canvas) || isEmpty(plot)) return plotCanvas;
+
+  const guidesSize = 20;
+
+  if (canvas.width / canvas.height >= plot.width / plot.height) {
+    plotCanvas.width = canvas.height * (plot.width / plot.height);
+    plotCanvas.height = canvas.height - guidesSize;
+  } else {
+    plotCanvas.width = canvas.width - guidesSize;
+    plotCanvas.height = canvas.width * (plot.height / plot.width);
+  }
+
+  return plotCanvas;
+});
 
 export const creatableAtom = atom<null | GardenObject>(null);
 
 export const mousePositionAtom = atom<null | Point>(null);
 
-export const offsetAtom = atom({ x: 0, y: 0 });
+export const offsetAtom = atom<{ x: number; y: number }>(
+  {} as { x: number; y: number }
+);
 
 export const selectedPlantAtom = atom<null | number>(null);
 

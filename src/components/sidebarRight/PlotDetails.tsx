@@ -6,7 +6,7 @@ import {
   Tag,
 } from '@blueprintjs/core';
 import { plotAtom } from 'atoms/atoms';
-import { drawableAreaAtom } from 'atoms/drawableAreaAtom';
+import { initialOffsetAtom } from 'atoms/initialOffsetAtom';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useLayoutEffect, useState } from 'react';
@@ -14,7 +14,7 @@ import { roundTwoDecimals } from 'utils/utils';
 import sidebarStyles from './SidebarRight.module.scss';
 
 export const PlotDetails = () => {
-  const updateDrawablaArea = useUpdateAtom(drawableAreaAtom);
+  const updateDrawablaArea = useUpdateAtom(initialOffsetAtom);
   const [plot, setPlot] = useAtom(plotAtom);
 
   const [widthString, setWidthString] = useState<string>(String(plot.width));
@@ -37,8 +37,6 @@ export const PlotDetails = () => {
         width: widthNumber,
         height: heightNumber,
       });
-
-      updateDrawablaArea();
     }
   };
 

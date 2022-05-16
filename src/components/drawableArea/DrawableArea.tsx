@@ -17,7 +17,7 @@ import {
 } from '../../atoms/atoms';
 import { copyAtom, pasteAtom } from '../../atoms/clipboardAtom';
 import { deleteAtom } from '../../atoms/deleteAtom';
-import { drawableAreaAtom } from '../../atoms/drawableAreaAtom';
+import { initialOffsetAtom } from '../../atoms/initialOffsetAtom';
 import { panAtom } from '../../atoms/panAtom';
 import { panStartAtom } from '../../atoms/panStartAtom';
 import { tapAtom } from '../../atoms/tapAtom';
@@ -50,7 +50,7 @@ export const DrawableArea = () => {
   const setTap = useUpdateAtom(tapAtom);
   const setPan = useUpdateAtom(panAtom);
   const setPanStart = useUpdateAtom(panStartAtom);
-  const setDrawableArea = useUpdateAtom(drawableAreaAtom);
+  const setInitialOffset = useUpdateAtom(initialOffsetAtom);
   const setMousePosition = useUpdateAtom(mousePositionAtom);
 
   const copy = useUpdateAtom(copyAtom);
@@ -153,9 +153,12 @@ export const DrawableArea = () => {
     if (rootRef.current) {
       const { width, height, x, y } = rootRef.current.getBoundingClientRect();
       setCanvas({ width, height, x, y });
-      setDrawableArea();
+
+      if (isEmpty(offset)) {
+        setInitialOffset();
+      }
     }
-  }, [setDrawableArea, setCanvas]);
+  }, [setInitialOffset, offset, setCanvas]);
 
   useLayoutEffect(() => {
     const $root = rootRef.current;
@@ -169,7 +172,7 @@ export const DrawableArea = () => {
         observer.disconnect();
       };
     }
-  }, [setDrawableArea, recalculateDrawableAreaDimensions]);
+  }, [setInitialOffset, recalculateDrawableAreaDimensions]);
 
   return (
     <div ref={rootRef} className={styles.root}>
