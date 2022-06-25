@@ -10,6 +10,6 @@
   justify-content: stretch;
 }
 
-body {
+:global(body.overflow) {
   overflow: hidden;
 }

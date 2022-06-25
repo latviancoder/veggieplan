@@ -6,14 +6,7 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useEffect, useRef, useState } from 'react';
 import { Modes, PlantDetails } from 'types';
 
-import {
-  Button,
-  FormGroup,
-  Icon,
-  InputGroup,
-  Position,
-  Tooltip,
-} from '@blueprintjs/core';
+import { FormGroup, Icon, InputGroup } from '@blueprintjs/core';
 
 import styles from './PlantsSearch.module.scss';
 
@@ -52,7 +45,7 @@ export const PlantsSearch = () => {
   return (
     <div className={styles.plantsSearch}>
       <div className={styles.search}>
-        <FormGroup label={'Kulturen'} labelFor="search" style={{ margin: 0 }}>
+        <FormGroup labelFor="search" style={{ margin: 0 }}>
           <div className={styles.flex}>
             <InputGroup
               fill
@@ -63,16 +56,6 @@ export const PlantsSearch = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Name, Familie"
             />
-            <div className={styles.add}>
-              <Tooltip content={<span></span>} position={Position.RIGHT}>
-                <Button
-                  icon="plus"
-                  onClick={() => {
-                    console.log('lul');
-                  }}
-                />
-              </Tooltip>
-            </div>
           </div>
         </FormGroup>
       </div>

@@ -7,6 +7,7 @@ import {
 } from '@blueprintjs/core';
 import { plotAtom } from 'atoms/atoms';
 import { initialOffsetAtom } from 'atoms/initialOffsetAtom';
+import { useNumericInputCallback } from 'hooks/useNumericInputCallback';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useLayoutEffect, useState } from 'react';
@@ -14,22 +15,15 @@ import { roundTwoDecimals } from 'utils/utils';
 import sidebarStyles from './SidebarRight.module.scss';
 
 export const PlotDetails = () => {
-  const updateDrawablaArea = useUpdateAtom(initialOffsetAtom);
   const [plot, setPlot] = useAtom(plotAtom);
 
-  const [widthString, setWidthString] = useState<string>(String(plot.width));
-  const [heightString, setHeightString] = useState<string>(String(plot.height));
+  const [widthString, widthNumber, onWidthChange] = useNumericInputCallback(
+    plot.width
+  );
 
-  const [widthNumber, setWidthNumber] = useState<number>(plot.width);
-  const [heightNumber, setHeightNumber] = useState<number>(plot.height);
-
-  useLayoutEffect(() => {
-    setWidthString(String(plot.width));
-    setHeightString(String(plot.height));
-
-    setWidthNumber(plot.width);
-    setHeightNumber(plot.height);
-  }, [plot]);
+  const [heightString, heightNumber, onHeightChange] = useNumericInputCallback(
+    plot.height
+  );
 
   const onBlur = () => {
     if (widthString && heightString && widthNumber > 0 && heightNumber > 0) {
@@ -60,17 +54,7 @@ export const PlotDetails = () => {
             value={widthString}
             minorStepSize={null}
             intent={!widthString ? 'danger' : 'none'}
-            onValueChange={(valueAsNumber, valueAsString) => {
-              if (!valueAsString) {
-                setWidthString('');
-                return;
-              }
-
-              if (!valueAsString.match(/^\d+$/)) return;
-
-              setWidthString(valueAsString);
-              setWidthNumber(valueAsNumber);
-            }}
+            onValueChange={onWidthChange}
             onBlur={onBlur}
             rightElement={<Tag minimal>m</Tag>}
           />
@@ -84,17 +68,7 @@ export const PlotDetails = () => {
             fill
             value={heightString}
             intent={!heightString ? 'danger' : 'none'}
-            onValueChange={(valueAsNumber, valueAsString) => {
-              if (!valueAsString) {
-                setHeightString('');
-                return;
-              }
-
-              if (!valueAsString.match(/^\d+$/)) return;
-
-              setHeightString(valueAsString);
-              setHeightNumber(valueAsNumber);
-            }}
+            onValueChange={onHeightChange}
             onBlur={onBlur}
             rightElement={<Tag minimal>m</Tag>}
           />

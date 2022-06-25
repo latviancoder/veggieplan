@@ -8,6 +8,7 @@ import {
   Modes,
   PlantDetails,
   Point,
+  Variety,
   Views,
 } from '../types';
 
@@ -65,5 +66,7 @@ export const offsetAtom = atom<{ x: number; y: number }>(
 export const selectedPlantAtom = atom<null | number>(null);
 
 export const plantsAtom = atom<PlantDetails[]>([]);
+
+export const varietiesAtom = atom<Variety[]>([]);
 
 export const viewAtom = atomWithStorage<Views>('view', Views.PLAN);

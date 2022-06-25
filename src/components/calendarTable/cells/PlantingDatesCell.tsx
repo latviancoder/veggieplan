@@ -1,8 +1,8 @@
 import { Tooltip, Position } from '@blueprintjs/core';
 import { Month, PlantDatesBar } from 'components/plantDatesBar/PlantDatesBar';
 import { formatDate } from 'utils/utils';
-import { Row } from '../Table';
-import styles from '../Table.module.scss';
+import { Row } from '../CalendarTable';
+import styles from '../CalendarTable.module.scss';
 
 export const PlantingDatesCell = ({
   data: {

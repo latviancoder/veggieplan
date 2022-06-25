@@ -10,6 +10,7 @@ export enum Modes {
 export enum Views {
   PLAN = 'PLAN',
   TABLE = 'TABLE',
+  VARIETIES = 'PLANTS',
 }
 
 export enum ObjectTypes {
@@ -53,7 +54,7 @@ export type Shape = RectangleShape;
 export type Plant = BaseObject & {
   objectType: ObjectTypes.Plant;
   plantId: number;
-  varietyId?: number;
+  varietyId?: string;
   x: number;
   y: number;
   width: number;
@@ -97,16 +98,19 @@ export type PlantDetails = {
   rowSpacing: number;
   frostTolerant: boolean;
   plantRelativeToLastFrost: number;
-  timeToMaturity: number;
+  maturity: number;
   harvestRelativeToFirstFrost: number;
   perennial: boolean;
   hasPicture: boolean;
 };
 
 export type Variety = {
-  id?: number;
-  name: string;
+  id: string;
   plantId: number;
+  name: string;
+  rowSpacing: number;
+  inRowSpacing: number;
+  maturity: number;
 };
 
 export type Config = {

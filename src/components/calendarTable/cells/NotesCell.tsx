@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Classes, Dialog, TextArea } from '@blueprintjs/core';
 
-import { Row, useFetchVarieties } from '../Table';
+import { Row, useFetchVarieties } from '../CalendarTable';
 
 import styles from './NotesCell.module.scss';
 import { getPlantName, post } from 'utils/utils';

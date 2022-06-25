@@ -1,7 +1,3 @@
-import './Table.scss';
-
-import { Column, Table2 } from '@blueprintjs/table';
-
 import { Month } from 'components/plantDatesBar/PlantDatesBar';
 import {
   addMonths,
@@ -13,7 +9,7 @@ import {
 import { de } from 'date-fns/locale';
 import { useAtomValue } from 'jotai/utils';
 import { compact, max, min, sortBy } from 'lodash';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import { useQuery, UseQueryOptions } from 'react-query';
 
 import { objectsInMetersAtom } from '../../atoms/objectsAtom';
@@ -28,9 +24,9 @@ import {
   useUtils,
 } from '../../utils/utils';
 import { NotesCell } from './cells/NotesCell';
-import styles from './Table.module.scss';
-import { CustomCell } from './cells/CustomCell';
+import styles from './CalendarTable.module.scss';
 import { PlantingDatesCell } from './cells/PlantingDatesCell';
+import { HTMLTable } from '@blueprintjs/core';
 
 export type Row = Plant & {
   plantName: string;
@@ -48,7 +44,7 @@ export const useFetchVarieties = (options?: UseQueryOptions<Variety[]>) => {
   return useQuery<Variety[]>('varieties', fetchVarieties, options);
 };
 
-const Table = () => {
+const CalendarTable = () => {
   const { getPlantDetails, getPlantAmount } = useUtils();
 
   const { data: varieties } = useFetchVarieties();
@@ -112,22 +108,6 @@ const Table = () => {
     return r;
   }, [getPlantAmount, getPlantDetails, plantObjects, shapeObjects, varieties]);
 
-  const [size, setSize] = useState<{ width: number; height: number } | null>(
-    null
-  );
-
-  const container = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (container.current) {
-      const rect = container.current.getBoundingClientRect();
-      setSize({
-        width: rect.width,
-        height: rect.height,
-      });
-    }
-  }, [setSize]);
-
   const months: Month[] = useMemo(() => {
     const dates = tableRows.map(
       ({
@@ -167,77 +147,52 @@ const Table = () => {
   }, [tableRows]);
 
   return (
-    <div style={{ padding: '20px', flex: '1' }}>
-      <div ref={container} style={{ height: '100%' }}>
-        {size?.height && (
-          <Table2
-            enableRowHeader={false}
-            numRows={tableRows.length}
-            rowHeights={tableRows.map(() => 40)}
-            columnWidths={[
-              size.width * 0.2,
-              size.width * 0.06,
-              size.width * 0.06,
-              size.width * 0.5,
-              size.width * 0.18,
-            ]}
-          >
-            <Column
-              name="Pflanze"
-              cellRenderer={(i) => {
-                const data = tableRows[i];
-
-                return (
-                  <CustomCell>
-                    {getPlantName(data.plantName, data.varietyName)}
-                  </CustomCell>
-                );
-              }}
-            />
-            <Column
-              name="Beet"
-              cellRenderer={(i) => (
-                <CustomCell>{tableRows[i].bedName || ''}</CustomCell>
-              )}
-            />
-            <Column
-              name="Abstand"
-              cellRenderer={(i) => {
-                const data = tableRows[i];
-                return (
-                  <CustomCell>{`${data.inRowSpacing}x${data.rowSpacing}`}</CustomCell>
-                );
-              }}
-            />
-            <Column
-              nameRenderer={() => (
-                <div className={styles.header}>
-                  {months.map(({ title }, i) => (
-                    <div className={styles.month} key={i}>
-                      {title}
-                    </div>
-                  ))}
-                </div>
-              )}
-              cellRenderer={(i) => (
-                <CustomCell>
-                  <PlantingDatesCell months={months} data={tableRows[i]} />
-                </CustomCell>
-              )}
-            />
-            <Column
-              name="Notizen"
-              cellRenderer={(i) => (
-                <CustomCell>
-                  <NotesCell data={tableRows[i]} />
-                </CustomCell>
-              )}
-            />
-          </Table2>
-        )}
-      </div>
+    <div style={{ padding: '15px 20px', flex: '1' }}>
+      <HTMLTable
+        striped
+        interactive
+        bordered
+        style={{ width: '100%', outline: 'none' }}
+      >
+        <thead>
+          <tr>
+            <th style={{ width: '15%' }}>Pflanze</th>
+            <th style={{ width: '50px' }}>Beet</th>
+            <th style={{ width: '50px' }}>Abstand</th>
+            <th>
+              <div className={styles.header}>
+                {months.map(({ title }, i) => (
+                  <div className={styles.month} key={i}>
+                    {title}
+                  </div>
+                ))}
+              </div>
+            </th>
+            <th style={{ width: '20%' }}>Notizen</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tableRows.map((data) => (
+            <tr key={data.id}>
+              <td style={{ whiteSpace: 'nowrap' }}>
+                {getPlantName(data.plantName, data.varietyName)}
+              </td>
+              <td>{data.bedName || ''}</td>
+              <td
+                style={{ whiteSpace: 'nowrap' }}
+              >{`${data.inRowSpacing}x${data.rowSpacing} cm`}</td>
+              <td style={{ position: 'relative' }}>
+                <PlantingDatesCell months={months} data={data} />
+              </td>
+              <td style={{ position: 'relative' }}>
+                <NotesCell data={data} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </HTMLTable>
     </div>
   );
 };
 
-export default Table;
+export default CalendarTable;

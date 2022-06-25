@@ -1,14 +1,14 @@
-import { useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useEffect, useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
 
 import { Button, Classes, MenuItem } from '@blueprintjs/core';
 import { ItemPredicate, ItemRenderer, Suggest } from '@blueprintjs/select';
 
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { Plant, PlantDetails, Variety } from '../../types';
-import { getPlantName, post } from '../../utils/utils';
+import { getPlantName } from '../../utils/utils';
 import styles from './PlantHeader.module.scss';
+import { varietiesAtom } from 'atoms/atoms';
 
 type Props = {
   plantObject: Plant;
@@ -18,32 +18,7 @@ type Props = {
 export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
   const setObjects = useUpdateAtom(objectsAtom);
 
-  const { data: varieties = [], refetch } = useQuery<Variety[] | undefined>(
-    ['varieties', plantDetails.id],
-    () => fetch(`/api/varieties/${plantDetails.id}`).then((res) => res.json()),
-    {
-      suspense: false,
-    }
-  );
-
-  const { mutate: saveVariety } = useMutation<Variety, string, Variety>(
-    (variety) => post('/api/varieties', variety).then((r) => r.json()),
-    {
-      onSuccess: (variety) => {
-        setObjects({
-          type: 'updateSingle',
-          payload: {
-            object: {
-              varietyId: variety.id,
-            },
-            id: plantObject.id,
-          },
-        });
-
-        refetch();
-      },
-    }
-  );
+  const varieties = useAtomValue(varietiesAtom);
 
   const [showVarietySelect, setShowVarietySelect] = useState(false);
 
@@ -81,26 +56,8 @@ export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
     }
   };
 
-  const renderCreateVarietyOption = (
-    query: string,
-    active: boolean,
-    handleClick: React.MouseEventHandler<HTMLElement>
-  ) => (
-    <MenuItem
-      icon="add"
-      text={`Erstellen "${query}"`}
-      active={active}
-      onClick={handleClick}
-      shouldDismissPopover={false}
-    />
-  );
-
   const onItemSelect = (variety: Variety) => {
     setShowVarietySelect(false);
-
-    if (!variety.id) {
-      saveVariety(variety);
-    }
 
     if (variety.id) {
       setObjects({
@@ -128,20 +85,18 @@ export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
       )}
       {showVarietySelect ? (
         <Suggest
-          createNewItemFromQuery={(query: string) => ({
-            name: query,
-            plantId: plantDetails.id,
-          })}
-          createNewItemRenderer={renderCreateVarietyOption}
           inputValueRenderer={inputValueRenderer}
           items={varieties}
           itemRenderer={itemRenderer}
           itemPredicate={itemPredicate}
           onItemSelect={onItemSelect}
           inputProps={{
-            placeholder: 'Auswählen oder neue erstellen..',
+            placeholder: 'Sorte auswählen',
             autoFocus: true,
             small: true,
+            onBlur: () => {
+              setShowVarietySelect(false);
+            },
           }}
           popoverProps={{ minimal: true }}
           itemsEqual={(varA, varB) => varA.name === varB.name}

@@ -34,13 +34,3 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-
-:global(.bp3-table-container) {
-  &:focus {
-    outline: none;
-  }
-}
-
-:global(.bp3-table-column-name) {
-  font-size: 12px;
-}
