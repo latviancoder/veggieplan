@@ -27,6 +27,7 @@ import { NotesCell } from './cells/NotesCell';
 import styles from './CalendarTable.module.scss';
 import { PlantingDatesCell } from './cells/PlantingDatesCell';
 import { HTMLTable } from '@blueprintjs/core';
+import { varietiesAtom } from 'atoms/atoms';
 
 export type Row = Plant & {
   plantName: string;
@@ -38,16 +39,9 @@ export type Row = Plant & {
   earliestDate?: Date;
 };
 
-const fetchVarieties = () => fetch(`/api/varieties`).then((res) => res.json());
-
-export const useFetchVarieties = (options?: UseQueryOptions<Variety[]>) => {
-  return useQuery<Variety[]>('varieties', fetchVarieties, options);
-};
-
 const CalendarTable = () => {
+  const varieties = useAtomValue(varietiesAtom);
   const { getPlantDetails, getPlantAmount } = useUtils();
-
-  const { data: varieties } = useFetchVarieties();
 
   const objects = useAtomValue(objectsInMetersAtom);
 

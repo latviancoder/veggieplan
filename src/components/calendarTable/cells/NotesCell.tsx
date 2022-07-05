@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Classes, Dialog, TextArea } from '@blueprintjs/core';
 
-import { Row, useFetchVarieties } from '../CalendarTable';
+import { Row } from '../CalendarTable';
 
 import styles from './NotesCell.module.scss';
 import { getPlantName, post } from 'utils/utils';
 import { useMutation } from 'react-query';
 import { GardenObject } from 'types';
-import { useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { objectsAtom } from 'atoms/objectsAtom';
+import { varietiesAtom } from 'atoms/atoms';
 
 type Props = {
   data: Row;
@@ -16,10 +17,10 @@ type Props = {
 
 export const NotesCell = ({ data }: Props) => {
   const setObjects = useUpdateAtom(objectsAtom);
+  const varieties = useAtomValue(varietiesAtom);
 
   const textRef = useRef<HTMLTextAreaElement | null>(null);
   const [value, setValue] = useState(data.notes || '');
-  const { data: varieties } = useFetchVarieties();
 
   const [isOpen, setOpen] = useState(false);
 
