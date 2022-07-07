@@ -1,6 +1,7 @@
 import { Alert, Button, Icon, IconSize, Intent } from '@blueprintjs/core';
 import { varietiesAtom } from 'atoms/atoms';
 import { useNumericInputCallback } from 'hooks/useNumericInputCallback';
+import produce from 'immer';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useState } from 'react';
@@ -31,6 +32,15 @@ export const PlantsTableVarietyRow = ({ variety, plant }: Props) => {
       mode: 'edit',
       variety,
       plant,
+      onSave: (updatedVariety) => {
+        const index = varieties.findIndex(({ id: vId }) => id === vId);
+
+        setVarieties(
+          produce(varieties, (draft) => {
+            draft[index] = { ...draft[index], ...updatedVariety };
+          })
+        );
+      },
     });
   };
 

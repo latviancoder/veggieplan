@@ -453,6 +453,16 @@ export const post = (url: string, body: any) =>
     body: JSON.stringify(body),
   });
 
+export const put = (url: string, body: any) =>
+  fetch(url, {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
 export const formatDate = (date: Date | string, f = 'dd.MM.yyyy'): string => {
   if (typeof date === 'string') {
     date = new Date(date);

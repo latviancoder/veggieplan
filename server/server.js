@@ -61,20 +61,31 @@ app.get('/api/varieties', async (req, res) => {
   res.json(camelCaseObjectDeep(result.rows));
 });
 
+// TODO make this more efficient, removing everything is dumb
+app.put('/api/varieties', async (req, res) => {
+  await client.query(SQL`DELETE FROM varieties`);
+
+  for (const obj of req.body || []) {
+    console.log(SQL`INSERT INTO varieties
+    (id, plant_id, name, row_spacing, in_row_spacing, maturity) VALUES
+    (${obj.id}, ${obj.plantId}, ${obj.name}, ${obj.rowSpacing}, ${obj.inRowSpacing}, ${obj.maturity})`);
+
+    await client.query(
+      SQL`INSERT INTO varieties
+      (id, plant_id, name, row_spacing, in_row_spacing, maturity) VALUES
+      (${obj.id}, ${obj.plantId}, ${obj.name}, ${obj.rowSpacing}, ${obj.inRowSpacing}, ${obj.maturity})`
+    );
+  }
+
+  res.send();
+});
+
 app.get('/api/varieties/:plantId', async (req, res) => {
   const result = await client.query(
     SQL`SELECT * FROM varieties WHERE plant_id=${req.params.plantId} ORDER BY name`
   );
 
   res.json(camelCaseObjectDeep(result.rows));
-});
-
-app.post('/api/varieties', async (req, res) => {
-  const result = await client.query(
-    SQL`INSERT INTO varieties (plant_id, name) VALUES (${req.body.plantId}, ${req.body.name}) RETURNING id`
-  );
-
-  res.send({ id: result.rows[0].id });
 });
 
 app.post('/api/objects/:objectId/save', async (req, res) => {
