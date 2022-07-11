@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useAtomDevtools } from 'jotai/devtools';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import isEmpty from 'lodash.isempty';
@@ -20,39 +21,75 @@ import { SidebarLeft } from '../sidebarLeft/SidebarLeft';
 import styles from './Root.module.css';
 import { useAutosave } from 'hooks/useAutoSave';
 import { PlantsTable } from 'components/plantsTable/PlantsTable';
+import { useAtom } from 'jotai';
 
 const CalendarTable = lazy(() => import('../calendarTable/CalendarTable'));
 
+let lul = false;
+
+const simulateRequest = (time: number) =>
+  new Promise((r) => setTimeout(r, time));
+
 const Root = () => {
-  useAutosave();
-
-  const hydrated = useRef(false);
-
   const view = useAtomValue(viewAtom);
-  const setPlot = useUpdateAtom(plotAtom);
-  const setPlants = useUpdateAtom(plantsAtom);
-  const setObjects = useUpdateAtom(objectsAtom);
-  const setVarieties = useUpdateAtom(varietiesAtom);
+  const [plot, setPlot] = useAtom(plotAtom);
+  const [plants, setPlants] = useAtom(plantsAtom);
+  const [objects, setObjects] = useAtom(objectsAtom);
+  const [varieties, setVarieties] = useAtom(varietiesAtom);
 
   // @ts-ignore
   useAtomDevtools(objectsAtom);
 
-  const { data: plantsDetails } = useQuery<PlantDetails[]>('plants', () =>
-    fetch('/api/plants').then((res) => res.json())
-  );
+  useQuery<PlantDetails[]>(['plants'], {
+    queryFn: async () => {
+      const payload = await fetch('/api/plants').then((res) => res.json());
 
-  const { data: objectsFromDb } = useQuery<GardenObject[]>('objects', () =>
-    fetch('/api/objects').then((res) => res.json())
-  );
+      setPlants(payload);
 
-  const { data: varietiesFromDb } = useQuery<Variety[]>('varieties', () =>
-    fetch('/api/varieties').then((res) => res.json())
-  );
+      return payload;
+    },
+    refetchOnWindowFocus: false,
+  });
 
-  const { data: config } = useQuery<{ width: number; height: number }>(
-    'config',
-    () => fetch('/api/config').then((res) => res.json())
-  );
+  useQuery<GardenObject[]>(['objects'], {
+    queryFn: async () => {
+      const payload = await fetch('/api/objects').then((res) => res.json());
+
+      setObjects({
+        payload,
+        type: 'replaceAll',
+        units: 'meters',
+      });
+
+      return payload;
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  useQuery<Variety[]>(['varieties'], {
+    queryFn: async () => {
+      const payload = await fetch('/api/varieties').then((res) => res.json());
+
+      setVarieties(payload);
+
+      return payload;
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  useQuery<{ width: number; height: number }>(['config'], {
+    queryFn: async () => {
+      const payload = await fetch('/api/config').then((res) => res.json());
+
+      setPlot({
+        width: payload.width,
+        height: payload.height,
+      });
+
+      return payload;
+    },
+    refetchOnWindowFocus: false,
+  });
 
   // Editor page doesn't have scrollbars
   useEffect(() => {
@@ -63,47 +100,7 @@ const Root = () => {
     }
   }, [view]);
 
-  useLayoutEffect(() => {
-    if (hydrated.current) {
-      return;
-    }
-
-    if (objectsFromDb && !isEmpty(objectsFromDb)) {
-      // When store is initially hydrated with objects from the DB we skip 'pixels-to-meters' conversion step,
-      // because objects stored in DB already use meters.
-      setObjects({
-        type: 'replaceAll',
-        payload: objectsFromDb,
-        units: 'meters',
-      });
-    }
-
-    if (varietiesFromDb && !isEmpty(varietiesFromDb)) {
-      setVarieties(varietiesFromDb);
-    }
-
-    if (plantsDetails) setPlants(plantsDetails);
-
-    if (config) {
-      setPlot({
-        width: config.width,
-        height: config.height,
-      });
-    }
-
-    hydrated.current = true;
-  }, [
-    objectsFromDb,
-    setObjects,
-    plantsDetails,
-    setPlants,
-    config,
-    setPlot,
-    varietiesFromDb,
-    setVarieties,
-  ]);
-
-  if (!hydrated.current) return <div className={styles.root} />;
+  useAutosave();
 
   return (
     <div className={styles.root}>

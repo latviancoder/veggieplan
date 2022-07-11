@@ -10,7 +10,6 @@ import { de } from 'date-fns/locale';
 import { useAtomValue } from 'jotai/utils';
 import { compact, max, min, sortBy } from 'lodash';
 import { useMemo } from 'react';
-import { useQuery, UseQueryOptions } from 'react-query';
 
 import { objectsInMetersAtom } from '../../atoms/objectsAtom';
 import { Plant, Variety } from '../../types';
