@@ -22,8 +22,6 @@ export const useAutosave = () => {
   const prevConfig = useRef<Config | undefined>();
   const prevVarieties = useRef<Variety[] | undefined>();
 
-  console.log({ objects, config, varieties });
-
   const { mutate: saveObjects } = useMutation<
     unknown,
     unknown,
@@ -68,8 +66,6 @@ export const useAutosave = () => {
     prevConfig.current = config;
   }, [config, saveConfig]);
 
-  // Autosave doesn't get triggered for volatile state changes like movement and resizing.
-  // Additionally there is a debounce.
   useEffect(() => {
     if (!isEmpty(canvas) && prevSavedObjects.current !== undefined) {
       clearTimeout(timeout);
