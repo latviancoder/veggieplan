@@ -1,4 +1,5 @@
-import { Tooltip, Position } from '@blueprintjs/core';
+import { Position } from '@blueprintjs/core';
+import { Tooltip2 } from '@blueprintjs/popover2';
 import { Month, PlantDatesBar } from 'components/plantDatesBar/PlantDatesBar';
 import { formatDate } from 'utils/utils';
 import { Row } from '../CalendarTable';
@@ -18,7 +19,7 @@ export const PlantingDatesCell = ({
   months: Month[];
 }) => {
   return (
-    <Tooltip
+    <Tooltip2
       content={
         <div className={styles.dateTooltip}>
           {dateStartIndoors && (
@@ -67,6 +68,6 @@ export const PlantingDatesCell = ({
           barHeight={6}
         />
       </div>
-    </Tooltip>
+    </Tooltip2>
   );
 };
