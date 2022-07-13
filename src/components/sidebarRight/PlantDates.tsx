@@ -1,6 +1,6 @@
 import { addYears, parse } from 'date-fns';
 import { useUpdateAtom } from 'jotai/utils';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { formatDate } from 'utils/utils';
 
 import { Checkbox, Classes, Colors, FormGroup } from '@blueprintjs/core';
@@ -13,10 +13,15 @@ import { PlantDatesBar } from '../plantDatesBar/PlantDatesBar';
 import commonStyles from './SidebarRight.module.scss';
 import styles from './PlantDates.module.scss';
 
-type Props = {
-  plantObject: Plant;
-  plantDetails: PlantDetails;
-};
+type Props = Pick<
+  Plant,
+  | 'id'
+  | 'dateStartIndoors'
+  | 'dateTransplant'
+  | 'dateDirectSow'
+  | 'dateFirstHarvest'
+  | 'dateLastHarvest'
+>;
 
 const parseDate = (str: string) => {
   if (!str) return null;
@@ -30,198 +35,201 @@ const parseDate = (str: string) => {
   return false;
 };
 
-export const PlantDates = ({
-  plantDetails,
-  plantObject: {
+export const PlantDates = memo(
+  ({
     id,
     dateStartIndoors,
     dateTransplant,
     dateDirectSow,
     dateFirstHarvest,
     dateLastHarvest,
-  },
-}: Props) => {
-  const setObjects = useUpdateAtom(objectsAtom);
-  const [seedStart, setSeedStart] = useState(
-    !!(dateStartIndoors || dateTransplant)
-  );
+  }: Props) => {
+    const setObjects = useUpdateAtom(objectsAtom);
+    const [seedStart, setSeedStart] = useState(
+      !!(dateStartIndoors || dateTransplant)
+    );
 
-  useEffect(() => {
-    setSeedStart(!!(dateStartIndoors || dateTransplant));
-  }, [dateStartIndoors, dateTransplant, id]);
+    useEffect(() => {
+      setSeedStart(!!(dateStartIndoors || dateTransplant));
+    }, [dateStartIndoors, dateTransplant, id]);
 
-  // todo proper min-max date logic and setting of dates
-  const maxDate = addYears(Date.now(), 2);
-  const minDate = addYears(Date.now(), -1);
+    // todo proper min-max date logic and setting of dates
+    const maxDate = addYears(Date.now(), 2);
+    const minDate = addYears(Date.now(), -1);
 
-  const defaultProps = {
-    dayPickerProps: { fixedWeeks: true },
-    maxDate,
-    minDate,
-    formatDate,
-    parseDate,
-    localeUtils,
-    placeholder: 'TT.MM.JJJJ',
-  };
+    const defaultProps = {
+      dayPickerProps: { fixedWeeks: true },
+      maxDate,
+      minDate,
+      formatDate,
+      parseDate,
+      localeUtils,
+      placeholder: 'TT.MM.JJJJ',
+    };
 
-  return (
-    <>
-      <div className={styles.header}>
-        <h6
-          className={Classes.HEADING}
-          style={{ color: Colors.GRAY3, margin: 0 }}
-        >
-          Timings
-        </h6>
-        <Checkbox
-          style={{ margin: 0 }}
-          label="Mit Voranzucht"
-          checked={seedStart}
-          onChange={() => setSeedStart(!seedStart)}
+    return (
+      <>
+        <div className={styles.header}>
+          <h6
+            className={Classes.HEADING}
+            style={{ color: Colors.GRAY3, margin: 0 }}
+          >
+            Timings
+          </h6>
+          <Checkbox
+            style={{ margin: 0 }}
+            label="Mit Voranzucht"
+            checked={seedStart}
+            onChange={() => setSeedStart(!seedStart)}
+          />
+        </div>
+        <div className={commonStyles.twoColumns}>
+          {seedStart && (
+            <>
+              <FormGroup
+                label={'Voranzucht'}
+                labelFor="seed-start"
+                style={{ margin: 0 }}
+              >
+                <DateInput
+                  {...defaultProps}
+                  inputProps={{ id: 'seed-start' }}
+                  dayPickerProps={{ fixedWeeks: true }}
+                  value={dateStartIndoors ? new Date(dateStartIndoors) : null}
+                  onChange={(date, isUserChange) => {
+                    if (isUserChange) {
+                      setObjects({
+                        type: 'updateSingle',
+                        payload: {
+                          object: {
+                            dateStartIndoors: date
+                              ? date.toISOString()
+                              : undefined,
+                          },
+                          id,
+                        },
+                      });
+                    }
+                  }}
+                />
+              </FormGroup>
+              <FormGroup
+                label={'Auspflanzen'}
+                labelFor="transplant"
+                style={{ margin: 0 }}
+              >
+                <DateInput
+                  {...defaultProps}
+                  inputProps={{ id: 'transplant' }}
+                  value={dateTransplant ? new Date(dateTransplant) : null}
+                  onChange={(date, isUserChange) => {
+                    if (isUserChange) {
+                      setObjects({
+                        type: 'updateSingle',
+                        payload: {
+                          object: {
+                            dateTransplant: date
+                              ? date.toISOString()
+                              : undefined,
+                          },
+                          id,
+                        },
+                      });
+                    }
+                  }}
+                />
+              </FormGroup>
+            </>
+          )}
+          {!seedStart && (
+            <>
+              <FormGroup
+                label={'Aussaat ins Freiland'}
+                labelFor="sow-outside"
+                style={{ margin: 0 }}
+              >
+                <DateInput
+                  {...defaultProps}
+                  inputProps={{ id: 'sow-outside' }}
+                  value={dateDirectSow ? new Date(dateDirectSow) : null}
+                  onChange={(date, isUserChange) => {
+                    if (isUserChange) {
+                      setObjects({
+                        type: 'updateSingle',
+                        payload: {
+                          object: {
+                            dateDirectSow: date
+                              ? date.toISOString()
+                              : undefined,
+                          },
+                          id,
+                        },
+                      });
+                    }
+                  }}
+                />
+              </FormGroup>
+              <div />
+            </>
+          )}
+          <FormGroup
+            label={'Erste Ernte'}
+            labelFor="first-harvest"
+            style={{ margin: 0 }}
+          >
+            <DateInput
+              {...defaultProps}
+              inputProps={{ id: 'first-harvest' }}
+              value={dateFirstHarvest ? new Date(dateFirstHarvest) : null}
+              onChange={(date, isUserChange) => {
+                if (isUserChange) {
+                  setObjects({
+                    type: 'updateSingle',
+                    payload: {
+                      object: {
+                        dateFirstHarvest: date ? date.toISOString() : undefined,
+                      },
+                      id,
+                    },
+                  });
+                }
+              }}
+            />
+          </FormGroup>
+          <FormGroup
+            label={'Letzte Ernte'}
+            labelFor="last-harvest"
+            style={{ margin: 0 }}
+          >
+            <DateInput
+              {...defaultProps}
+              inputProps={{ id: 'last-harvest' }}
+              value={dateLastHarvest ? new Date(dateLastHarvest) : null}
+              onChange={(date, isUserChange) => {
+                if (isUserChange) {
+                  setObjects({
+                    type: 'updateSingle',
+                    payload: {
+                      object: {
+                        dateLastHarvest: date ? date.toISOString() : undefined,
+                      },
+                      id,
+                    },
+                  });
+                }
+              }}
+            />
+          </FormGroup>
+        </div>
+        <PlantDatesBar
+          dateStartIndoors={dateStartIndoors}
+          dateTransplant={dateTransplant}
+          dateDirectSow={dateDirectSow}
+          dateFirstHarvest={dateFirstHarvest}
+          dateLastHarvest={dateLastHarvest}
+          showMonthTitle={true}
         />
-      </div>
-      <div className={commonStyles.twoColumns}>
-        {seedStart && (
-          <>
-            <FormGroup
-              label={'Voranzucht'}
-              labelFor="seed-start"
-              style={{ margin: 0 }}
-            >
-              <DateInput
-                {...defaultProps}
-                inputProps={{ id: 'seed-start' }}
-                dayPickerProps={{ fixedWeeks: true }}
-                value={dateStartIndoors ? new Date(dateStartIndoors) : null}
-                onChange={(date, isUserChange) => {
-                  if (isUserChange) {
-                    setObjects({
-                      type: 'updateSingle',
-                      payload: {
-                        object: {
-                          dateStartIndoors: date
-                            ? date.toISOString()
-                            : undefined,
-                        },
-                        id,
-                      },
-                    });
-                  }
-                }}
-              />
-            </FormGroup>
-            <FormGroup
-              label={'Auspflanzen'}
-              labelFor="transplant"
-              style={{ margin: 0 }}
-            >
-              <DateInput
-                {...defaultProps}
-                inputProps={{ id: 'transplant' }}
-                value={dateTransplant ? new Date(dateTransplant) : null}
-                onChange={(date, isUserChange) => {
-                  if (isUserChange) {
-                    setObjects({
-                      type: 'updateSingle',
-                      payload: {
-                        object: {
-                          dateTransplant: date ? date.toISOString() : undefined,
-                        },
-                        id,
-                      },
-                    });
-                  }
-                }}
-              />
-            </FormGroup>
-          </>
-        )}
-        {!seedStart && (
-          <>
-            <FormGroup
-              label={'Aussaat ins Freiland'}
-              labelFor="sow-outside"
-              style={{ margin: 0 }}
-            >
-              <DateInput
-                {...defaultProps}
-                inputProps={{ id: 'sow-outside' }}
-                value={dateDirectSow ? new Date(dateDirectSow) : null}
-                onChange={(date, isUserChange) => {
-                  if (isUserChange) {
-                    setObjects({
-                      type: 'updateSingle',
-                      payload: {
-                        object: {
-                          dateDirectSow: date ? date.toISOString() : undefined,
-                        },
-                        id,
-                      },
-                    });
-                  }
-                }}
-              />
-            </FormGroup>
-            <div />
-          </>
-        )}
-        <FormGroup
-          label={'Erste Ernte'}
-          labelFor="first-harvest"
-          style={{ margin: 0 }}
-        >
-          <DateInput
-            {...defaultProps}
-            inputProps={{ id: 'first-harvest' }}
-            value={dateFirstHarvest ? new Date(dateFirstHarvest) : null}
-            onChange={(date, isUserChange) => {
-              if (isUserChange) {
-                setObjects({
-                  type: 'updateSingle',
-                  payload: {
-                    object: {
-                      dateFirstHarvest: date ? date.toISOString() : undefined,
-                    },
-                    id,
-                  },
-                });
-              }
-            }}
-          />
-        </FormGroup>
-        <FormGroup
-          label={'Letzte Ernte'}
-          labelFor="last-harvest"
-          style={{ margin: 0 }}
-        >
-          <DateInput
-            {...defaultProps}
-            inputProps={{ id: 'last-harvest' }}
-            value={dateLastHarvest ? new Date(dateLastHarvest) : null}
-            onChange={(date, isUserChange) => {
-              if (isUserChange) {
-                setObjects({
-                  type: 'updateSingle',
-                  payload: {
-                    object: {
-                      dateLastHarvest: date ? date.toISOString() : undefined,
-                    },
-                    id,
-                  },
-                });
-              }
-            }}
-          />
-        </FormGroup>
-      </div>
-      <PlantDatesBar
-        dateStartIndoors={dateStartIndoors}
-        dateTransplant={dateTransplant}
-        dateDirectSow={dateDirectSow}
-        dateFirstHarvest={dateFirstHarvest}
-        dateLastHarvest={dateLastHarvest}
-        showMonthTitle={true}
-      />
-    </>
-  );
-};
+      </>
+    );
+  }
+);

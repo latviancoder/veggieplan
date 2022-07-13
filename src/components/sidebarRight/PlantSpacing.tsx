@@ -1,5 +1,5 @@
 import { useUpdateAtom } from 'jotai/utils';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import {
   Classes,
@@ -18,7 +18,7 @@ type Props = {
   plantDetails: PlantDetails;
 };
 
-export const PlantSpacing = ({ plantDetails, objectId }: Props) => {
+export const PlantSpacing = memo(({ plantDetails, objectId }: Props) => {
   const setObjects = useUpdateAtom(objectsAtom);
 
   const [inRowSpacing, setInRowSpacing] = useState('');
@@ -122,4 +122,4 @@ export const PlantSpacing = ({ plantDetails, objectId }: Props) => {
       </div>
     </>
   );
-};
+});

@@ -1,8 +1,13 @@
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { Button, Classes, MenuItem } from '@blueprintjs/core';
-import { ItemPredicate, ItemRenderer, Suggest } from '@blueprintjs/select';
+import {
+  ItemPredicate,
+  ItemRenderer,
+  Suggest,
+  Suggest2,
+} from '@blueprintjs/select';
 
 import { objectsAtom } from '../../atoms/objectsAtom';
 import { Plant, PlantDetails, Variety } from '../../types';
@@ -11,109 +16,115 @@ import styles from './PlantHeader.module.scss';
 import { varietiesAtom } from 'atoms/atoms';
 
 type Props = {
-  plantObject: Plant;
+  objectId: string;
+  plantId: number;
+  varietyId?: string;
   plantDetails: PlantDetails;
 };
 
-export const PlantHeader = ({ plantDetails, plantObject }: Props) => {
-  const setObjects = useUpdateAtom(objectsAtom);
+export const PlantHeader = memo(
+  ({ plantDetails, objectId, varietyId, plantId }: Props) => {
+    const setObjects = useUpdateAtom(objectsAtom);
 
-  const varieties = useAtomValue(varietiesAtom);
+    const allVarieties = useAtomValue(varietiesAtom);
+    const plantVarieties = allVarieties.filter(
+      (variety) => variety.plantId === plantId
+    );
 
-  const [showVarietySelect, setShowVarietySelect] = useState(false);
+    const [showVarietySelect, setShowVarietySelect] = useState(false);
 
-  useEffect(() => {
-    return () => setShowVarietySelect(false);
-  }, [plantObject.id]);
+    useEffect(() => {
+      return () => setShowVarietySelect(false);
+    }, [objectId]);
 
-  const itemRenderer: ItemRenderer<Variety> = (
-    item,
-    { modifiers, handleClick }
-  ) => (
-    <MenuItem
-      active={modifiers.active}
-      onClick={handleClick}
-      text={item.name}
-      key={item.name}
-    />
-  );
+    const itemRenderer: ItemRenderer<Variety> = (
+      item,
+      { modifiers, handleClick }
+    ) => (
+      <MenuItem
+        active={modifiers.active}
+        onClick={handleClick}
+        text={item.name}
+        key={item.name}
+      />
+    );
 
-  const inputValueRenderer = (inputValue: Variety) => inputValue.name;
+    const inputValueRenderer = (inputValue: Variety) => inputValue.name;
 
-  const itemPredicate: ItemPredicate<Variety> = (
-    query,
-    item,
-    index,
-    exactMatch
-  ) => {
-    const Title = item.name.toLowerCase();
-    const Query = query.toLowerCase();
+    const itemPredicate: ItemPredicate<Variety> = (
+      query,
+      item,
+      index,
+      exactMatch
+    ) => {
+      const Title = item.name.toLowerCase();
+      const Query = query.toLowerCase();
 
-    if (exactMatch) {
-      return Title === query;
-    } else {
-      return Title.indexOf(Query) >= 0;
-    }
-  };
+      if (exactMatch) {
+        return Title === query;
+      } else {
+        return Title.indexOf(Query) >= 0;
+      }
+    };
 
-  const onItemSelect = (variety: Variety) => {
-    setShowVarietySelect(false);
-
-    if (variety.id) {
-      setObjects({
-        type: 'updateSingle',
-        payload: {
-          object: {
-            varietyId: variety.id,
-          },
-          id: plantObject.id,
-        },
-      });
-    }
-  };
-
-  const varietyName = varieties?.find(
-    ({ id }) => id === plantObject.varietyId
-  )?.name;
-
-  return (
-    <div className={styles.header}>
-      {!showVarietySelect && (
-        <h4 className={Classes.HEADING} style={{ margin: 0 }}>
-          {getPlantName(plantDetails.name, varietyName)}
-        </h4>
-      )}
-      {showVarietySelect ? (
-        <Suggest
-          inputValueRenderer={inputValueRenderer}
-          items={varieties}
-          itemRenderer={itemRenderer}
-          itemPredicate={itemPredicate}
-          onItemSelect={onItemSelect}
-          inputProps={{
-            placeholder: 'Sorte auswählen',
-            autoFocus: true,
-            small: true,
-            onBlur: () => {
-              setShowVarietySelect(false);
+    const onItemSelect = (variety: Variety) => {
+      if (variety.id) {
+        setObjects({
+          type: 'updateSingle',
+          payload: {
+            object: {
+              varietyId: variety.id,
             },
-          }}
-          popoverProps={{ minimal: true }}
-          itemsEqual={(varA, varB) => varA.name === varB.name}
-          fill
-        />
-      ) : (
-        <Button
-          text="Sorte"
-          icon="edit"
-          onClick={() => {
-            setShowVarietySelect(true);
-          }}
-          small
-          minimal
-          intent="primary"
-        />
-      )}
-    </div>
-  );
-};
+            id: objectId,
+          },
+        });
+      }
+
+      setShowVarietySelect(false);
+    };
+
+    const selectedVariety = allVarieties?.find(({ id }) => id === varietyId);
+
+    return (
+      <div className={styles.header}>
+        {!showVarietySelect && (
+          <h4 className={Classes.HEADING} style={{ margin: 0 }}>
+            {getPlantName(plantDetails.name, selectedVariety?.name)}
+          </h4>
+        )}
+        {showVarietySelect ? (
+          <Suggest2
+            inputValueRenderer={inputValueRenderer}
+            items={plantVarieties}
+            itemRenderer={itemRenderer}
+            itemPredicate={itemPredicate}
+            onItemSelect={onItemSelect}
+            selectedItem={selectedVariety}
+            inputProps={{
+              placeholder: 'Sorte auswählen',
+              autoFocus: true,
+              small: true,
+              onBlur: () => {
+                setTimeout(() => setShowVarietySelect(false), 100);
+              },
+            }}
+            popoverProps={{ minimal: true }}
+            itemsEqual={(varA, varB) => varA.name === varB.name}
+            fill
+          />
+        ) : (
+          <Button
+            text="Sorte"
+            icon="edit"
+            onClick={() => {
+              setShowVarietySelect(true);
+            }}
+            small
+            minimal
+            intent="primary"
+          />
+        )}
+      </div>
+    );
+  }
+);

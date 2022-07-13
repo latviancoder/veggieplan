@@ -52,14 +52,11 @@ export const useAutosave = () => {
     (config) => post('/api/config/save', config)
   );
 
-  // console.log(prevConfig.current);
-
   useEffect(() => {
     if (
       prevConfig.current !== undefined &&
       !deepEqual(prevConfig.current, config)
     ) {
-      console.log(prevConfig.current, config);
       saveConfig(config);
     }
 

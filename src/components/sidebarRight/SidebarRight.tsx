@@ -33,7 +33,9 @@ const SidebarRight = memo(({ selectedObject, plantDetails }: Props) => {
       <div className={styles.header}>
         {plantDetails && isPlant(selectedObject) ? (
           <PlantHeader
-            plantObject={selectedObject}
+            objectId={selectedObject.id}
+            plantId={selectedObject.plantId}
+            varietyId={selectedObject.varietyId}
             plantDetails={plantDetails}
           />
         ) : (
@@ -70,8 +72,12 @@ const SidebarRight = memo(({ selectedObject, plantDetails }: Props) => {
             objectId={selectedObject.id}
           />
           <PlantDates
-            plantObject={selectedObject}
-            plantDetails={plantDetails}
+            id={selectedObject.id}
+            dateStartIndoors={selectedObject.dateStartIndoors}
+            dateTransplant={selectedObject.dateTransplant}
+            dateDirectSow={selectedObject.dateDirectSow}
+            dateFirstHarvest={selectedObject.dateFirstHarvest}
+            dateLastHarvest={selectedObject.dateLastHarvest}
           />
         </>
       )}

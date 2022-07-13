@@ -116,6 +116,15 @@ app.post('/api/objects/:objectId/save', async (req, res) => {
 });
 
 app.post('/api/objects/save', async (req, res) => {
+  // const newObjects = req.body || [];
+  // const newObjectsIds = newObjects.map(({ id }) => id);
+
+  // const prevObjects = await client.query(SQL`SELECT * FROM objects`);
+
+  // const deletedObjectsIds = prevObjects.rows
+  //   .filter((prev) => !newObjectsIds.includes(prev.id))
+  //   .map(({ id }) => id);
+
   // Deleted objects
   if (req.body.deletedObjectIds?.length) {
     await client.query(`DELETE FROM objects WHERE id = ANY($1)`, [

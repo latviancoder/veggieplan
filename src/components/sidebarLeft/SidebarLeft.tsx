@@ -1,5 +1,5 @@
 import { useUpdateAtom } from 'jotai/utils';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 import { Button, ButtonGroup, Position, Tooltip } from '@blueprintjs/core';
 
@@ -9,7 +9,7 @@ import { Modes } from '../../types';
 import { PlantsSearch } from './plantsSearch/PlantsSearch';
 import styles from './SidebarLeft.module.scss';
 
-export const SidebarLeft = () => {
+export const SidebarLeft = memo(() => {
   const setMode = useUpdateAtom(modeAtom);
   const setSelectedPlant = useUpdateAtom(selectedPlantAtom);
 
@@ -58,4 +58,4 @@ export const SidebarLeft = () => {
       )}
     </aside>
   );
-};
+});
