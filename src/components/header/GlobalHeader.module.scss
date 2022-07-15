@@ -1,11 +1,10 @@
-@import "@blueprintjs/core/lib/scss/variables";
-@import "/src/variables.scss";
+@import '@blueprintjs/core/lib/scss/variables';
 
 .root {
   border-bottom: 1px solid $light-gray1;
   display: flex;
   align-items: center;
-  height: $header-height;
+  height: var(--header-height);
   padding: 0 5px;
   position: relative;
   z-index: 3;

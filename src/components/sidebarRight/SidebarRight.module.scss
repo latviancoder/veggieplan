@@ -1,5 +1,4 @@
-@import "@blueprintjs/core/lib/scss/variables";
-@import "/src/variables.scss";
+@import '@blueprintjs/core/lib/scss/variables';
 
 .root {
   flex: 0 0 350px;
@@ -8,7 +7,7 @@
   overflow-y: scroll;
   overflow-x: none;
   height: 100vh;
-  margin-top: -$header-height;
+  margin-top: -var(--header-height);
   padding-top: 50px;
   position: relative;
   z-index: 2;
