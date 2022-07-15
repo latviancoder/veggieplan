@@ -34,13 +34,7 @@ export const NotesCell = ({ data }: Props) => {
     }
   }, [isOpen]);
 
-  const { mutate: save } = useMutation<unknown, string, Partial<GardenObject>>(
-    (partialObj) => post(`/api/objects/${data.id}/save`, partialObj)
-  );
-
   const onBlur = () => {
-    save({ notes: value });
-
     setObjects({
       type: 'updateSingle',
       payload: {

@@ -22,16 +22,11 @@ export const useAutosave = () => {
   const prevConfig = useRef<Config | undefined>();
   const prevVarieties = useRef<Variety[] | undefined>();
 
-  const { mutate: saveObjects } = useMutation<
-    unknown,
-    unknown,
-    { changedObjects: GardenObject[]; deletedObjectIds: string[] | undefined }
-  >(({ changedObjects, deletedObjectIds }) => {
-    return post('/api/objects/save', {
-      changedObjects,
-      deletedObjectIds,
-    });
-  });
+  const { mutate: saveObjects } = useMutation<unknown, unknown, GardenObject[]>(
+    (objects) => {
+      return put('/api/objects', objects);
+    }
+  );
 
   const { mutate: saveVarieties } = useMutation<unknown, unknown, Variety[]>(
     (varieties) => put('/api/varieties', varieties)
@@ -83,29 +78,7 @@ export const useAutosave = () => {
             )
           )
         ) {
-          const deletedObjectIds = prevSavedObjects.current
-            ?.filter(
-              ({ id }) => !objects.find(({ id: deletedId }) => id === deletedId)
-            )
-            .map(({ id }) => id);
-
-          const changedObjects = objects.filter((obj) => {
-            if (
-              !deepEqual(
-                { ...obj, zIndex: undefined },
-                {
-                  ...prevSavedObjects.current?.find(({ id }) => id === obj.id),
-                  zIndex: undefined,
-                }
-              )
-            ) {
-              return true;
-            }
-
-            return false;
-          });
-
-          saveObjects({ changedObjects, deletedObjectIds });
+          saveObjects(objects);
 
           prevSavedObjects.current = objects;
         }

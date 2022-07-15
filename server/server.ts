@@ -1,6 +1,8 @@
+import { Variety, GardenObject } from '../src/types';
 import express from 'express';
 import path, { dirname } from 'path';
 import pg from 'pg';
+// @ts-ignore
 import camelCaseObjectDeep from 'camelcase-object-deep';
 import SQL from 'sql-template-strings';
 
@@ -61,7 +63,7 @@ app.get('/api/varieties', async (req, res) => {
   res.json(camelCaseObjectDeep(result.rows));
 });
 
-app.put('/api/varieties', async (req, res) => {
+app.put<void, void, Variety[]>('/api/varieties', async (req, res) => {
   const newVarieties = req.body || [];
   const newVarietiesIds = newVarieties.map(({ id }) => id);
 
@@ -103,37 +105,41 @@ app.get('/api/varieties/:plantId', async (req, res) => {
   res.json(camelCaseObjectDeep(result.rows));
 });
 
-app.post('/api/objects/:objectId/save', async (req, res) => {
-  const query = SQL`UPDATE objects SET`;
+app.put<void, void, any[]>('/api/objects', async (req, res) => {
+  const newObjects = req.body || [];
+  const newObjectsIds = newObjects.map(({ id }) => id);
 
-  query.append(SQL` notes=${req.body.notes} `);
+  const prevObjects = await client.query(SQL`SELECT * FROM objects`);
 
-  query.append(SQL` WHERE id=${req.params.objectId}`);
+  const deletedObjectsIds = prevObjects.rows
+    .filter((prev) => !newObjectsIds.includes(prev.id))
+    .map(({ id }) => id);
 
-  await client.query(query);
-
-  res.send();
-});
-
-app.post('/api/objects/save', async (req, res) => {
-  // const newObjects = req.body || [];
-  // const newObjectsIds = newObjects.map(({ id }) => id);
-
-  // const prevObjects = await client.query(SQL`SELECT * FROM objects`);
-
-  // const deletedObjectsIds = prevObjects.rows
-  //   .filter((prev) => !newObjectsIds.includes(prev.id))
-  //   .map(({ id }) => id);
-
-  // Deleted objects
-  if (req.body.deletedObjectIds?.length) {
+  if (deletedObjectsIds.length) {
     await client.query(`DELETE FROM objects WHERE id = ANY($1)`, [
-      req.body.deletedObjectIds,
+      deletedObjectsIds,
     ]);
   }
 
-  // Upsert all changed objects
-  for (const obj of req.body.changedObjects || []) {
+  res.send();
+
+  // const changedObjects = objects.filter((obj) => {
+  //   if (
+  //     !deepEqual(
+  //       { ...obj, zIndex: undefined },
+  //       {
+  //         ...prevSavedObjects.current?.find(({ id }) => id === obj.id),
+  //         zIndex: undefined,
+  //       }
+  //     )
+  //   ) {
+  //     return true;
+  //   }
+
+  //   return false;
+  // });
+
+  for (const obj of req.body || []) {
     await client.query(
       SQL`INSERT INTO objects 
         (id, x, y, width, height, rotation, variety_id, object_type, shape_type, plant_id, 
