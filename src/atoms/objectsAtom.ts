@@ -1,5 +1,6 @@
 import produce from 'immer';
 import { atom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 import isArray from 'lodash.isarray';
 import sortBy from 'lodash.sortby';
 
@@ -7,7 +8,7 @@ import { GardenObject } from '../types';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { utilsAtom } from './utilsAtom';
 
-const _objectsAtom = atom<GardenObject[]>([]);
+const _objectsAtom = atomWithStorage<GardenObject[]>('objects', []);
 
 type SetParams = (
   | {
