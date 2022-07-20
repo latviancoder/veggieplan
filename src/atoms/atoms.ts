@@ -29,7 +29,7 @@ export const canvasAtom = atom<{
 );
 
 // In meters
-export const plotAtom = atom<Config>({} as Config);
+export const plotAtom = atomWithStorage<Config>('config', {} as Config);
 
 export const plotCanvasAtom = atom<{ width: number; height: number }>((get) => {
   const plot = get(plotAtom);
@@ -67,6 +67,6 @@ export const selectedPlantAtom = atom<null | number>(null);
 
 export const plantsAtom = atom<PlantDetails[]>([]);
 
-export const varietiesAtom = atom<Variety[]>([]);
+export const varietiesAtom = atomWithStorage<Variety[]>('varieties', []);
 
 export const viewAtom = atomWithStorage<Views>('view', Views.PLAN);
