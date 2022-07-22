@@ -1,1 +1,1 @@
-web: node --esm server/server.ts
+web: ts-node --esm server/server.ts
