@@ -5,9 +5,9 @@ import { Button, ButtonGroup } from '@blueprintjs/core';
 import { viewAtom } from '../../atoms/atoms';
 import { Views } from '../../types';
 import styles from './GlobalHeader.module.scss';
-import { memo } from 'react';
+import { FC, memo } from 'react';
 
-export const GlobalHeader = memo(() => {
+export const GlobalHeader: FC<any> = memo(({ children }) => {
   const [view, setView] = useAtom(viewAtom);
 
   return (
@@ -37,6 +37,7 @@ export const GlobalHeader = memo(() => {
           Kulturen & Sorten
         </Button>
       </ButtonGroup>
+      <div className={styles.children}>{children}</div>
     </div>
   );
 });

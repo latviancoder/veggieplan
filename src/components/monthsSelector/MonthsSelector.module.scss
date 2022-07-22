@@ -1,4 +1,4 @@
-@import "@blueprintjs/core/lib/scss/variables";
+@import '@blueprintjs/core/lib/scss/variables';
 
 .container {
   height: 30px;
@@ -20,9 +20,9 @@
   border: none;
   outline: none;
   position: absolute;
-  top: 5px;
-  bottom: 5px;
-  left: 5px;
+  top: 0;
+  bottom: 0;
+  width: 5px;
 }
 
 .month {

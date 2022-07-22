@@ -10,9 +10,8 @@ import {
 } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { useAtomValue } from 'jotai/utils';
-import { divide } from 'lodash';
 import compact from 'lodash.compact';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isPlant } from 'utils/utils';
 
 import {
@@ -32,16 +31,26 @@ import styles from './MonthsSelector.module.scss';
 
 const GRID_SIZE = 50;
 
-export function modifier(initial: number, monthsCount: number): Modifier {
-  return ({ transform }) => {
+export function modifier(
+  initial: number,
+  monthsCount: number,
+  func: any
+): Modifier {
+  return (event) => {
+    const { transform } = event;
+
     let after = transform.x;
 
     if (after + initial < 0) {
       after = -initial;
     }
 
-    if ((after + initial) / GRID_SIZE > monthsCount - 1) {
-      after = GRID_SIZE * (monthsCount - 1) - initial;
+    if (after + initial >= monthsCount * GRID_SIZE) {
+      after = GRID_SIZE * monthsCount - initial;
+    }
+
+    if (func(after + initial).flag) {
+      after -= func(after + initial).diff;
     }
 
     return {
@@ -61,13 +70,22 @@ type Month = {
 export const MonthsSelectorContainer = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const [initial, setInitial] = useState(0);
-  const [translate, setTranslate] = useState(0);
-
+  const [dimensions, setDimensions] = useState<{
+    width: Number;
+    height: number;
+  } | null>(null);
   const objects = useAtomValue(objectsAtom);
   const mouseSensor = useSensor(MouseSensor);
   const touchSensor = useSensor(TouchSensor);
   const sensors = useSensors(mouseSensor, touchSensor);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const { width, height } = containerRef.current.getBoundingClientRect();
+
+      setDimensions({ width, height });
+    }
+  }, []);
 
   const months: Month[] = useMemo(() => {
     const dates = objects
@@ -112,72 +130,88 @@ export const MonthsSelectorContainer = () => {
     return [];
   }, [objects]);
 
-  const snapToGridModifier = useCallback(() => {
-    return modifier(initial, months.length);
-  }, [initial, months.length]);
+  const [initial1, setInitial1] = useState(0);
+  const [translate1, setTranslate1] = useState(0);
 
-  const onDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      setInitial(initial + event.delta.x);
-    },
-    [initial]
-  );
+  const [initial2, setInitial2] = useState(GRID_SIZE * months.length);
+  const [translate2, setTranslate2] = useState(GRID_SIZE * months.length);
 
-  const onDragMove = useCallback(
-    (event: DragMoveEvent) => {
-      setTranslate(initial + event.delta.x);
-    },
-    [initial]
-  );
+  const snapToGridModifier1 = useCallback(() => {
+    return modifier(initial1, months.length, (test: number) => {
+      return {
+        flag: test >= initial2,
+        diff: test - initial2,
+      };
+    });
+  }, [initial1, months.length, initial2]);
+
+  const snapToGridModifier2 = useCallback(() => {
+    return modifier(initial2, months.length, (test: number) => {
+      return {
+        flag: test <= initial1,
+        diff: test - initial1,
+      };
+    });
+  }, [initial2, months.length, initial1]);
 
   return (
     <div className={styles.container} ref={containerRef}>
-      {containerRef.current && (
+      <div className={styles.inner}>
         <DndContext
-          modifiers={[snapToGridModifier()]}
+          modifiers={[snapToGridModifier1()]}
           sensors={sensors}
-          onDragEnd={onDragEnd}
-          onDragMove={onDragMove}
+          onDragEnd={(event) => {
+            setInitial1(initial1 + event.delta.x);
+          }}
+          onDragMove={(event) => setTranslate1(initial1 + event.delta.x)}
         >
-          <MonthsSelector translate={translate} months={months} />
+          <Slider translate={translate1} color="red" />
         </DndContext>
-      )}
+        <DndContext
+          modifiers={[snapToGridModifier2()]}
+          sensors={sensors}
+          onDragEnd={(event) => {
+            setInitial2(initial2 + event.delta.x);
+          }}
+          onDragMove={(event) => setTranslate2(initial2 + event.delta.x)}
+        >
+          <Slider translate={translate2} color="blue" />
+        </DndContext>
+        {months.map(({ title, year, month }, i) => (
+          <div
+            key={`${year}-${month}`}
+            className={classNames(styles.month)}
+            style={{ width: `${GRID_SIZE}px` }}
+          >
+            {title}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
-export const MonthsSelector = ({
+export const Slider = ({
   translate,
-  months,
+  color,
 }: {
   translate: number;
-  months: Month[];
+  color: string;
 }) => {
   const { attributes, listeners, setNodeRef } = useDraggable({
     id: 'unique-id',
   });
 
   return (
-    <div className={styles.inner}>
-      <button
-        ref={setNodeRef}
-        className={styles.handler}
-        style={{
-          transform: `translateX(${translate}px)`,
-          width: `${GRID_SIZE}px`,
-        }}
-        {...listeners}
-        {...attributes}
-      />
-      {months.map(({ title, year, month }, i) => (
-        <div
-          key={`${year}-${month}`}
-          className={classNames(styles.month)}
-          style={{ width: `${GRID_SIZE}px` }}
-        >
-          {title}
-        </div>
-      ))}
-    </div>
+    <button
+      ref={setNodeRef}
+      className={styles.handler}
+      style={{
+        transform: `translateX(${translate}px)`,
+        backgroundColor: color,
+      }}
+      {...listeners}
+      {...attributes}
+    />
   );
 };
