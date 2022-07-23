@@ -16,9 +16,6 @@ import { isPlant } from 'utils/utils';
 
 import {
   DndContext,
-  DragEndEvent,
-  DragMoveEvent,
-  DragStartEvent,
   Modifier,
   MouseSensor,
   TouchSensor,
@@ -30,11 +27,12 @@ import {
 import styles from './MonthsSelector.module.scss';
 
 const GRID_SIZE = 50;
+const HANDLER_SIZE = 10;
 
-export function modifier(
+export function constraintMovementModifier(
   initial: number,
   monthsCount: number,
-  func: any
+  collisionComparator: (n: number) => { isColliding: boolean; diff: number }
 ): Modifier {
   return (event) => {
     const { transform } = event;
@@ -49,8 +47,8 @@ export function modifier(
       after = GRID_SIZE * monthsCount - initial;
     }
 
-    if (func(after + initial).flag) {
-      after -= func(after + initial).diff;
+    if (collisionComparator(after + initial).isColliding) {
+      after -= collisionComparator(after + initial).diff;
     }
 
     return {
@@ -136,29 +134,33 @@ export const MonthsSelectorContainer = () => {
   const [initial2, setInitial2] = useState(GRID_SIZE * months.length);
   const [translate2, setTranslate2] = useState(GRID_SIZE * months.length);
 
-  const snapToGridModifier1 = useCallback(() => {
-    return modifier(initial1, months.length, (test: number) => {
-      return {
-        flag: test >= initial2,
-        diff: test - initial2,
-      };
-    });
+  const modifier1 = useCallback(() => {
+    return constraintMovementModifier(
+      initial1,
+      months.length,
+      (handlerPosition: number) => ({
+        isColliding: handlerPosition >= initial2 - HANDLER_SIZE,
+        diff: handlerPosition - initial2 + HANDLER_SIZE,
+      })
+    );
   }, [initial1, months.length, initial2]);
 
-  const snapToGridModifier2 = useCallback(() => {
-    return modifier(initial2, months.length, (test: number) => {
-      return {
-        flag: test <= initial1,
-        diff: test - initial1,
-      };
-    });
+  const modifier2 = useCallback(() => {
+    return constraintMovementModifier(
+      initial2,
+      months.length,
+      (handlerPosition: number) => ({
+        isColliding: handlerPosition <= initial1 + HANDLER_SIZE,
+        diff: handlerPosition - initial1 - HANDLER_SIZE,
+      })
+    );
   }, [initial2, months.length, initial1]);
 
   return (
     <div className={styles.container} ref={containerRef}>
       <div className={styles.inner}>
         <DndContext
-          modifiers={[snapToGridModifier1()]}
+          modifiers={[modifier1()]}
           sensors={sensors}
           onDragEnd={(event) => {
             setInitial1(initial1 + event.delta.x);
@@ -168,7 +170,7 @@ export const MonthsSelectorContainer = () => {
           <Slider translate={translate1} color="red" />
         </DndContext>
         <DndContext
-          modifiers={[snapToGridModifier2()]}
+          modifiers={[modifier2()]}
           sensors={sensors}
           onDragEnd={(event) => {
             setInitial2(initial2 + event.delta.x);
@@ -209,6 +211,7 @@ export const Slider = ({
       style={{
         transform: `translateX(${translate}px)`,
         backgroundColor: color,
+        width: `${HANDLER_SIZE}px`,
       }}
       {...listeners}
       {...attributes}
