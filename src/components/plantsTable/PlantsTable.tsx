@@ -2,7 +2,7 @@ import { plantsAtom, varietiesAtom } from 'atoms/atoms';
 import { atom, useAtom, useAtomValue } from 'jotai';
 import { HTMLTable } from '@blueprintjs/core';
 import { PlantsTableRow } from './PlantsTableRow';
-import groupBy from 'lodash.groupby';
+import { groupBy } from 'lodash';
 import { useMemo } from 'react';
 import { PlantsTableVarietyRow } from './PlantsTableVarietyRow';
 import { Variety, PlantDetails } from 'types';

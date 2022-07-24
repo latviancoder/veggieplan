@@ -12,7 +12,7 @@ import {
   startOfMonth,
 } from 'date-fns';
 import { de } from 'date-fns/locale';
-import compact from 'lodash.compact';
+import { compact } from 'lodash';
 
 import { Colors } from '@blueprintjs/core';
 

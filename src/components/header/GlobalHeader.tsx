@@ -1,13 +1,15 @@
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 
 import { Button, ButtonGroup } from '@blueprintjs/core';
 
-import { viewAtom } from '../../atoms/atoms';
+import { selectedDatesAtom, viewAtom } from '../../atoms/atoms';
 import { Views } from '../../types';
 import styles from './GlobalHeader.module.scss';
 import { FC, memo } from 'react';
+import { formatDate } from 'utils/utils';
 
 export const GlobalHeader: FC<any> = memo(({ children }) => {
+  const selectedDates = useAtomValue(selectedDatesAtom);
   const [view, setView] = useAtom(viewAtom);
 
   return (
@@ -37,7 +39,15 @@ export const GlobalHeader: FC<any> = memo(({ children }) => {
           Kulturen & Sorten
         </Button>
       </ButtonGroup>
-      <div className={styles.children}>{children}</div>
+      <div className={styles.right}>
+        {selectedDates && (
+          <div className={styles.selectedDates}>
+            {formatDate(selectedDates?.start, 'dd MMM')} -{' '}
+            {formatDate(selectedDates?.end, 'dd MMM')}
+          </div>
+        )}
+        <div>{children}</div>
+      </div>
     </div>
   );
 });

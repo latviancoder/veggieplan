@@ -2,7 +2,7 @@ import Hammer from 'hammerjs';
 import { useUndoRedo } from 'hooks/useUndoRedo';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import isEmpty from 'lodash.isempty';
+import { isEmpty } from 'lodash';
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 

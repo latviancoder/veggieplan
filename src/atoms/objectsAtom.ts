@@ -1,8 +1,7 @@
 import produce from 'immer';
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import isArray from 'lodash.isarray';
-import sortBy from 'lodash.sortby';
+import { isArray, sortBy } from 'lodash';
 
 import { GardenObject } from '../types';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';

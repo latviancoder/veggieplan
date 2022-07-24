@@ -12,6 +12,14 @@
   background: #fff;
 }
 
-.children {
+.right {
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+}
+
+.selectedDates {
+  margin-right: 5px;
+  font-weight: bold;
 }

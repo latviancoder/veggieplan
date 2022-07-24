@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useAtomDevtools } from 'jotai/devtools';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import isEmpty from 'lodash.isempty';
+import { isEmpty } from 'lodash';
 import { lazy, Suspense, useEffect, useLayoutEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
 
@@ -95,7 +95,7 @@ const Root = () => {
     }
   }, [view]);
 
-  // useAutosave();
+  useAutosave();
 
   return (
     <div className={styles.root}>

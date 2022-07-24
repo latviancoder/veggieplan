@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import isEmpty from 'lodash.isempty';
+import { isEmpty } from 'lodash';
 
 import {
   Config,
@@ -70,3 +70,8 @@ export const plantsAtom = atom<PlantDetails[]>([]);
 export const varietiesAtom = atomWithStorage<Variety[]>('varieties', []);
 
 export const viewAtom = atomWithStorage<Views>('view', Views.PLAN);
+
+export const selectedDatesAtom = atom<null | {
+  start: Date;
+  end: Date;
+}>(null);

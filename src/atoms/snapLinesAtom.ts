@@ -3,7 +3,7 @@ import { atom } from 'jotai';
 import { GardenObject, Point, SnapLine } from '../types';
 import { isRectangular, rotateRectangle } from '../utils/utils';
 import { SNAPPING_THRESHOLD } from '../constants';
-import uniq from 'lodash.uniq';
+import { uniq } from 'lodash';
 
 const _snapLinesAtom = atom<SnapLine[]>([]);
 

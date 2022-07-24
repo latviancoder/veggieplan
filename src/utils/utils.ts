@@ -1,4 +1,5 @@
-import { format } from 'date-fns';
+import { isEmpty, compact } from 'lodash';
+import { format, max, min } from 'date-fns';
 import { de } from 'date-fns/locale';
 import produce from 'immer';
 import { useAtomValue } from 'jotai/utils';
@@ -463,12 +464,15 @@ export const put = (url: string, body: any) =>
     body: JSON.stringify(body),
   });
 
-export const formatDate = (date: Date | string, f = 'dd.MM.yyyy'): string => {
+export const formatDate = (
+  date: Date | string | undefined,
+  f = 'dd.MM.yyyy'
+): string => {
   if (typeof date === 'string') {
     date = new Date(date);
   }
 
-  return format(date, f, { locale: de });
+  return date ? format(date, f, { locale: de }) : '';
 };
 
 export const getPlantName = (name: string, variety?: string): string => {
@@ -479,4 +483,31 @@ export const getPlantName = (name: string, variety?: string): string => {
   }
 
   return res;
+};
+
+export const getTerminalDates = ({
+  dateStartIndoors,
+  dateTransplant,
+  dateDirectSow,
+  dateFirstHarvest,
+  dateLastHarvest,
+}: {
+  dateStartIndoors: string | undefined;
+  dateTransplant: string | undefined;
+  dateDirectSow: string | undefined;
+  dateFirstHarvest: string | undefined;
+  dateLastHarvest: string | undefined;
+}): { earliest: Date | undefined; latest: Date | undefined } => {
+  const si = dateStartIndoors ? new Date(dateStartIndoors) : undefined;
+  const tp = dateTransplant ? new Date(dateTransplant) : undefined;
+  const ds = dateDirectSow ? new Date(dateDirectSow) : undefined;
+  const fh = dateFirstHarvest ? new Date(dateFirstHarvest) : undefined;
+  const lh = dateLastHarvest ? new Date(dateLastHarvest) : undefined;
+
+  return {
+    earliest: isEmpty(compact([si, tp, ds]))
+      ? undefined
+      : min(compact([si, tp, ds])),
+    latest: isEmpty(compact([fh, lh])) ? undefined : max(compact([fh, lh])),
+  };
 };
