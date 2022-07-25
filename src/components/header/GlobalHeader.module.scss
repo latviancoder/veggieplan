@@ -6,7 +6,6 @@
   align-items: center;
   justify-content: space-between;
   height: var(--header-height);
-  padding: 0 5px;
   position: relative;
   z-index: 3;
   background: #fff;
@@ -20,6 +19,6 @@
 }
 
 .selectedDates {
-  margin-right: 5px;
   font-weight: bold;
+  margin-right: 10px;
 }

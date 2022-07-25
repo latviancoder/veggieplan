@@ -40,7 +40,7 @@ import styles from './MonthsSelector.module.scss';
 import { selectedDatesAtom } from 'atoms/atoms';
 
 const GRID_SIZE = 50;
-const HANDLER_SIZE = 10;
+const HANDLER_SIZE = 5;
 
 export function constraintMovementModifier(
   initial: number,
@@ -172,6 +172,7 @@ export const MonthsSelectorContainer = () => {
   const [initial2, setInitial2] = useState(GRID_SIZE * months.length);
   const [translate2, setTranslate2] = useState(GRID_SIZE * months.length);
 
+  // When `months` are changed from outside we need to modify positions of sliders accordingly
   useEffect(() => {
     if (!deepEqual(prevMonths.current, months) && selectedDates) {
       const intervalLength = (interval || []).length - 1;
@@ -232,8 +233,8 @@ export const MonthsSelectorContainer = () => {
       initial1,
       months.length,
       (handlerPosition: number) => ({
-        isColliding: handlerPosition >= initial2 - HANDLER_SIZE,
-        diff: handlerPosition - initial2 + HANDLER_SIZE,
+        isColliding: handlerPosition >= initial2 - HANDLER_SIZE * 2,
+        diff: handlerPosition - initial2 + HANDLER_SIZE * 2,
       })
     );
   }, [initial1, months.length, initial2]);
@@ -243,8 +244,8 @@ export const MonthsSelectorContainer = () => {
       initial2,
       months.length,
       (handlerPosition: number) => ({
-        isColliding: handlerPosition <= initial1 + HANDLER_SIZE,
-        diff: handlerPosition - initial1 - HANDLER_SIZE,
+        isColliding: handlerPosition <= initial1 + HANDLER_SIZE * 2,
+        diff: handlerPosition - initial1 - HANDLER_SIZE * 2,
       })
     );
   }, [initial2, months.length, initial1]);
@@ -272,7 +273,7 @@ export const MonthsSelectorContainer = () => {
           }}
           onDragMove={(event) => setTranslate2(initial2 + event.delta.x)}
         >
-          <Slider translate={translate2} color="blue" />
+          <Slider translate={translate2 - HANDLER_SIZE} color="blue" />
         </DndContext>
         {months.map(({ title, year, month }, i) => (
           <div

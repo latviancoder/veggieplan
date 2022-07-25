@@ -40,7 +40,7 @@ export const GlobalHeader: FC<any> = memo(({ children }) => {
         </Button>
       </ButtonGroup>
       <div className={styles.right}>
-        {selectedDates && (
+        {selectedDates && view === Views.PLAN && (
           <div className={styles.selectedDates}>
             {formatDate(selectedDates?.start, 'dd MMM')} -{' '}
             {formatDate(selectedDates?.end, 'dd MMM')}
