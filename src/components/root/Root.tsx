@@ -16,7 +16,7 @@ import { GardenObject, PlantDetails, Variety, Views } from '../../types';
 import { SidebarRightConnected } from '../sidebarRight/SidebarRight';
 import { DrawableArea } from '../drawableArea/DrawableArea';
 import { GlobalHeader } from '../header/GlobalHeader';
-import { MonthsSelectorContainer } from '../monthsSelector/MonthsSelector';
+import { MonthsSelector } from '../monthsSelector/MonthsSelector';
 import { SidebarLeft } from '../sidebarLeft/SidebarLeft';
 import styles from './Root.module.css';
 import { useAutosave } from 'hooks/useAutoSave';
@@ -108,7 +108,7 @@ const Root = () => {
               marginRight: '5px',
             }}
           >
-            <MonthsSelectorContainer />
+            <MonthsSelector />
           </div>
         )}
       </GlobalHeader>

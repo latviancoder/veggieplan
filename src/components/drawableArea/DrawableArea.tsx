@@ -1,6 +1,6 @@
 import Hammer from 'hammerjs';
 import { useUndoRedo } from 'hooks/useUndoRedo';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { isEmpty } from 'lodash';
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
@@ -31,6 +31,7 @@ import { Objects } from '../shapes/Objects';
 import { SnapLines } from '../snapLines/SnapLines';
 import { Zoom } from '../zoom/Zoom';
 import styles from './DrawableArea.module.scss';
+import { selectedDatesAtom } from 'atoms/selectedDatesAtom';
 
 function animate(time: number) {
   requestAnimationFrame(animate);
@@ -43,8 +44,8 @@ export const DrawableArea = () => {
 
   const rootRef = useRef<HTMLDivElement>(null);
 
-  const [plotCanvas] = useAtom(plotCanvasAtom);
-  const [offset] = useAtom(offsetAtom);
+  const plotCanvas = useAtomValue(plotCanvasAtom);
+  const offset = useAtomValue(offsetAtom);
   const [zoom, setZoom] = useAtom(zoomAtom);
   const [canvas, setCanvas] = useAtom(canvasAtom);
   const setTap = useUpdateAtom(tapAtom);

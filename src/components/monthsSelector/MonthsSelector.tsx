@@ -17,6 +17,7 @@ import { useAtom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
 import { compact, isEmpty, intersectionWith } from 'lodash';
 import {
+  memo,
   useCallback,
   useEffect,
   useMemo,
@@ -37,7 +38,7 @@ import {
 } from '@dnd-kit/core';
 
 import styles from './MonthsSelector.module.scss';
-import { selectedDatesAtom } from 'atoms/atoms';
+import { selectedDatesAtom } from 'atoms/selectedDatesAtom';
 
 const GRID_SIZE = 50;
 const HANDLER_SIZE = 5;
@@ -78,8 +79,7 @@ type Month = {
   year: number;
 };
 
-export const MonthsSelectorContainer = () => {
-  const prevMonths = useRef<Month[] | null>(null);
+export const MonthsSelector = memo(() => {
   const prevInterval = useRef<Date[] | undefined>(undefined);
 
   const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
@@ -91,6 +91,7 @@ export const MonthsSelectorContainer = () => {
     height: number;
   } | null>(null);
   const objects = useAtomValue(objectsAtom);
+
   const mouseSensor = useSensor(MouseSensor);
   const touchSensor = useSensor(TouchSensor);
   const sensors = useSensors(mouseSensor, touchSensor);
@@ -165,6 +166,8 @@ export const MonthsSelectorContainer = () => {
 
     return [];
   }, [objects]);
+
+  const prevMonths = useRef<Month[] | null>(months);
 
   const [initial1, setInitial1] = useState(0);
   const [translate1, setTranslate1] = useState(0);
@@ -252,6 +255,9 @@ export const MonthsSelectorContainer = () => {
 
   if (!months.length) return null;
 
+  // console.log(months);
+  // console.log(selectedDates);
+
   return (
     <div className={styles.container} ref={containerRef}>
       <div className={styles.inner}>
@@ -287,7 +293,7 @@ export const MonthsSelectorContainer = () => {
       </div>
     </div>
   );
-};
+});
 
 export const Slider = ({
   translate,

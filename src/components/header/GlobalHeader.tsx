@@ -2,11 +2,12 @@ import { useAtom, useAtomValue } from 'jotai';
 
 import { Button, ButtonGroup } from '@blueprintjs/core';
 
-import { selectedDatesAtom, viewAtom } from '../../atoms/atoms';
+import { viewAtom } from '../../atoms/atoms';
 import { Views } from '../../types';
 import styles from './GlobalHeader.module.scss';
 import { FC, memo } from 'react';
 import { formatDate } from 'utils/utils';
+import { selectedDatesAtom } from 'atoms/selectedDatesAtom';
 
 export const GlobalHeader: FC<any> = memo(({ children }) => {
   const selectedDates = useAtomValue(selectedDatesAtom);
