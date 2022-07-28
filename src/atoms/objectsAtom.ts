@@ -4,6 +4,7 @@ import { atomWithStorage } from 'jotai/utils';
 import { isArray, sortBy } from 'lodash';
 
 import { GardenObject } from '../types';
+import { hiddenObjectIdsAtom } from './atoms';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { utilsAtom } from './utilsAtom';
 
@@ -30,6 +31,7 @@ type SetParams = (
 export const objectsInMetersAtom = atom<GardenObject[], SetParams>(
   (get) => {
     const selectedObjectIds = get(selectedObjectIdsAtom);
+    const hiddenObjectIds = get(hiddenObjectIdsAtom);
 
     let objects = get(_objectsAtom);
 
@@ -40,6 +42,10 @@ export const objectsInMetersAtom = atom<GardenObject[], SetParams>(
         draft.zIndex = isSelected
           ? selectedObjectIds.indexOf(draft.id) + 1
           : undefined;
+
+        if (hiddenObjectIds.includes(draft.id)) {
+          draft.zIndex = -1;
+        }
       })
     );
 

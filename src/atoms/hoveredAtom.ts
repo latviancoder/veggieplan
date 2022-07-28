@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 import { zoomAtom } from './zoomAtom';
 import { Modes } from '../types';
 import { getObjectAtPoint } from '../utils/utils';
-import { modeAtom, mousePositionAtom } from './atoms';
+import { modeAtom, mousePositionAtom, hiddenObjectIdsAtom } from './atoms';
 import { objectsAtom } from './objectsAtom';
 import { utilsAtom } from './utilsAtom';
 
@@ -12,6 +12,7 @@ export const hoveredAtom = atom<null | string>((get) => {
   const mode = get(modeAtom);
   const mousePosition = get(mousePositionAtom);
   const zoom = get(zoomAtom);
+  const hiddenObjectIds = get(hiddenObjectIdsAtom);
 
   let hoveredObject;
 
@@ -21,7 +22,7 @@ export const hoveredAtom = atom<null | string>((get) => {
         x: absoluteToRelativeX(mousePosition.x),
         y: absoluteToRelativeY(mousePosition.y),
       },
-      objects,
+      objects: objects.filter(({ id }) => !hiddenObjectIds.includes(id)),
       offset: 2 / zoom,
     });
   }

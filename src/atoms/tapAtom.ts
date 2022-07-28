@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 
 import { Modes, ObjectTypes, Plant, Point } from '../types';
 import { getObjectAtPoint } from '../utils/utils';
-import { modeAtom, selectedPlantAtom } from './atoms';
+import { modeAtom, selectedPlantAtom, hiddenObjectIdsAtom } from './atoms';
 import { objectsAtom } from './objectsAtom';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { utilsAtom } from './utilsAtom';
@@ -27,6 +27,7 @@ export const tapAtom = atom<unknown, Params>(
     const objects = get(objectsAtom);
     const selectedObjectIds = get(selectedObjectIdsAtom);
     const selectedPlantId = get(selectedPlantAtom);
+    const hiddenObjectIds = get(hiddenObjectIdsAtom);
 
     if (selectedPlantId) {
       const plantDetails = getPlantDetails(selectedPlantId);
@@ -63,7 +64,7 @@ export const tapAtom = atom<unknown, Params>(
         x: absoluteToRelativeX(center.x),
         y: absoluteToRelativeY(center.y),
       },
-      objects,
+      objects: objects.filter(({ id }) => !hiddenObjectIds.includes(id)),
       offset: 2 / zoom,
     });
 

@@ -36,9 +36,9 @@ export const Rectangle = memo(
     const zoom = useAtomValue(zoomAtom);
 
     let strokeWidth = 2 / zoom;
-    let fillOpacity = 0.5;
-    let fill = isPlant(rest) ? Colors.SEPIA3 : 'transparent';
-    let stroke = isPlant(rest) ? 'transparent' : Colors.SEPIA2;
+    let fillOpacity = 1;
+    let fill = isPlant(rest) ? Colors.SEPIA5 : 'transparent';
+    let stroke = Colors.SEPIA2;
     if (isSelected) {
       stroke = Colors.VIOLET1;
     }
@@ -49,16 +49,15 @@ export const Rectangle = memo(
     if (isHovered) {
       stroke = Colors.COBALT1;
       if (isPlant(rest)) {
-        fill = Colors.SEPIA1;
+        fill = Colors.SEPIA4;
       } else {
         fill = 'transparent';
-        fillOpacity = 1;
       }
     }
 
     if (isHidden) {
-      stroke = '#ddd';
-      fill = '#ddd';
+      stroke = '#eee';
+      fill = '#eee';
     }
 
     let plantIconSize = 30;
@@ -104,6 +103,7 @@ export const Rectangle = memo(
 
         {!isHovered && !isInteracted && isPlant(rest) && (
           <image
+            style={isHidden ? { filter: 'grayscale(1)' } : {}}
             href={hasPicture ? `image/${rest.plantId}.png` : 'image/plant.png'}
             height={plantIconSize > 1 ? plantIconSize : 1}
             width={plantIconSize > 1 ? plantIconSize : 1}

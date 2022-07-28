@@ -20,6 +20,7 @@ import {
 import { rectangleHandlerMap } from '../utils/rectangleHandlerMap';
 import {
   creatableAtom,
+  hiddenObjectIdsAtom,
   modeAtom,
   offsetAtom,
   selectedPlantAtom,
@@ -53,6 +54,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
     const zoom = get(zoomAtom);
     const selectedObjectIds = get(selectedObjectIdsAtom);
     const selectedPlant = get(selectedPlantAtom);
+    const hiddenObjectIds = get(hiddenObjectIdsAtom);
 
     // Wben panning is starting we want to save starting offset and click position
     if (panStart) {
@@ -127,7 +129,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
             x: panStartX,
             y: panStartY,
           },
-          objects,
+          objects: objects.filter(({ id }) => !hiddenObjectIds.includes(id)),
           offset: 2 / zoom,
         });
 
