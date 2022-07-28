@@ -104,7 +104,7 @@ export const Badge = () => {
         ref={textRef}
         x={width / 2}
         y={height / 2}
-        style={{ fontSize: 13 / zoom, fontFamily: 'Roboto Mono' }}
+        style={{ fontSize: 12 / zoom, fontFamily: 'Roboto Mono' }}
         dominantBaseline="middle"
         textAnchor="middle"
         transform={
