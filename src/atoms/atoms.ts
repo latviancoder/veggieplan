@@ -70,3 +70,5 @@ export const plantsAtom = atom<PlantDetails[]>([]);
 export const varietiesAtom = atomWithStorage<Variety[]>('varieties', []);
 
 export const viewAtom = atomWithStorage<Views>('view', Views.PLAN);
+
+export const hiddenObjectIdsAtom = atom<string[]>([]);

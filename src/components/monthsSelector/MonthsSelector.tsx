@@ -18,6 +18,7 @@ import { useAtomValue } from 'jotai/utils';
 import { compact, isEmpty, intersectionWith } from 'lodash';
 import {
   memo,
+  startTransition,
   useCallback,
   useEffect,
   useMemo,
@@ -105,24 +106,7 @@ export const MonthsSelector = memo(() => {
   }, []);
 
   const { earliestDate, latestDate, interval } = useMemo(() => {
-    const objectTerminalDates = objects
-      .filter(isPlant)
-      .map(
-        ({
-          dateStartIndoors,
-          dateTransplant,
-          dateDirectSow,
-          dateFirstHarvest,
-          dateLastHarvest,
-        }) =>
-          getTerminalDates({
-            dateStartIndoors,
-            dateTransplant,
-            dateDirectSow,
-            dateFirstHarvest,
-            dateLastHarvest,
-          })
-      );
+    const objectTerminalDates = objects.filter(isPlant).map(getTerminalDates);
 
     const earliest: Date | undefined = isEmpty(
       compact(objectTerminalDates.map((d) => d.earliest))
@@ -168,6 +152,7 @@ export const MonthsSelector = memo(() => {
   }, [objects]);
 
   const prevMonths = useRef<Month[] | null>(months);
+  const prevSelectedDates = useRef(selectedDates);
 
   const [initial1, setInitial1] = useState(0);
   const [translate1, setTranslate1] = useState(0);
@@ -175,7 +160,7 @@ export const MonthsSelector = memo(() => {
   const [initial2, setInitial2] = useState(GRID_SIZE * months.length);
   const [translate2, setTranslate2] = useState(GRID_SIZE * months.length);
 
-  // When `months` are changed from outside we need to modify positions of sliders accordingly
+  // When `months` are changed from outside we need to modify translated positions of sliders
   useEffect(() => {
     if (!deepEqual(prevMonths.current, months) && selectedDates) {
       const intervalLength = (interval || []).length - 1;
@@ -194,6 +179,21 @@ export const MonthsSelector = memo(() => {
         index2 = intervalLength;
       }
 
+      // If previously all months were completely selected we maintain complete selection.
+      // We don't want to confuse user when they're experimenting with planting dates,
+      // and suddenly their plants start disappearing because dates selection is shrinking
+      if (
+        prevSelectedDates.current &&
+        prevInterval.current &&
+        prevSelectedDates.current.start.getTime() ===
+          prevInterval.current?.[0].getTime() &&
+        prevSelectedDates.current.end.getTime() ===
+          prevInterval.current?.[prevInterval.current.length - 1].getTime()
+      ) {
+        index1 = 0;
+        index2 = intervalLength;
+      }
+
       const fullWidth = GRID_SIZE * months.length;
 
       setInitial1(Math.round((index1 * fullWidth) / intervalLength));
@@ -204,6 +204,7 @@ export const MonthsSelector = memo(() => {
 
     prevMonths.current = months;
     prevInterval.current = interval;
+    prevSelectedDates.current = selectedDates;
   }, [months, interval, selectedDates]);
 
   useEffect(() => {
@@ -211,24 +212,39 @@ export const MonthsSelector = memo(() => {
       return;
     }
 
+    const intervalLength = (interval || []).length - 1;
+
     const fullWidth = GRID_SIZE * months.length;
-    const percentage1 = (translate1 / fullWidth) * 100;
-    const percentage2 = (translate2 / fullWidth) * 100;
 
-    const resultingDateIndex1 = Math.floor(
-      (percentage1 * interval.length) / 100
+    let resultingDateIndex1 = Math.floor(
+      (translate1 / fullWidth) * interval.length
     );
 
-    const resultingDateIndex2 = Math.floor(
-      (percentage2 * (interval.length - 1)) / 100
+    let resultingDateIndex2 = Math.floor(
+      (translate2 / fullWidth) * (interval.length - 1)
     );
 
-    startTransition(() => {
-      setSelectedDates({
-        start: interval[resultingDateIndex1],
-        end: interval[resultingDateIndex2],
+    if (resultingDateIndex1 < 1) resultingDateIndex1 = 0;
+    if (resultingDateIndex2 > intervalLength)
+      resultingDateIndex2 = intervalLength;
+
+    if (
+      interval[resultingDateIndex1].getTime() !==
+        selectedDates?.start.getTime() ||
+      interval[resultingDateIndex2].getTime() !== selectedDates?.end.getTime()
+    ) {
+      startTransition(() => {
+        // console.log({
+        //   start: interval[resultingDateIndex1],
+        //   end: interval[resultingDateIndex2],
+        // });
+
+        setSelectedDates({
+          start: interval[resultingDateIndex1],
+          end: interval[resultingDateIndex2],
+        });
       });
-    });
+    }
   }, [translate1, translate2, months, interval]);
 
   const modifier1 = useCallback(() => {

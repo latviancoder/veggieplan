@@ -1,5 +1,5 @@
-import { isEmpty, compact } from 'lodash';
-import { format, max, min } from 'date-fns';
+import { isEmpty, compact, pick } from 'lodash';
+import { areIntervalsOverlapping, format, max, min } from 'date-fns';
 import { de } from 'date-fns/locale';
 import produce from 'immer';
 import { useAtomValue } from 'jotai/utils';
@@ -491,13 +491,14 @@ export const getTerminalDates = ({
   dateDirectSow,
   dateFirstHarvest,
   dateLastHarvest,
-}: {
-  dateStartIndoors: string | undefined;
-  dateTransplant: string | undefined;
-  dateDirectSow: string | undefined;
-  dateFirstHarvest: string | undefined;
-  dateLastHarvest: string | undefined;
-}): { earliest: Date | undefined; latest: Date | undefined } => {
+}: Pick<
+  Plant,
+  | 'dateStartIndoors'
+  | 'dateTransplant'
+  | 'dateDirectSow'
+  | 'dateFirstHarvest'
+  | 'dateLastHarvest'
+>): { earliest: Date | undefined; latest: Date | undefined } => {
   const si = dateStartIndoors ? new Date(dateStartIndoors) : undefined;
   const tp = dateTransplant ? new Date(dateTransplant) : undefined;
   const ds = dateDirectSow ? new Date(dateDirectSow) : undefined;
@@ -510,4 +511,19 @@ export const getTerminalDates = ({
       : min(compact([si, tp, ds])),
     latest: isEmpty(compact([fh, lh])) ? undefined : max(compact([fh, lh])),
   };
+};
+
+export const isPlantOverlappingDateRange = (
+  plant: Plant,
+  range: { start: Date; end: Date } | null
+): boolean => {
+  if (!range) return true;
+
+  const { latest, earliest } = getTerminalDates(plant);
+
+  if (!latest || !earliest) {
+    return true;
+  }
+
+  return areIntervalsOverlapping({ start: earliest, end: latest }, range);
 };

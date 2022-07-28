@@ -11,6 +11,7 @@ import { rectangleHandlerMap } from '../../utils/rectangleHandlerMap';
 
 type Props = (RectangleShape | Plant) & {
   isSelected?: boolean;
+  isHidden?: boolean;
   isInteracted?: boolean;
   isHovered?: boolean;
   borderRadius?: number;
@@ -26,6 +27,7 @@ export const Rectangle = memo(
     isSelected,
     isInteracted,
     isHovered,
+    isHidden,
     rotation,
     borderRadius,
     hasPicture,
@@ -52,6 +54,11 @@ export const Rectangle = memo(
         fill = 'transparent';
         fillOpacity = 1;
       }
+    }
+
+    if (isHidden) {
+      stroke = '#ddd';
+      fill = '#ddd';
     }
 
     let plantIconSize = 30;

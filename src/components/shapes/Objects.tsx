@@ -1,3 +1,4 @@
+import { hiddenObjectIdsAtom } from 'atoms/atoms';
 import { useAtomValue } from 'jotai/utils';
 
 import { hoveredAtom } from '../../atoms/hoveredAtom';
@@ -11,12 +12,11 @@ import { Rectangle } from './Rectangle';
 export const Objects = () => {
   const { getPlantDetails, meterToPx } = useUtils();
   const hoveredObjectId = useAtomValue(hoveredAtom);
-  const selection = useAtomValue(selectedObjectIdsAtom);
+  const selectedObjectIds = useAtomValue(selectedObjectIdsAtom);
   const objects = useAtomValue(objectsAtom);
   const panStart = useAtomValue(panStartAtom);
   const zoom = useAtomValue(zoomAtom);
-
-  // console.log({ objects });
+  const hiddenObjectIds = useAtomValue(hiddenObjectIdsAtom);
 
   return (
     <>
@@ -28,7 +28,8 @@ export const Objects = () => {
             <Rectangle
               key={obj.id}
               {...obj}
-              isSelected={selection.includes(obj.id)}
+              isHidden={hiddenObjectIds.includes(obj.id)}
+              isSelected={selectedObjectIds.includes(obj.id)}
               isHovered={obj.id === hoveredObjectId}
               isInteracted={obj.id === panStart?.interactableObjectId}
               borderRadius={plant ? meterToPx(plant.spacing / 100) / zoom : 0}
