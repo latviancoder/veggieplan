@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"vite\" \"nodemon --esm server/server.ts\" --kill-others",
     "build": "vite build",
     "preview": "vite preview"
   },

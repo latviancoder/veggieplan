@@ -14,7 +14,7 @@ const __dirname = dirname(__filename);
 const { Client } = pg;
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5303;
 
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
