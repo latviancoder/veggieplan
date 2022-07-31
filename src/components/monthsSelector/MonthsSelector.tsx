@@ -162,7 +162,6 @@ export const MonthsSelector = memo(() => {
 
   // When `months` are changed from outside we need to modify translated positions of sliders
   useEffect(() => {
-    console.log({ prevMonths: prevMonths.current, months, selectedDates });
     if (!deepEqual(prevMonths.current, months)) {
       const intervalLength = (interval || []).length - 1;
 

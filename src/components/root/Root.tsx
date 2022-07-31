@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useAtomDevtools } from 'jotai/devtools';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { isEmpty } from 'lodash';
 import { lazy, Suspense, useEffect, useLayoutEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
 
@@ -21,16 +20,15 @@ import { SidebarLeft } from '../sidebarLeft/SidebarLeft';
 import styles from './Root.module.css';
 import { useAutosave } from 'hooks/useAutoSave';
 import { PlantsTable } from 'components/plantsTable/PlantsTable';
-import { useAtom } from 'jotai';
 
 const CalendarTable = lazy(() => import('../calendarTable/CalendarTable'));
 
 const Root = () => {
   const view = useAtomValue(viewAtom);
-  const [plot, setPlot] = useAtom(plotAtom);
-  const [plants, setPlants] = useAtom(plantsAtom);
-  const [objects, setObjects] = useAtom(objectsAtom);
-  const [varieties, setVarieties] = useAtom(varietiesAtom);
+  const setPlot = useUpdateAtom(plotAtom);
+  const setPlants = useUpdateAtom(plantsAtom);
+  const setObjects = useUpdateAtom(objectsAtom);
+  const setVarieties = useUpdateAtom(varietiesAtom);
 
   // @ts-ignore
   useAtomDevtools(objectsAtom);

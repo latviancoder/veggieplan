@@ -252,23 +252,39 @@ export const panAtom = atom(
             resizingHandler
           )
         ) {
-          draft[i].x = revertedRotatedCorners[RectangleCorners.BottomLeft].x;
-          draft[i].y = revertedRotatedCorners[RectangleCorners.TopRight].y;
-          draft[i].width =
+          draft[i].x = Math.min(
+            revertedRotatedCorners[RectangleCorners.BottomLeft].x,
+            revertedRotatedCorners[RectangleCorners.TopRight].x
+          );
+          draft[i].y = Math.min(
+            revertedRotatedCorners[RectangleCorners.TopRight].y,
+            revertedRotatedCorners[RectangleCorners.BottomLeft].y
+          );
+          draft[i].width = Math.abs(
             revertedRotatedCorners[RectangleCorners.TopRight].x -
-            revertedRotatedCorners[RectangleCorners.BottomLeft].x;
-          draft[i].height =
+              revertedRotatedCorners[RectangleCorners.BottomLeft].x
+          );
+          draft[i].height = Math.abs(
             revertedRotatedCorners[RectangleCorners.BottomLeft].y -
-            revertedRotatedCorners[RectangleCorners.TopRight].y;
+              revertedRotatedCorners[RectangleCorners.TopRight].y
+          );
         } else {
-          draft[i].x = revertedRotatedCorners[RectangleCorners.TopLeft].x;
-          draft[i].y = revertedRotatedCorners[RectangleCorners.TopLeft].y;
-          draft[i].width =
+          draft[i].x = Math.min(
+            revertedRotatedCorners[RectangleCorners.TopLeft].x,
+            revertedRotatedCorners[RectangleCorners.BottomRight].x
+          );
+          draft[i].y = Math.min(
+            revertedRotatedCorners[RectangleCorners.TopLeft].y,
+            revertedRotatedCorners[RectangleCorners.BottomRight].y
+          );
+          draft[i].width = Math.abs(
             revertedRotatedCorners[RectangleCorners.BottomRight].x -
-            revertedRotatedCorners[RectangleCorners.TopLeft].x;
-          draft[i].height =
+              revertedRotatedCorners[RectangleCorners.TopLeft].x
+          );
+          draft[i].height = Math.abs(
             revertedRotatedCorners[RectangleCorners.BottomRight].y -
-            revertedRotatedCorners[RectangleCorners.TopLeft].y;
+              revertedRotatedCorners[RectangleCorners.TopLeft].y
+          );
         }
       });
 

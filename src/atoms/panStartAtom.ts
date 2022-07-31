@@ -129,7 +129,7 @@ export const panStartAtom = atom<PanStart, { center: Point } | null>(
             x: panStartX,
             y: panStartY,
           },
-          objects: objects.filter(({ id }) => !hiddenObjectIds.includes(id)),
+          objects: objects.filter(({ id }) => !hiddenObjectIds?.includes(id)),
           offset: 2 / zoom,
         });
 

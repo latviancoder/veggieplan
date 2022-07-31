@@ -119,13 +119,13 @@ export const Rectangle = memo(
         {isSelected && (
           <>
             {[...rectangleHandlerMap({ x: 0, y: 0, width, height }, zoom)].map(
-              ([key, { x, y }]) => (
+              ([key, { x: handlerX, y: handlerY }]) => (
                 <rect
                   key={key}
                   fill={Colors.COBALT1}
                   width={HANDLER_SIZE / zoom}
                   height={HANDLER_SIZE / zoom}
-                  transform={`translate(${x} ${y})`}
+                  transform={`translate(${handlerX} ${handlerY})`}
                 />
               )
             )}
