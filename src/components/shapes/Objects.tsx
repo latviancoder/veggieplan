@@ -28,7 +28,7 @@ export const Objects = () => {
             <Rectangle
               key={obj.id}
               {...obj}
-              isHidden={hiddenObjectIds.includes(obj.id)}
+              isHidden={hiddenObjectIds?.includes(obj.id)}
               isSelected={selectedObjectIds.includes(obj.id)}
               isHovered={obj.id === hoveredObjectId}
               isInteracted={obj.id === panStart?.interactableObjectId}

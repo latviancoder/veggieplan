@@ -64,7 +64,7 @@ export const tapAtom = atom<unknown, Params>(
         x: absoluteToRelativeX(center.x),
         y: absoluteToRelativeY(center.y),
       },
-      objects: objects.filter(({ id }) => !hiddenObjectIds.includes(id)),
+      objects: objects.filter(({ id }) => !hiddenObjectIds?.includes(id)),
       offset: 2 / zoom,
     });
 

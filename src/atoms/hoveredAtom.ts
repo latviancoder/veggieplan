@@ -22,7 +22,7 @@ export const hoveredAtom = atom<null | string>((get) => {
         x: absoluteToRelativeX(mousePosition.x),
         y: absoluteToRelativeY(mousePosition.y),
       },
-      objects: objects.filter(({ id }) => !hiddenObjectIds.includes(id)),
+      objects: objects.filter(({ id }) => !hiddenObjectIds?.includes(id)),
       offset: 2 / zoom,
     });
   }

@@ -14,7 +14,7 @@ export const selectedDatesAtom = atom<
     start: Date;
     end: Date;
   },
-  {
+  null | {
     start: Date;
     end: Date;
   }
@@ -31,8 +31,16 @@ export const selectedDatesAtom = atom<
       end: new Date(selectedDateStrings.end),
     };
   },
-  (get, set, { start, end }) => {
+  (get, set, payload) => {
     const objects = get(objectsAtom);
+
+    if (!payload) {
+      set(_selectedDatesAtom, null);
+      set(hiddenObjectIdsAtom, null);
+      return;
+    }
+
+    const { start, end } = payload!;
 
     // Defining hidden objects here is more performance than inside objectsAtom
     // on every rotation/resize/move etc.

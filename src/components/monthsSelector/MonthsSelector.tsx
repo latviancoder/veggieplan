@@ -162,17 +162,18 @@ export const MonthsSelector = memo(() => {
 
   // When `months` are changed from outside we need to modify translated positions of sliders
   useEffect(() => {
-    if (!deepEqual(prevMonths.current, months) && selectedDates) {
+    console.log({ prevMonths: prevMonths.current, months, selectedDates });
+    if (!deepEqual(prevMonths.current, months)) {
       const intervalLength = (interval || []).length - 1;
 
       let index1 = interval?.findIndex(
-        (d) => d.getTime() === selectedDates.start.getTime()
+        (d) => d.getTime() === selectedDates?.start.getTime()
       );
 
       if (!index1 || index1 === -1) index1 = 0;
 
       let index2 = interval?.findIndex(
-        (d) => d.getTime() === selectedDates.end.getTime()
+        (d) => d.getTime() === selectedDates?.end.getTime()
       );
 
       if (!index2 || index2 === -1) {
@@ -209,6 +210,7 @@ export const MonthsSelector = memo(() => {
 
   useEffect(() => {
     if (!interval) {
+      setSelectedDates(null);
       return;
     }
 
@@ -227,6 +229,11 @@ export const MonthsSelector = memo(() => {
     if (resultingDateIndex1 < 1) resultingDateIndex1 = 0;
     if (resultingDateIndex2 > intervalLength)
       resultingDateIndex2 = intervalLength;
+
+    if (!interval[resultingDateIndex1] || !interval[resultingDateIndex2]) {
+      setSelectedDates(null);
+      return;
+    }
 
     if (
       interval[resultingDateIndex1].getTime() !==

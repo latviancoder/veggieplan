@@ -43,7 +43,7 @@ export const objectsInMetersAtom = atom<GardenObject[], SetParams>(
           ? selectedObjectIds.indexOf(draft.id) + 1
           : undefined;
 
-        if (hiddenObjectIds.includes(draft.id)) {
+        if (hiddenObjectIds?.includes(draft.id)) {
           draft.zIndex = -1;
         }
       })
