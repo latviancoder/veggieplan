@@ -16,9 +16,16 @@ const { Client } = pg;
 const app = express();
 const port = process.env.PORT || 5303;
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-});
+const client = new Client(
+  process.env.ENVIRONMENT === 'DEV'
+    ? {
+        host: 'localhost',
+        database: 'dumped',
+      }
+    : {
+        connectionString: process.env.DATABASE_URL,
+      }
+);
 
 await client.connect();
 
