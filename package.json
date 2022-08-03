@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"vite\" \"nodemon --ignore ./src/ --esm server/server.ts\" --kill-others",
+    "dev": "concurrently \"vite\" \"ENVIRONMENT=DEV nodemon --ignore ./src/ --esm server/server.ts\" --kill-others",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -45,6 +45,7 @@
     "node-sass": "^7.0.1",
     "pg": "^8.7.1",
     "prettier": "^2.3.1",
+    "puppeteer": "^15.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hotkeys-hook": "^3.4.0",
