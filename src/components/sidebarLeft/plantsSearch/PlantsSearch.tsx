@@ -61,7 +61,7 @@ export const PlantsSearch = () => {
       </div>
       <div className={styles.overflow}>
         <div className={styles.list}>
-          {searchResult?.map(({ name, id, hasPicture }) => (
+          {searchResult?.map(({ name, id, hasPicture, code }) => (
             <div
               tabIndex={0}
               role="button"
@@ -79,7 +79,7 @@ export const PlantsSearch = () => {
                 className={styles.icon}
                 style={{
                   backgroundImage: hasPicture
-                    ? `url(image/${id}.png)`
+                    ? `url(image/${code.trim()}.png)`
                     : 'url(image/plant.png)',
                 }}
               />

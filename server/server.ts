@@ -20,7 +20,7 @@ const client = new Client(
   process.env.ENVIRONMENT === 'DEV'
     ? {
         host: 'localhost',
-        database: 'dumped',
+        database: 'sergejsrizovs',
       }
     : {
         connectionString: process.env.DATABASE_URL,
