@@ -119,7 +119,7 @@ export const PlantDates = memo((props: Props) => {
                 inputProps={{ id: 'seed-start' }}
                 dayPickerProps={{ fixedWeeks: true }}
                 minDate={defaultMinDate}
-                maxDate={terminalDates.earliestHarvest}
+                maxDate={terminalDates.earliestHarvest || defaultMaxDate}
                 value={dateStartIndoors ? new Date(dateStartIndoors) : null}
                 onChange={updateDateCreator('dateStartIndoors')}
               />
@@ -131,8 +131,8 @@ export const PlantDates = memo((props: Props) => {
             >
               <DateInput
                 {...defaultProps}
-                minDate={terminalDates.earliestPlanting}
-                maxDate={terminalDates.earliestHarvest}
+                minDate={terminalDates.earliestPlanting || defaultMinDate}
+                maxDate={terminalDates.earliestHarvest || defaultMaxDate}
                 inputProps={{ id: 'transplant' }}
                 value={dateTransplant ? new Date(dateTransplant) : null}
                 onChange={updateDateCreator('dateTransplant')}
@@ -150,7 +150,7 @@ export const PlantDates = memo((props: Props) => {
               <DateInput
                 {...defaultProps}
                 minDate={defaultMinDate}
-                maxDate={terminalDates.earliestHarvest}
+                maxDate={terminalDates.earliestHarvest || defaultMaxDate}
                 inputProps={{ id: 'sow-outside' }}
                 value={dateDirectSow ? new Date(dateDirectSow) : null}
                 onChange={updateDateCreator('dateDirectSow')}
@@ -166,8 +166,8 @@ export const PlantDates = memo((props: Props) => {
         >
           <DateInput
             {...defaultProps}
-            minDate={terminalDates.latestPlanting}
-            maxDate={terminalDates.latestHarvest}
+            minDate={terminalDates.latestPlanting || defaultMinDate}
+            maxDate={terminalDates.latestHarvest || defaultMaxDate}
             inputProps={{ id: 'first-harvest' }}
             value={dateFirstHarvest ? new Date(dateFirstHarvest) : null}
             onChange={updateDateCreator('dateFirstHarvest')}
@@ -180,7 +180,7 @@ export const PlantDates = memo((props: Props) => {
         >
           <DateInput
             {...defaultProps}
-            minDate={terminalDates.latestPlanting}
+            minDate={terminalDates.latestPlanting || defaultMinDate}
             maxDate={defaultMaxDate}
             inputProps={{ id: 'last-harvest' }}
             value={dateLastHarvest ? new Date(dateLastHarvest) : null}
