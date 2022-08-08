@@ -498,18 +498,32 @@ export const getTerminalDates = ({
   | 'dateDirectSow'
   | 'dateFirstHarvest'
   | 'dateLastHarvest'
->): { earliest: Date | undefined; latest: Date | undefined } => {
+>): {
+  earliestPlanting: Date | undefined;
+  latestPlanting: Date | undefined;
+  latestHarvest: Date | undefined;
+  earliestHarvest: Date | undefined;
+} => {
   const si = dateStartIndoors ? new Date(dateStartIndoors) : undefined;
   const tp = dateTransplant ? new Date(dateTransplant) : undefined;
   const ds = dateDirectSow ? new Date(dateDirectSow) : undefined;
   const fh = dateFirstHarvest ? new Date(dateFirstHarvest) : undefined;
   const lh = dateLastHarvest ? new Date(dateLastHarvest) : undefined;
 
+  const allPlantingDates = compact([si, tp, ds]);
+  const allHarvestDates = compact([fh, lh]);
+
   return {
-    earliest: isEmpty(compact([si, tp, ds]))
+    earliestPlanting: isEmpty(allPlantingDates)
       ? undefined
-      : min(compact([si, tp, ds])),
-    latest: isEmpty(compact([fh, lh])) ? undefined : max(compact([fh, lh])),
+      : min(allPlantingDates),
+    latestPlanting: isEmpty(allPlantingDates)
+      ? undefined
+      : max(allPlantingDates),
+    earliestHarvest: isEmpty(allHarvestDates)
+      ? undefined
+      : min(allHarvestDates),
+    latestHarvest: isEmpty(allHarvestDates) ? undefined : max(allHarvestDates),
   };
 };
 
@@ -519,11 +533,14 @@ export const isPlantOverlappingDateRange = (
 ): boolean => {
   if (!range) return true;
 
-  const { latest, earliest } = getTerminalDates(plant);
+  const { latestHarvest, earliestPlanting } = getTerminalDates(plant);
 
-  if (!latest || !earliest) {
+  if (!latestHarvest || !earliestPlanting) {
     return true;
   }
 
-  return areIntervalsOverlapping({ start: earliest, end: latest }, range);
+  return areIntervalsOverlapping(
+    { start: earliestPlanting, end: latestHarvest },
+    range
+  );
 };

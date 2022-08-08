@@ -109,16 +109,16 @@ export const MonthsSelector = memo(() => {
     const objectTerminalDates = objects.filter(isPlant).map(getTerminalDates);
 
     const earliest: Date | undefined = isEmpty(
-      compact(objectTerminalDates.map((d) => d.earliest))
+      compact(objectTerminalDates.map((d) => d.earliestPlanting))
     )
       ? undefined
-      : min(compact(objectTerminalDates.map((d) => d.earliest)));
+      : min(compact(objectTerminalDates.map((d) => d.earliestPlanting)));
 
     const latest: Date | undefined = isEmpty(
-      compact(objectTerminalDates.map((d) => d.latest))
+      compact(objectTerminalDates.map((d) => d.latestHarvest))
     )
       ? undefined
-      : max(compact(objectTerminalDates.map((d) => d.latest)));
+      : max(compact(objectTerminalDates.map((d) => d.latestHarvest)));
 
     return {
       earliestDate: earliest,

@@ -9,6 +9,7 @@ import { Modes, PlantDetails } from 'types';
 import { FormGroup, Icon, InputGroup } from '@blueprintjs/core';
 
 import styles from './PlantsSearch.module.scss';
+import { escapeRegExp } from 'lodash';
 
 export const PlantsSearch = () => {
   const fuseRef = useRef<Fuse<PlantDetails>>();
@@ -89,7 +90,7 @@ export const PlantsSearch = () => {
                   __html:
                     searchQuery.length > 1
                       ? name.replace(
-                          new RegExp(`(${searchQuery})`, 'gi'),
+                          new RegExp(`(${escapeRegExp(searchQuery)})`, 'gi'),
                           `<strong>$1</strong>`
                         )
                       : name,
