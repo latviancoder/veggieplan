@@ -1,6 +1,7 @@
-import { useUpdateAtom } from 'jotai/utils';
-import { zoomAtom } from '../../atoms/zoomAtom';
 import { Button, Icon } from '@blueprintjs/core';
+import { useUpdateAtom } from 'jotai/utils';
+
+import { zoomAtom } from 'atoms';
 
 import styles from './Zoom.module.css';
 

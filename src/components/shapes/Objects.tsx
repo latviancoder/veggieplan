@@ -1,11 +1,14 @@
-import { hiddenObjectIdsAtom } from 'atoms/atoms';
 import { useAtomValue } from 'jotai/utils';
 
-import { hoveredAtom } from '../../atoms/hoveredAtom';
-import { objectsAtom } from '../../atoms/objectsAtom';
-import { panStartAtom } from '../../atoms/panStartAtom';
-import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
-import { zoomAtom } from '../../atoms/zoomAtom';
+import {
+  hiddenObjectIdsAtom,
+  hoveredAtom,
+  objectsAtom,
+  panStartAtom,
+  selectedObjectIdsAtom,
+  zoomAtom,
+} from 'atoms';
+
 import { isPlant, isRectangular, useUtils } from '../../utils/utils';
 import { Rectangle } from './Rectangle';
 

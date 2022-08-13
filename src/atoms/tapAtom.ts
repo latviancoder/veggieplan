@@ -1,9 +1,10 @@
 import { atom } from 'jotai';
 import { nanoid } from 'nanoid';
 
-import { Modes, ObjectTypes, Plant, Point } from '../types';
+import { Modes, ObjectTypes, Plant, Point } from 'types';
+
 import { getObjectAtPoint } from '../utils/utils';
-import { modeAtom, selectedPlantAtom, hiddenObjectIdsAtom } from './atoms';
+import { hiddenObjectIdsAtom, modeAtom, selectedPlantAtom } from './atoms';
 import { objectsAtom } from './objectsAtom';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { utilsAtom } from './utilsAtom';

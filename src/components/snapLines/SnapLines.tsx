@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai/utils';
-import { zoomAtom } from '../../atoms/zoomAtom';
-import { snapLinesAtom } from '../../atoms/snapLinesAtom';
+
+import { snapLinesAtom, zoomAtom } from 'atoms';
 
 export const SnapLines = () => {
   const zoom = useAtomValue(zoomAtom);

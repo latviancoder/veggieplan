@@ -1,19 +1,13 @@
+import { Button, Classes, MenuItem } from '@blueprintjs/core';
+import { ItemPredicate, ItemRenderer, Suggest2 } from '@blueprintjs/select';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { memo, useEffect, useState } from 'react';
 
-import { Button, Classes, MenuItem } from '@blueprintjs/core';
-import {
-  ItemPredicate,
-  ItemRenderer,
-  Suggest,
-  Suggest2,
-} from '@blueprintjs/select';
+import { objectsAtom, varietiesAtom } from 'atoms';
+import { PlantDetails, Variety } from 'types';
 
-import { objectsAtom } from '../../atoms/objectsAtom';
-import { Plant, PlantDetails, Variety } from '../../types';
 import { getPlantName } from '../../utils/utils';
 import styles from './PlantHeader.module.scss';
-import { varietiesAtom } from 'atoms/atoms';
 
 type Props = {
   objectId: string;

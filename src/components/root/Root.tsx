@@ -1,25 +1,26 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useAtomDevtools } from 'jotai/devtools';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { lazy, Suspense, useEffect, useLayoutEffect, useRef } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
 import {
+  objectsAtom,
   plantsAtom,
   plotAtom,
   varietiesAtom,
   viewAtom,
-} from '../../atoms/atoms';
-import { objectsAtom } from '../../atoms/objectsAtom';
-import { GardenObject, PlantDetails, Variety, Views } from '../../types';
-import { SidebarRightConnected } from '../sidebarRight/SidebarRight';
+} from 'atoms';
+import { PlantsTable } from 'components/plantsTable/PlantsTable';
+import { useAutosave } from 'hooks/useAutoSave';
+import { GardenObject, PlantDetails, Variety, Views } from 'types';
+
 import { DrawableArea } from '../drawableArea/DrawableArea';
 import { GlobalHeader } from '../header/GlobalHeader';
 import { MonthsSelector } from '../monthsSelector/MonthsSelector';
 import { SidebarLeft } from '../sidebarLeft/SidebarLeft';
+import { SidebarRightConnected } from '../sidebarRight/SidebarRight';
 import styles from './Root.module.css';
-import { useAutosave } from 'hooks/useAutoSave';
-import { PlantsTable } from 'components/plantsTable/PlantsTable';
 
 const CalendarTable = lazy(() => import('../calendarTable/CalendarTable'));
 

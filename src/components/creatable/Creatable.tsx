@@ -1,7 +1,9 @@
 import { useAtom } from 'jotai';
-import { creatableAtom } from '../../atoms/atoms';
+
+import { creatableAtom } from 'atoms';
+import { isRectangular } from 'utils/utils';
+
 import { Rectangle } from '../shapes/Rectangle';
-import { isRectangular } from '../../utils/utils';
 
 type Props = {};
 

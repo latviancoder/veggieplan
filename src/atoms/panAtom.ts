@@ -1,13 +1,14 @@
 import produce from 'immer';
 import { atom } from 'jotai';
 
-import { Modes, Point, RectangleCorners } from '../types';
+import { Modes, Point, RectangleCorners } from 'types';
 import {
   isRectangular,
   radiansToDegrees,
   rotatePoint,
   rotateRectangle,
-} from '../utils/utils';
+} from 'utils/utils';
+
 import { creatableAtom, modeAtom, offsetAtom } from './atoms';
 import { objectsAtom } from './objectsAtom';
 import { panStartAtom } from './panStartAtom';

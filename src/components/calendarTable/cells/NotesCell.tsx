@@ -1,15 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
 import { Classes, Dialog, TextArea } from '@blueprintjs/core';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useEffect, useRef, useState } from 'react';
+
+import { objectsAtom, varietiesAtom } from 'atoms';
+import { getPlantName } from 'utils/utils';
 
 import { Row } from '../CalendarTable';
-
 import styles from './NotesCell.module.scss';
-import { getPlantName, post } from 'utils/utils';
-import { useMutation } from 'react-query';
-import { GardenObject } from 'types';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { objectsAtom } from 'atoms/objectsAtom';
-import { varietiesAtom } from 'atoms/atoms';
 
 type Props = {
   data: Row;

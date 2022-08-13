@@ -1,10 +1,12 @@
 import { atom } from 'jotai';
-import { zoomAtom } from './zoomAtom';
-import { Modes } from '../types';
+
+import { Modes } from 'types';
+
 import { getObjectAtPoint } from '../utils/utils';
-import { modeAtom, mousePositionAtom, hiddenObjectIdsAtom } from './atoms';
+import { hiddenObjectIdsAtom, modeAtom, mousePositionAtom } from './atoms';
 import { objectsAtom } from './objectsAtom';
 import { utilsAtom } from './utilsAtom';
+import { zoomAtom } from './zoomAtom';
 
 export const hoveredAtom = atom<null | string>((get) => {
   const { absoluteToRelativeX, absoluteToRelativeY } = get(utilsAtom);

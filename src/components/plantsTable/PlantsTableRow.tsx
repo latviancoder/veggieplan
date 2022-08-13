@@ -1,14 +1,14 @@
 import { Button } from '@blueprintjs/core';
-import { varietiesAtom } from 'atoms/atoms';
-import { nanoid } from 'nanoid';
-import { memo, useState } from 'react';
-import { PlantDetails } from 'types';
 import { useAtom } from 'jotai';
-
-import styles from './PlantsTableRow.module.scss';
-import { VarietyUpdateModal } from './VarietyUpdateModal';
 import { useUpdateAtom } from 'jotai/utils';
+import { nanoid } from 'nanoid';
+import { memo } from 'react';
+
+import { varietiesAtom } from 'atoms';
+import { PlantDetails } from 'types';
+
 import { varietyModalAtom } from './PlantsTable';
+import styles from './PlantsTableRow.module.scss';
 
 type Props = {
   plant: PlantDetails;

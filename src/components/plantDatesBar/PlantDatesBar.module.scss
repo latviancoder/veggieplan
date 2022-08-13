@@ -6,6 +6,7 @@
 
 .month {
   flex: 1;
+
   &:last-child .monthTitle {
     border-right: none;
   }

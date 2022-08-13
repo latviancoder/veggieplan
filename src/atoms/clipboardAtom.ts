@@ -1,7 +1,8 @@
 import { atom } from 'jotai';
 import { nanoid } from 'nanoid';
 
-import { GardenObject } from '../types';
+import { GardenObject } from 'types';
+
 import { objectsAtom } from './objectsAtom';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { zoomAtom } from './zoomAtom';

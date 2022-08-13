@@ -1,13 +1,15 @@
 import { useAtomValue } from 'jotai/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { creatableAtom } from '../../atoms/atoms';
-import { hoveredAtom } from '../../atoms/hoveredAtom';
-import { objectsAtom } from '../../atoms/objectsAtom';
-import { panStartAtom } from '../../atoms/panStartAtom';
-import { zoomAtom } from '../../atoms/zoomAtom';
-import { ObjectTypes, Plant, Shape } from '../../types';
-import { isPlant, useUtils } from '../../utils/utils';
+import {
+  creatableAtom,
+  hoveredAtom,
+  objectsAtom,
+  panStartAtom,
+  zoomAtom,
+} from 'atoms';
+import { ObjectTypes, Plant, Shape } from 'types';
+import { isPlant, useUtils } from 'utils/utils';
 
 export const Badge = () => {
   const hoveredObjectId = useAtomValue(hoveredAtom);

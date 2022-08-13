@@ -1,8 +1,10 @@
-import { atom } from 'jotai';
-import { roundTwoDecimals } from '../utils/utils';
 import { Easing, Tween } from '@tweenjs/tween.js';
+import { atom } from 'jotai';
+
+import { Point } from 'types';
+import { roundTwoDecimals } from 'utils/utils';
+
 import { canvasAtom, offsetAtom } from './atoms';
-import { Point } from '../types';
 
 const _zoomAtom = atom(1);
 

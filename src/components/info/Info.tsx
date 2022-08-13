@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 
-import { infoAtom } from '../../atoms/infoAtom';
+import { infoAtom } from 'atoms';
 
 export const Info = () => {
   const [info] = useAtom(infoAtom);

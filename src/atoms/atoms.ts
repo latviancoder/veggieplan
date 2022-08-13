@@ -10,7 +10,7 @@ import {
   Point,
   Variety,
   Views,
-} from '../types';
+} from 'types';
 
 export const modeAtom = atom(Modes.DEFAULT);
 

@@ -1,11 +1,10 @@
-import { objectsInMetersAtom } from './../atoms/objectsAtom';
-import { canvasAtom, modeAtom } from 'atoms/atoms';
-import { objectsAtom } from 'atoms/objectsAtom';
 import deepEqual from 'deep-equal';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { isEmpty, sortBy } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
+
+import { canvasAtom, modeAtom, objectsAtom, objectsInMetersAtom } from 'atoms';
 import { GardenObject, Modes } from 'types';
 
 type StateSnapshot = {

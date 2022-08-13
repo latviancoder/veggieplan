@@ -1,10 +1,10 @@
+import { Button, Classes, InputGroup } from '@blueprintjs/core';
 import { useUpdateAtom } from 'jotai/utils';
 import { ChangeEventHandler, useState } from 'react';
 
-import { Button, Classes, InputGroup } from '@blueprintjs/core';
+import { objectsAtom } from 'atoms';
+import { Shape } from 'types';
 
-import { objectsAtom } from '../../atoms/objectsAtom';
-import { Shape } from '../../types';
 import styles from './ShapeHeader.module.scss';
 
 type Props = {

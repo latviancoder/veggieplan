@@ -39,6 +39,7 @@
   align-items: center;
   height: 50px;
   padding: 0 15px;
+
   &:hover {
     background: $light-gray5;
   }
@@ -46,6 +47,7 @@
 
 .plantSelected {
   background: $light-gray3;
+
   &:hover {
     background: $light-gray3;
   }

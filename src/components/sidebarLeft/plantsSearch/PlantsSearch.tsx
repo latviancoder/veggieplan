@@ -1,15 +1,15 @@
-import { modeAtom, plantsAtom, selectedPlantAtom } from 'atoms/atoms';
+import { FormGroup, Icon, InputGroup } from '@blueprintjs/core';
 import classnames from 'classnames';
 import Fuse from 'fuse.js';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { escapeRegExp } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
+
+import { modeAtom, plantsAtom, selectedPlantAtom } from 'atoms';
 import { Modes, PlantDetails } from 'types';
 
-import { FormGroup, Icon, InputGroup } from '@blueprintjs/core';
-
 import styles from './PlantsSearch.module.scss';
-import { escapeRegExp } from 'lodash';
 
 export const PlantsSearch = () => {
   const fuseRef = useRef<Fuse<PlantDetails>>();

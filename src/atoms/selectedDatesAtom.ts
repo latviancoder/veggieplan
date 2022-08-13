@@ -1,8 +1,9 @@
-import { hiddenObjectIdsAtom } from './atoms';
-import { atomWithStorage } from 'jotai/utils';
 import { atom } from 'jotai';
-import { objectsAtom } from './objectsAtom';
+
 import { isPlant, isPlantOverlappingDateRange } from 'utils/utils';
+
+import { hiddenObjectIdsAtom } from './atoms';
+import { objectsAtom } from './objectsAtom';
 
 const _selectedDatesAtom = atom<null | {
   start: string;

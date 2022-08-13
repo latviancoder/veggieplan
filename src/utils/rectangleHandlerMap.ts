@@ -1,4 +1,5 @@
-import { RectangleShape, RectangleCorners } from '../types';
+import { RectangleCorners, RectangleShape } from 'types';
+
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../constants';
 
 export const rectangleHandlerMap = (

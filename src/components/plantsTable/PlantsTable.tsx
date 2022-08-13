@@ -1,12 +1,13 @@
-import { plantsAtom, varietiesAtom } from 'atoms/atoms';
-import { atom, useAtom, useAtomValue } from 'jotai';
 import { HTMLTable } from '@blueprintjs/core';
-import { PlantsTableRow } from './PlantsTableRow';
+import { atom, useAtom, useAtomValue } from 'jotai';
 import { groupBy } from 'lodash';
 import { useMemo } from 'react';
+
+import { plantsAtom, varietiesAtom } from 'atoms';
+import { PlantDetails, Variety } from 'types';
+
+import { PlantsTableRow } from './PlantsTableRow';
 import { PlantsTableVarietyRow } from './PlantsTableVarietyRow';
-import { Variety, PlantDetails } from 'types';
-import { useUpdateAtom } from 'jotai/utils';
 import { VarietyUpdateModal } from './VarietyUpdateModal';
 
 export type VarietyModalParams = {

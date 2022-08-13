@@ -1,5 +1,5 @@
 import { NumericInputProps } from '@blueprintjs/core';
-import { useState, useLayoutEffect } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
 export const useNumericInputCallback = (
   value: number,

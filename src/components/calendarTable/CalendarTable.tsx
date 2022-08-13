@@ -1,4 +1,4 @@
-import { Month } from 'components/plantDatesBar/PlantDatesBar';
+import { HTMLTable } from '@blueprintjs/core';
 import {
   addMonths,
   differenceInMonths,
@@ -11,8 +11,10 @@ import { useAtomValue } from 'jotai/utils';
 import { compact, max, min, sortBy } from 'lodash';
 import { useMemo } from 'react';
 
-import { objectsInMetersAtom } from '../../atoms/objectsAtom';
-import { Plant, Variety } from '../../types';
+import { objectsInMetersAtom, varietiesAtom } from 'atoms';
+import { Month } from 'components/plantDatesBar/PlantDatesBar';
+import { Plant } from 'types';
+
 import {
   convertRectangleToPolygon,
   doPolygonsIntersect,
@@ -22,11 +24,9 @@ import {
   isRectangular,
   useUtils,
 } from '../../utils/utils';
-import { NotesCell } from './cells/NotesCell';
 import styles from './CalendarTable.module.scss';
+import { NotesCell } from './cells/NotesCell';
 import { PlantingDatesCell } from './cells/PlantingDatesCell';
-import { HTMLTable } from '@blueprintjs/core';
-import { varietiesAtom } from 'atoms/atoms';
 
 export type Row = Plant & {
   plantName: string;

@@ -1,17 +1,17 @@
+import { Checkbox, Classes, Colors, FormGroup } from '@blueprintjs/core';
+import { DateInput, DateInputProps, DateUtils } from '@blueprintjs/datetime';
 import { addYears, parse } from 'date-fns';
 import { useUpdateAtom } from 'jotai/utils';
 import { memo, useEffect, useState } from 'react';
+
+import { objectsAtom } from 'atoms';
+import { Plant } from 'types';
 import { formatDate, getTerminalDates } from 'utils/utils';
 
-import { Checkbox, Classes, Colors, FormGroup } from '@blueprintjs/core';
-import { DateInput, DateInputProps, DateUtils } from '@blueprintjs/datetime';
-
-import { objectsAtom } from '../../atoms/objectsAtom';
 import { localeUtils } from '../../datepickerLocaleUtils';
-import { Plant } from '../../types';
 import { PlantDatesBar } from '../plantDatesBar/PlantDatesBar';
-import commonStyles from './SidebarRight.module.scss';
 import styles from './PlantDates.module.scss';
+import commonStyles from './SidebarRight.module.scss';
 
 type Props = Pick<
   Plant,

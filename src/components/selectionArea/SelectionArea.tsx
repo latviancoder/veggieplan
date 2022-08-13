@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai/utils';
-import { selectionAtom } from '../../atoms/selectionAtom';
-import { zoomAtom } from '../../atoms/zoomAtom';
+
+import { selectionAtom, zoomAtom } from 'atoms';
 
 export const SelectionArea = () => {
   const selection = useAtomValue(selectionAtom);

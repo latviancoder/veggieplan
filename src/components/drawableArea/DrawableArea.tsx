@@ -1,27 +1,28 @@
+import { Colors } from '@blueprintjs/core';
+import { update } from '@tweenjs/tween.js';
 import Hammer from 'hammerjs';
-import { useUndoRedo } from 'hooks/useUndoRedo';
 import { useAtom, useAtomValue } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { isEmpty } from 'lodash';
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-import { Colors } from '@blueprintjs/core';
-import { update } from '@tweenjs/tween.js';
-
 import {
   canvasAtom,
+  copyAtom,
+  deleteAtom,
+  initialOffsetAtom,
   mousePositionAtom,
   offsetAtom,
+  panAtom,
+  panStartAtom,
+  pasteAtom,
   plotCanvasAtom,
-} from '../../atoms/atoms';
-import { copyAtom, pasteAtom } from '../../atoms/clipboardAtom';
-import { deleteAtom } from '../../atoms/deleteAtom';
-import { initialOffsetAtom } from '../../atoms/initialOffsetAtom';
-import { panAtom } from '../../atoms/panAtom';
-import { panStartAtom } from '../../atoms/panStartAtom';
-import { tapAtom } from '../../atoms/tapAtom';
-import { zoomAtom } from '../../atoms/zoomAtom';
+  tapAtom,
+  zoomAtom,
+} from 'atoms';
+import { useUndoRedo } from 'hooks/useUndoRedo';
+
 import { Badge } from '../badge/Badge';
 import { Creatable } from '../creatable/Creatable';
 import { Guides } from '../guides/Guides';
@@ -31,12 +32,12 @@ import { Objects } from '../shapes/Objects';
 import { SnapLines } from '../snapLines/SnapLines';
 import { Zoom } from '../zoom/Zoom';
 import styles from './DrawableArea.module.scss';
-import { selectedDatesAtom } from 'atoms/selectedDatesAtom';
 
 function animate(time: number) {
   requestAnimationFrame(animate);
   update(time);
 }
+
 requestAnimationFrame(animate);
 
 export const DrawableArea = () => {

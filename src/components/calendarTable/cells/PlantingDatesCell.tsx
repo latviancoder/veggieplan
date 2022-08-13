@@ -1,7 +1,9 @@
 import { Position } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
+
 import { Month, PlantDatesBar } from 'components/plantDatesBar/PlantDatesBar';
 import { formatDate } from 'utils/utils';
+
 import { Row } from '../CalendarTable';
 import styles from '../CalendarTable.module.scss';
 

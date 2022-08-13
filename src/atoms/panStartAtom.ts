@@ -1,7 +1,6 @@
 import { atom } from 'jotai';
 import { nanoid } from 'nanoid';
 
-import { HANDLER_OFFSET, HANDLER_SIZE } from '../constants';
 import {
   GardenObject,
   Modes,
@@ -9,7 +8,10 @@ import {
   Point,
   RectangleCorners,
   ShapeTypes,
-} from '../types';
+} from 'types';
+
+import { HANDLER_OFFSET, HANDLER_SIZE } from '../constants';
+import { rectangleHandlerMap } from '../utils/rectangleHandlerMap';
 import {
   getObjectAtPoint,
   isPointInsideCircle,
@@ -17,7 +19,6 @@ import {
   isRectangular,
   rotateRectangle,
 } from '../utils/utils';
-import { rectangleHandlerMap } from '../utils/rectangleHandlerMap';
 import {
   creatableAtom,
   hiddenObjectIdsAtom,

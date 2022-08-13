@@ -1,8 +1,8 @@
+import { Auth0Provider } from '@auth0/auth0-react';
 import { HotkeysProvider } from '@blueprintjs/core';
+import { useAtomsDevtools } from 'jotai/devtools';
 import { ReactElement, Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { useAtomsDevtools } from 'jotai/devtools';
-import { Auth0Provider } from '@auth0/auth0-react';
 
 import Root from './components/root/Root';
 

@@ -1,15 +1,15 @@
 .root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .content {
-  flex: 1;
-  display: flex;
-  justify-content: stretch;
+    flex: 1;
+    display: flex;
+    justify-content: stretch;
 }
 
 :global(body.overflow) {
-  overflow: hidden;
+    overflow: hidden;
 }

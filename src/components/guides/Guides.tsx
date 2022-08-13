@@ -1,18 +1,16 @@
+import { Colors } from '@blueprintjs/core';
 import { scaleLinear } from 'd3-scale';
-import { useAtom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
 import { useCallback, useMemo } from 'react';
 
-import { Colors } from '@blueprintjs/core';
-
 import {
   canvasAtom,
+  infoAtom,
   offsetAtom,
   plotAtom,
-  plotCanvasAtom
-} from '../../atoms/atoms';
-import { infoAtom } from '../../atoms/infoAtom';
-import { zoomAtom } from '../../atoms/zoomAtom';
+  plotCanvasAtom,
+  zoomAtom,
+} from 'atoms';
 
 export const Guides = () => {
   const offset = useAtomValue(offsetAtom);

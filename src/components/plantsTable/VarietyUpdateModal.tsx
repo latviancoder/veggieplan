@@ -1,16 +1,18 @@
 import {
-  Dialog,
+  Button,
   Classes,
+  Dialog,
   FormGroup,
   InputGroup,
   NumericInput,
   Tag,
-  Button,
 } from '@blueprintjs/core';
-import { useNumericInputCallback } from 'hooks/useNumericInputCallback';
 import { useUpdateAtom } from 'jotai/utils';
 import { useState } from 'react';
+
+import { useNumericInputCallback } from 'hooks/useNumericInputCallback';
 import { Variety } from 'types';
+
 import { varietyModalAtom, VarietyModalParams } from './PlantsTable';
 
 const isEditMode = (

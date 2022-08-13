@@ -1,13 +1,13 @@
+import { Colors } from '@blueprintjs/core';
 import { useAtomValue } from 'jotai/utils';
 import { memo } from 'react';
 
-import { Colors } from '@blueprintjs/core';
+import { zoomAtom } from 'atoms';
+import { ObjectTypes, Plant, RectangleShape } from 'types';
 
-import { zoomAtom } from '../../atoms/zoomAtom';
 import { HANDLER_OFFSET, HANDLER_SIZE } from '../../constants';
-import { ObjectTypes, Plant, RectangleShape } from '../../types';
-import { isPlant } from '../../utils/utils';
 import { rectangleHandlerMap } from '../../utils/rectangleHandlerMap';
+import { isPlant } from '../../utils/utils';
 
 type Props = (RectangleShape | Plant) & {
   isSelected?: boolean;

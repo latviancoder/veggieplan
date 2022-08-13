@@ -1,11 +1,17 @@
-import { objectsInMetersAtom } from './../atoms/objectsAtom';
-import { canvasAtom, modeAtom, plotAtom, varietiesAtom } from 'atoms/atoms';
 import deepEqual from 'deep-equal';
 import { useAtomValue } from 'jotai/utils';
 import { isEmpty, sortBy } from 'lodash';
-import { useEffect, useRef, useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useMutation } from 'react-query';
-import { Config, GardenObject, Modes, Variety } from 'types';
+
+import {
+  canvasAtom,
+  modeAtom,
+  objectsInMetersAtom,
+  plotAtom,
+  varietiesAtom,
+} from 'atoms';
+import { Config, GardenObject, Variety } from 'types';
 import { post, put } from 'utils/utils';
 
 let timeout: NodeJS.Timeout;

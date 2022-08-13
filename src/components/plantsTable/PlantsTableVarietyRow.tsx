@@ -1,11 +1,12 @@
 import { Alert, Button, Icon, IconSize, Intent } from '@blueprintjs/core';
-import { varietiesAtom } from 'atoms/atoms';
-import { useNumericInputCallback } from 'hooks/useNumericInputCallback';
 import produce from 'immer';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useState } from 'react';
+
+import { varietiesAtom } from 'atoms';
 import { PlantDetails, Variety } from 'types';
+
 import { varietyModalAtom } from './PlantsTable';
 import styles from './PlantsTableVarietyRow.module.scss';
 

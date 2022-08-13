@@ -1,12 +1,7 @@
 import { atom } from 'jotai';
 
 import { roundTwoDecimals } from '../utils/utils';
-import {
-  canvasAtom,
-  mousePositionAtom,
-  plotAtom,
-  plotCanvasAtom,
-} from './atoms';
+import { canvasAtom, plotAtom, plotCanvasAtom } from './atoms';
 import { utilsAtom } from './utilsAtom';
 
 export const infoAtom = atom((get) => {

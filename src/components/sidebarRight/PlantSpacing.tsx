@@ -1,6 +1,3 @@
-import { useUpdateAtom } from 'jotai/utils';
-import { memo, useEffect, useState } from 'react';
-
 import {
   Classes,
   Colors,
@@ -8,9 +5,12 @@ import {
   NumericInput,
   Tag,
 } from '@blueprintjs/core';
+import { useUpdateAtom } from 'jotai/utils';
+import { memo, useEffect, useState } from 'react';
 
-import { objectsAtom } from '../../atoms/objectsAtom';
-import { PlantDetails } from '../../types';
+import { objectsAtom } from 'atoms';
+import { PlantDetails } from 'types';
+
 import styles from './SidebarRight.module.scss';
 
 type Props = {

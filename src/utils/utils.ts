@@ -1,8 +1,8 @@
-import { isEmpty, compact, pick } from 'lodash';
 import { areIntervalsOverlapping, format, max, min } from 'date-fns';
 import { de } from 'date-fns/locale';
 import produce from 'immer';
 import { useAtomValue } from 'jotai/utils';
+import { compact, isEmpty } from 'lodash';
 
 import {
   canvasAtom,
@@ -10,8 +10,8 @@ import {
   plantsAtom,
   plotAtom,
   plotCanvasAtom,
-} from '../atoms/atoms';
-import { zoomAtom } from '../atoms/zoomAtom';
+  zoomAtom,
+} from 'atoms';
 import {
   GardenObject,
   ObjectTypes,
@@ -21,7 +21,7 @@ import {
   RectangleShape,
   Shape,
   ShapeTypes,
-} from '../types';
+} from 'types';
 
 export const roundTwoDecimals = (num: number) =>
   Math.round((num + Number.EPSILON) * 100) / 100;

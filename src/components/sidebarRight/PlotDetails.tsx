@@ -5,13 +5,12 @@ import {
   NumericInput,
   Tag,
 } from '@blueprintjs/core';
-import { plotAtom } from 'atoms/atoms';
-import { initialOffsetAtom } from 'atoms/initialOffsetAtom';
-import { useNumericInputCallback } from 'hooks/useNumericInputCallback';
 import { useAtom } from 'jotai';
-import { useUpdateAtom } from 'jotai/utils';
-import { useLayoutEffect, useState } from 'react';
+
+import { plotAtom } from 'atoms';
+import { useNumericInputCallback } from 'hooks/useNumericInputCallback';
 import { roundTwoDecimals } from 'utils/utils';
+
 import sidebarStyles from './SidebarRight.module.scss';
 
 export const PlotDetails = () => {

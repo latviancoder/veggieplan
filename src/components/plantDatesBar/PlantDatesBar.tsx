@@ -1,3 +1,4 @@
+import { Colors } from '@blueprintjs/core';
 import {
   addMonths,
   differenceInCalendarDays,
@@ -13,8 +14,6 @@ import {
 } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { compact } from 'lodash';
-
-import { Colors } from '@blueprintjs/core';
 
 import styles from './PlantDatesBar.module.scss';
 

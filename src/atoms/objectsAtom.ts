@@ -3,7 +3,8 @@ import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 import { isArray, sortBy } from 'lodash';
 
-import { GardenObject } from '../types';
+import { GardenObject } from 'types';
+
 import { hiddenObjectIdsAtom } from './atoms';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { utilsAtom } from './utilsAtom';

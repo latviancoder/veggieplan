@@ -1,9 +1,11 @@
-import { zoomAtom } from './zoomAtom';
 import { atom } from 'jotai';
-import { GardenObject, Point, SnapLine } from '../types';
-import { isRectangular, rotateRectangle } from '../utils/utils';
-import { SNAPPING_THRESHOLD } from '../constants';
 import { uniq } from 'lodash';
+
+import { GardenObject, Point, SnapLine } from 'types';
+
+import { SNAPPING_THRESHOLD } from '../constants';
+import { isRectangular, rotateRectangle } from '../utils/utils';
+import { zoomAtom } from './zoomAtom';
 
 const _snapLinesAtom = atom<SnapLine[]>([]);
 

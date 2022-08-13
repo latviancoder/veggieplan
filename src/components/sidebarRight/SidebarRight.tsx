@@ -1,24 +1,23 @@
+import { Classes, Colors } from '@blueprintjs/core';
 import { useAtomValue } from 'jotai/utils';
 import { memo } from 'react';
 
-import { Classes, Colors } from '@blueprintjs/core';
+import { objectsInMetersAtom, selectedObjectIdsAtom } from 'atoms';
+import { GardenObject, ObjectTypes, PlantDetails } from 'types';
 
-import { objectsInMetersAtom } from '../../atoms/objectsAtom';
-import { selectedObjectIdsAtom } from '../../atoms/selectedObjectIdsAtom';
-import { GardenObject, ObjectTypes, PlantDetails } from '../../types';
 import {
   isPlant,
   isRectangular,
   roundTwoDecimals,
   useUtils,
 } from '../../utils/utils';
-import styles from './SidebarRight.module.scss';
 import { PlantAmountRow } from './PlantAmountRow';
 import { PlantDates } from './PlantDates';
 import { PlantHeader } from './PlantHeader';
 import { PlantSpacing } from './PlantSpacing';
-import { ShapeHeader } from './ShapeHeader';
 import { PlotDetails } from './PlotDetails';
+import { ShapeHeader } from './ShapeHeader';
+import styles from './SidebarRight.module.scss';
 
 type Props = {
   selectedObject: GardenObject;

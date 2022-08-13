@@ -1,6 +1,13 @@
-import { objectsAtom } from 'atoms/objectsAtom';
+import {
+  DndContext,
+  Modifier,
+  MouseSensor,
+  TouchSensor,
+  useDraggable,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import classNames from 'classnames';
-import deepEqual from 'deep-equal';
 import {
   addMonths,
   differenceInMonths,
@@ -13,12 +20,12 @@ import {
   startOfMonth,
 } from 'date-fns';
 import { de } from 'date-fns/locale';
+import deepEqual from 'deep-equal';
 import { useAtom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
-import { compact, isEmpty, intersectionWith } from 'lodash';
+import { compact, isEmpty } from 'lodash';
 import {
   memo,
-  startTransition,
   useCallback,
   useEffect,
   useMemo,
@@ -26,20 +33,11 @@ import {
   useState,
   useTransition,
 } from 'react';
+
+import { objectsAtom, selectedDatesAtom } from 'atoms';
 import { getTerminalDates, isPlant } from 'utils/utils';
 
-import {
-  DndContext,
-  Modifier,
-  MouseSensor,
-  TouchSensor,
-  useDraggable,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-
 import styles from './MonthsSelector.module.scss';
-import { selectedDatesAtom } from 'atoms/selectedDatesAtom';
 
 const GRID_SIZE = 50;
 const HANDLER_SIZE = 5;
