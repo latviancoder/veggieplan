@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@auth0/auth0-react": "^1.10.2",
     "@blueprintjs/core": "^4.6.0",
     "@blueprintjs/datetime": "^4.3.2",
     "@blueprintjs/icons": "^4.3.1",
