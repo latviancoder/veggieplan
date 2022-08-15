@@ -125,9 +125,6 @@ app.put<any, any, void, Variety[]>(
 
 app.put<any, any, void, any[]>('/api/objects', jwtCheck, async (req, res) => {
   const newObjects = req.body || [];
-  console.log('-----------------');
-  console.log(newObjects);
-  console.log(typeof newObjects);
   const newObjectsIds = newObjects.map(({ id }) => id);
 
   const prevObjects = await client.query(SQL`SELECT * FROM objects`);

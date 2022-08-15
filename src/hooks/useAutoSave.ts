@@ -33,16 +33,13 @@ export const useAutosave = () => {
   const prevVarieties = useRef<Variety[] | undefined>();
 
   const { mutate: saveObjects } = useMutation<unknown, unknown, GardenObject[]>(
-    (objects) => {
-      console.log(`Bearer ${token}`);
-
-      return put('/api/objects', {
+    (objects) =>
+      put('/api/objects', {
         body: objects,
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
-    }
+      })
   );
 
   const { mutate: saveVarieties } = useMutation<unknown, unknown, Variety[]>(

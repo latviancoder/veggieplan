@@ -449,12 +449,13 @@ export const post = (
   init: Omit<RequestInit, 'body'> & { body: object }
 ) =>
   fetch(url, {
+    ...init,
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      ...init.headers,
     },
-    ...init,
     body: JSON.stringify(init.body),
   });
 
@@ -463,12 +464,13 @@ export const put = (
   init: Omit<RequestInit, 'body'> & { body: object }
 ) =>
   fetch(url, {
+    ...init,
     method: 'PUT',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
+      ...init.headers,
     },
-    ...init,
     body: JSON.stringify(init.body),
   });
 
