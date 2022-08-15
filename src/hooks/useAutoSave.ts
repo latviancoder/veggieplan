@@ -1,3 +1,4 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import deepEqual from 'deep-equal';
 import { useAtomValue } from 'jotai/utils';
 import { isEmpty, sortBy } from 'lodash';
@@ -11,12 +12,16 @@ import {
   plotAtom,
   varietiesAtom,
 } from 'atoms';
+import { useAccessToken } from 'hooks/useAccessToken';
 import { Config, GardenObject, Variety } from 'types';
-import { post, put } from 'utils/utils';
+import { put } from 'utils/utils';
 
 let timeout: NodeJS.Timeout;
 
 export const useAutosave = () => {
+  const { isAuthenticated } = useAuth0();
+  const token = useAccessToken();
+
   const canvas = useAtomValue(canvasAtom);
   const mode = useAtomValue(modeAtom);
   const objects = useAtomValue(objectsInMetersAtom);
@@ -28,43 +33,65 @@ export const useAutosave = () => {
   const prevVarieties = useRef<Variety[] | undefined>();
 
   const { mutate: saveObjects } = useMutation<unknown, unknown, GardenObject[]>(
-    (objects) => {
-      return put('/api/objects', objects);
-    }
+    (objects) =>
+      put('/api/objects', {
+        body: objects,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
   );
 
   const { mutate: saveVarieties } = useMutation<unknown, unknown, Variety[]>(
-    (varieties) => put('/api/varieties', varieties)
+    (varieties) =>
+      put('/api/varieties', {
+        body: varieties,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+  );
+
+  const { mutate: saveConfig } = useMutation<unknown, unknown, Config>(
+    (config) =>
+      put('/api/config', {
+        body: config,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
   );
 
   useLayoutEffect(() => {
     if (
       prevVarieties.current !== undefined &&
-      !deepEqual(prevVarieties.current, varieties)
+      !deepEqual(prevVarieties.current, varieties) &&
+      isAuthenticated
     ) {
       saveVarieties(varieties);
     }
 
     prevVarieties.current = varieties;
-  }, [varieties, saveVarieties]);
-
-  const { mutate: saveConfig } = useMutation<unknown, unknown, Config>(
-    (config) => post('/api/config/save', config)
-  );
+  }, [varieties, saveVarieties, isAuthenticated]);
 
   useEffect(() => {
     if (
       prevConfig.current !== undefined &&
-      !deepEqual(prevConfig.current, config)
+      !deepEqual(prevConfig.current, config) &&
+      isAuthenticated
     ) {
       saveConfig(config);
     }
 
     prevConfig.current = config;
-  }, [config, saveConfig]);
+  }, [config, saveConfig, isAuthenticated]);
 
   useEffect(() => {
-    if (!isEmpty(canvas) && prevSavedObjects.current !== undefined) {
+    if (
+      !isEmpty(canvas) &&
+      prevSavedObjects.current !== undefined &&
+      isAuthenticated
+    ) {
       clearTimeout(timeout);
 
       timeout = setTimeout(() => {
@@ -93,5 +120,5 @@ export const useAutosave = () => {
     if (prevSavedObjects.current === undefined) {
       prevSavedObjects.current = objects;
     }
-  }, [mode, objects, saveObjects, prevSavedObjects, canvas]);
+  }, [mode, objects, saveObjects, prevSavedObjects, canvas, isAuthenticated]);
 };

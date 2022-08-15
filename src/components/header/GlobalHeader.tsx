@@ -3,6 +3,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { FC, memo } from 'react';
 
 import { selectedDatesAtom, viewAtom } from 'atoms';
+import { UserActions } from 'components/sidebarLeft/userActions/UserActions';
 import { Views } from 'types';
 import { formatDate } from 'utils/utils';
 
@@ -47,6 +48,9 @@ export const GlobalHeader: FC<any> = memo(({ children }) => {
           </div>
         )}
         <div>{children}</div>
+        <div style={{ paddingRight: '5px' }}>
+          <UserActions />
+        </div>
       </div>
     </div>
   );

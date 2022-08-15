@@ -11,6 +11,7 @@ export {
   varietiesAtom,
   viewAtom,
   hiddenObjectIdsAtom,
+  accessTokenAtom,
 } from './atoms';
 
 export { copyAtom, pasteAtom } from './clipboardAtom';

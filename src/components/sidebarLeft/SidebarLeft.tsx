@@ -9,7 +9,7 @@ import { Modes } from 'types';
 import { ReactComponent as LeafIcon } from '../../assets/leaf.svg';
 import styles from './SidebarLeft.module.scss';
 import { PlantsSearch } from './plantsSearch/PlantsSearch';
-import { UserActions } from './userActions./UserActions';
+import { UserActions } from './userActions/UserActions';
 
 export const SidebarLeft = memo(() => {
   const setMode = useUpdateAtom(modeAtom);
@@ -54,9 +54,7 @@ export const SidebarLeft = memo(() => {
             </Tooltip2>
           </ButtonGroup>
         </div>
-        <div style={{ marginTop: 'auto' }}>
-          <UserActions />
-        </div>
+        <div style={{ marginTop: 'auto' }}>{/*<UserActions />*/}</div>
       </nav>
       {plantsSearch && (
         <>

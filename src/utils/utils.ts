@@ -444,24 +444,32 @@ Clockwise rotation ⇒ 𝜃 = −90°
 𝑦' = √53 sin(−arccos((3 − 1)∕√53) − 90°) + 2 = 0
  */
 
-export const post = (url: string, body: any) =>
+export const post = (
+  url: string,
+  init: Omit<RequestInit, 'body'> & { body: object }
+) =>
   fetch(url, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body),
+    ...init,
+    body: JSON.stringify(init.body),
   });
 
-export const put = (url: string, body: any) =>
+export const put = (
+  url: string,
+  init: Omit<RequestInit, 'body'> & { body: object }
+) =>
   fetch(url, {
     method: 'PUT',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body),
+    ...init,
+    body: JSON.stringify(init.body),
   });
 
 export const formatDate = (

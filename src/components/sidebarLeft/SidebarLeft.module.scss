@@ -3,6 +3,8 @@
 .nav {
   padding: 5px;
   border-right: 1px $light-gray1 solid;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar {

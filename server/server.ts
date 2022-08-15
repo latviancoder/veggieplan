@@ -1,12 +1,14 @@
-import { Variety, GardenObject } from '../src/types';
-import express from 'express';
-import path, { dirname } from 'path';
-import pg from 'pg';
 // @ts-ignore
 import camelCaseObjectDeep from 'camelcase-object-deep';
+import express from 'express';
+import { expressjwt as jwt } from 'express-jwt';
+import jwks from 'jwks-rsa';
+import path, { dirname } from 'path';
+import pg from 'pg';
 import SQL from 'sql-template-strings';
-
 import { fileURLToPath } from 'url';
+
+import { Variety, GardenObject } from '../src/types';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,6 +17,19 @@ const { Client } = pg;
 
 const app = express();
 const port = process.env.PORT || 5303;
+
+const jwtCheck = jwt({
+  // @ts-ignore
+  secret: jwks.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: 'https://veggieplan.eu.auth0.com/.well-known/jwks.json',
+  }),
+  audience: 'http://localhost:5303/api',
+  issuer: 'https://veggieplan.eu.auth0.com/',
+  algorithms: ['RS256'],
+});
 
 const client = new Client(
   process.env.ENVIRONMENT === 'DEV'
@@ -37,13 +52,13 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
-app.get('/api/config', async (req, res) => {
+app.get('/api/config', jwtCheck, async (req, res) => {
   const result = await client.query(`SELECT * FROM config`);
 
   res.json(camelCaseObjectDeep(result.rows[0]));
 });
 
-app.post('/api/config/save', async (req, res) => {
+app.put('/api/config', jwtCheck, async (req, res) => {
   await client.query(
     SQL`UPDATE config set width=${req.body.width}, height=${req.body.height}`
   );
@@ -51,7 +66,7 @@ app.post('/api/config/save', async (req, res) => {
   res.send();
 });
 
-app.get('/api/objects', async (req, res) => {
+app.get('/api/objects', jwtCheck, async (req, res) => {
   const result = await client.query(`SELECT objects.* FROM objects`);
   res.json(camelCaseObjectDeep(result.rows));
 });
@@ -64,55 +79,51 @@ app.get('/api/plants', async (req, res) => {
   res.json(camelCaseObjectDeep(result.rows));
 });
 
-app.get('/api/varieties', async (req, res) => {
+app.get('/api/varieties', jwtCheck, async (req, res) => {
   const result = await client.query(SQL`SELECT * FROM varieties ORDER BY name`);
 
   res.json(camelCaseObjectDeep(result.rows));
 });
 
-app.put<void, void, Variety[]>('/api/varieties', async (req, res) => {
-  const newVarieties = req.body || [];
-  const newVarietiesIds = newVarieties.map(({ id }) => id);
+app.put<any, any, void, Variety[]>(
+  '/api/varieties',
+  jwtCheck,
+  async (req, res) => {
+    const newVarieties = req.body || [];
+    const newVarietiesIds = newVarieties.map(({ id }) => id);
 
-  const prevVarieties = await client.query(SQL`SELECT * FROM varieties`);
+    const prevVarieties = await client.query(SQL`SELECT * FROM varieties`);
 
-  const deletedVarietiesIds = prevVarieties.rows
-    .filter((prev) => !newVarietiesIds.includes(prev.id))
-    .map(({ id }) => id);
+    const deletedVarietiesIds = prevVarieties.rows
+      .filter((prev) => !newVarietiesIds.includes(prev.id))
+      .map(({ id }) => id);
 
-  if (deletedVarietiesIds.length) {
-    await client.query(
-      `UPDATE objects SET variety_id = NULL WHERE variety_id = ANY($1)`,
-      [deletedVarietiesIds]
-    );
+    if (deletedVarietiesIds.length) {
+      await client.query(
+        `UPDATE objects SET variety_id = NULL WHERE variety_id = ANY($1)`,
+        [deletedVarietiesIds]
+      );
 
-    await client.query(`DELETE FROM varieties WHERE id = ANY($1)`, [
-      deletedVarietiesIds,
-    ]);
-  }
+      await client.query(`DELETE FROM varieties WHERE id = ANY($1)`, [
+        deletedVarietiesIds,
+      ]);
+    }
 
-  for (const obj of req.body || []) {
-    await client.query(
-      SQL`INSERT INTO varieties
+    for (const obj of req.body || []) {
+      await client.query(
+        SQL`INSERT INTO varieties
       (id, plant_id, name, row_spacing, in_row_spacing, maturity) VALUES
       (${obj.id}, ${obj.plantId}, ${obj.name}, ${obj.rowSpacing}, ${obj.inRowSpacing}, ${obj.maturity})
       ON CONFLICT (id) DO UPDATE SET
         name = ${obj.name}, row_spacing = ${obj.rowSpacing}, in_row_spacing = ${obj.inRowSpacing}, maturity = ${obj.maturity}`
-    );
+      );
+    }
+
+    res.send();
   }
+);
 
-  res.send();
-});
-
-app.get('/api/varieties/:plantId', async (req, res) => {
-  const result = await client.query(
-    SQL`SELECT * FROM varieties WHERE plant_id=${req.params.plantId} ORDER BY name`
-  );
-
-  res.json(camelCaseObjectDeep(result.rows));
-});
-
-app.put<void, void, any[]>('/api/objects', async (req, res) => {
+app.put<any, any, void, any[]>('/api/objects', jwtCheck, async (req, res) => {
   const newObjects = req.body || [];
   const newObjectsIds = newObjects.map(({ id }) => id);
 
