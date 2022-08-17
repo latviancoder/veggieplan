@@ -1,14 +1,16 @@
 // @ts-ignore
 import camelCaseObjectDeep from 'camelcase-object-deep';
-import express from 'express';
+import express, { Request } from 'express';
 import { expressjwt as jwt } from 'express-jwt';
+import { JwtPayload } from 'jsonwebtoken';
 import jwks from 'jwks-rsa';
 import path, { dirname } from 'path';
 import pg from 'pg';
 import SQL from 'sql-template-strings';
 import { fileURLToPath } from 'url';
 
-import { Variety, GardenObject } from '../src/types';
+import { updateObjects } from './endpoints/updateObjects.js';
+import { updateVarieties } from './endpoints/updateVarieties.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,6 +19,8 @@ const { Client } = pg;
 
 const app = express();
 const port = process.env.PORT || 5303;
+
+export type RequestBody<T> = Request<{}, {}, T> & { auth?: JwtPayload };
 
 const jwtCheck = jwt({
   // @ts-ignore
@@ -31,7 +35,7 @@ const jwtCheck = jwt({
   algorithms: ['RS256'],
 });
 
-const client = new Client(
+export const client = new Client(
   process.env.ENVIRONMENT === 'DEV'
     ? {
         host: 'localhost',
@@ -52,15 +56,27 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
-app.get('/api/config', jwtCheck, async (req, res) => {
-  const result = await client.query(`SELECT * FROM config`);
+app.get('/api/plants', async (req, res) => {
+  const result = await client.query(
+    SQL`SELECT plants.*, families.name AS family_name, families.latin_name AS family_latin_name 
+    FROM plants LEFT OUTER JOIN families ON (plants.family_id = families.id) ORDER BY plants.name ASC`
+  );
+  res.json(camelCaseObjectDeep(result.rows));
+});
+
+app.get('/api/config', jwtCheck, async (req: RequestBody<any>, res) => {
+  const result = await client.query(
+    SQL`SELECT * FROM config WHERE user_id = ${req.auth?.sub}`
+  );
 
   res.json(camelCaseObjectDeep(result.rows[0]));
 });
 
-app.put('/api/config', jwtCheck, async (req, res) => {
+app.put('/api/config', jwtCheck, async (req: RequestBody<any>, res) => {
   await client.query(
-    SQL`UPDATE config set width=${req.body.width}, height=${req.body.height}`
+    SQL`INSERT INTO config (user_id, width, height) 
+        VALUES (${req.auth?.sub}, ${req.body.width}, ${req.body.height}) 
+        ON CONFLICT (user_id) DO UPDATE SET width=${req.body.width}, height=${req.body.height}`
   );
 
   res.send();
@@ -71,117 +87,15 @@ app.get('/api/objects', jwtCheck, async (req, res) => {
   res.json(camelCaseObjectDeep(result.rows));
 });
 
-app.get('/api/plants', async (req, res) => {
-  const result = await client.query(
-    `SELECT plants.*, families.name AS family_name, families.latin_name AS family_latin_name 
-    FROM plants LEFT OUTER JOIN families ON (plants.family_id = families.id) ORDER BY plants.name ASC`
-  );
-  res.json(camelCaseObjectDeep(result.rows));
-});
-
 app.get('/api/varieties', jwtCheck, async (req, res) => {
   const result = await client.query(SQL`SELECT * FROM varieties ORDER BY name`);
 
   res.json(camelCaseObjectDeep(result.rows));
 });
 
-app.put<any, any, void, Variety[]>(
-  '/api/varieties',
-  jwtCheck,
-  async (req, res) => {
-    const newVarieties = req.body || [];
-    const newVarietiesIds = newVarieties.map(({ id }) => id);
+app.put('/api/varieties', jwtCheck, updateVarieties);
 
-    const prevVarieties = await client.query(SQL`SELECT * FROM varieties`);
-
-    const deletedVarietiesIds = prevVarieties.rows
-      .filter((prev) => !newVarietiesIds.includes(prev.id))
-      .map(({ id }) => id);
-
-    if (deletedVarietiesIds.length) {
-      await client.query(
-        `UPDATE objects SET variety_id = NULL WHERE variety_id = ANY($1)`,
-        [deletedVarietiesIds]
-      );
-
-      await client.query(`DELETE FROM varieties WHERE id = ANY($1)`, [
-        deletedVarietiesIds,
-      ]);
-    }
-
-    for (const obj of req.body || []) {
-      await client.query(
-        SQL`INSERT INTO varieties
-      (id, plant_id, name, row_spacing, in_row_spacing, maturity) VALUES
-      (${obj.id}, ${obj.plantId}, ${obj.name}, ${obj.rowSpacing}, ${obj.inRowSpacing}, ${obj.maturity})
-      ON CONFLICT (id) DO UPDATE SET
-        name = ${obj.name}, row_spacing = ${obj.rowSpacing}, in_row_spacing = ${obj.inRowSpacing}, maturity = ${obj.maturity}`
-      );
-    }
-
-    res.send();
-  }
-);
-
-app.put<any, any, void, any[]>('/api/objects', jwtCheck, async (req, res) => {
-  const newObjects = req.body || [];
-  const newObjectsIds = newObjects.map(({ id }) => id);
-
-  const prevObjects = await client.query(SQL`SELECT * FROM objects`);
-
-  const deletedObjectsIds = prevObjects.rows
-    .filter((prev) => !newObjectsIds.includes(prev.id))
-    .map(({ id }) => id);
-
-  if (deletedObjectsIds.length) {
-    await client.query(`DELETE FROM objects WHERE id = ANY($1)`, [
-      deletedObjectsIds,
-    ]);
-  }
-
-  res.send();
-
-  // const changedObjects = objects.filter((obj) => {
-  //   if (
-  //     !deepEqual(
-  //       { ...obj, zIndex: undefined },
-  //       {
-  //         ...prevSavedObjects.current?.find(({ id }) => id === obj.id),
-  //         zIndex: undefined,
-  //       }
-  //     )
-  //   ) {
-  //     return true;
-  //   }
-
-  //   return false;
-  // });
-
-  for (const obj of req.body || []) {
-    await client.query(
-      SQL`INSERT INTO objects 
-        (id, x, y, width, height, rotation, variety_id, object_type, shape_type, plant_id, 
-          date_added, sorting, in_row_spacing, row_spacing, 
-          date_direct_sow, date_start_indoors, date_transplant, date_first_harvest, date_last_harvest) VALUES 
-        (${obj.id}, ${obj.x}, ${obj.y}, ${obj.width}, ${obj.height}, ${obj.rotation}, 
-          ${obj.varietyId}, ${obj.objectType}, ${obj.shapeType}, ${obj.plantId}, 
-          ${obj.dateAdded}, ${obj.sorting}, ${obj.inRowSpacing}, ${obj.rowSpacing},
-          ${obj.dateDirectSow}, ${obj.dateStartIndoors}, ${obj.dateTransplant}, ${obj.dateFirstHarvest}, ${obj.dateLastHarvest}  
-          ) 
-      ON CONFLICT (id) DO UPDATE SET 
-        x = ${obj.x}, y = ${obj.y}, 
-        width = ${obj.width}, height = ${obj.height}, 
-        rotation = ${obj.rotation}, 
-        variety_id=${obj.varietyId}, 
-        in_row_spacing=${obj.inRowSpacing}, row_spacing=${obj.rowSpacing},
-        title=${obj.title},
-        date_direct_sow=${obj.dateDirectSow}, date_start_indoors=${obj.dateStartIndoors}, date_transplant=${obj.dateTransplant}, date_first_harvest=${obj.dateFirstHarvest}, date_last_harvest=${obj.dateLastHarvest}
-        `
-    );
-  }
-
-  res.send();
-});
+app.put('/api/objects', jwtCheck, updateObjects);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
