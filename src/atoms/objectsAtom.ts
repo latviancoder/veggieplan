@@ -5,11 +5,11 @@ import { isArray, sortBy } from 'lodash';
 
 import { GardenObject } from 'types';
 
-import { hiddenObjectIdsAtom } from './atoms';
+import { hiddenObjectIdsAtom, storage } from './atoms';
 import { selectedObjectIdsAtom } from './selectedObjectIdsAtom';
 import { utilsAtom } from './utilsAtom';
 
-const _objectsAtom = atomWithStorage<GardenObject[]>('objects', []);
+const _objectsAtom = atomWithStorage<GardenObject[]>('objects', [], storage);
 
 type SetParams = (
   | {

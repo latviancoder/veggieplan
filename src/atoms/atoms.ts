@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { atomWithStorage } from 'jotai/utils';
+import { atomWithStorage, createJSONStorage } from 'jotai/utils';
 import { isEmpty } from 'lodash';
 
 import {
@@ -11,6 +11,8 @@ import {
   Variety,
   Views,
 } from 'types';
+
+export const storage = createJSONStorage<any>(() => sessionStorage);
 
 export const modeAtom = atom(Modes.DEFAULT);
 
@@ -29,10 +31,14 @@ export const canvasAtom = atom<{
 );
 
 // In meters
-export const plotAtom = atomWithStorage<Config>('config', {
-  width: 10,
-  height: 10,
-} as Config);
+export const plotAtom = atomWithStorage<Config>(
+  'config',
+  {
+    width: 10,
+    height: 10,
+  } as Config,
+  storage
+);
 
 export const plotCanvasAtom = atom<{ width: number; height: number }>((get) => {
   const plot = get(plotAtom);
@@ -70,9 +76,13 @@ export const selectedPlantAtom = atom<null | number>(null);
 
 export const plantsAtom = atom<PlantDetails[]>([]);
 
-export const varietiesAtom = atomWithStorage<Variety[]>('varieties', []);
+export const varietiesAtom = atomWithStorage<Variety[]>(
+  'varieties',
+  [],
+  storage
+);
 
-export const viewAtom = atomWithStorage<Views>('view', Views.PLAN);
+export const viewAtom = atomWithStorage<Views>('view', Views.PLAN, storage);
 
 export const hiddenObjectIdsAtom = atom<string[] | null>(null);
 
