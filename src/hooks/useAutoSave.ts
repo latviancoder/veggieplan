@@ -2,7 +2,13 @@ import { useAuth0 } from '@auth0/auth0-react';
 import deepEqual from 'deep-equal';
 import { useAtomValue } from 'jotai/utils';
 import { isEmpty, sortBy } from 'lodash';
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useMutation } from 'react-query';
 
 import {
@@ -18,11 +24,27 @@ import { put } from 'utils/utils';
 
 let timeout: NodeJS.Timeout;
 
+const func = (event: any) => {
+  return (event.returnValue = 'true');
+};
+
 export const useAutosave = () => {
   const { isAuthenticated } = useAuth0();
   const token = useAccessToken();
 
-  const canvas = useAtomValue(canvasAtom);
+  const [changeMade, setChangeMade] = useState(false);
+
+  useEffect(() => {
+    if (changeMade && !isAuthenticated) {
+      window.addEventListener('beforeunload', func);
+    } else {
+      window.removeEventListener('beforeunload', func);
+    }
+    return () => {
+      window.removeEventListener('beforeunload', func);
+    };
+  }, [changeMade, isAuthenticated]);
+
   const mode = useAtomValue(modeAtom);
   const objects = useAtomValue(objectsInMetersAtom);
   const config = useAtomValue(plotAtom);
@@ -62,54 +84,71 @@ export const useAutosave = () => {
       })
   );
 
+  const varietiesChanged = useCallback(
+    () =>
+      prevVarieties.current !== undefined &&
+      !deepEqual(prevVarieties.current, varieties),
+    [varieties]
+  );
+
+  const configChanged = useCallback(
+    () =>
+      prevConfig.current !== undefined &&
+      !deepEqual(prevConfig.current, config),
+    [config]
+  );
+
+  const objectsChanged = useCallback(
+    () =>
+      prevSavedObjects.current !== undefined &&
+      !deepEqual(
+        sortBy(
+          objects.map((obj) => ({ ...obj, zIndex: undefined })),
+          'id'
+        ),
+        sortBy(
+          prevSavedObjects.current?.map((obj) => ({
+            ...obj,
+            zIndex: undefined,
+          })),
+          'id'
+        )
+      ),
+    [objects]
+  );
+
   useLayoutEffect(() => {
     if (
-      prevVarieties.current !== undefined &&
-      !deepEqual(prevVarieties.current, varieties) &&
-      isAuthenticated
+      (prevSavedObjects.current !== undefined && objects) ||
+      (prevVarieties.current !== undefined && varieties) ||
+      (prevConfig.current !== undefined && config)
     ) {
+      setChangeMade(true);
+    }
+  }, [objects, varieties, config]);
+
+  useLayoutEffect(() => {
+    if (varietiesChanged() && isAuthenticated) {
       saveVarieties(varieties);
     }
 
     prevVarieties.current = varieties;
   }, [varieties, saveVarieties, isAuthenticated]);
 
-  useEffect(() => {
-    if (
-      prevConfig.current !== undefined &&
-      !deepEqual(prevConfig.current, config) &&
-      isAuthenticated
-    ) {
+  useLayoutEffect(() => {
+    if (configChanged() && isAuthenticated) {
       saveConfig(config);
     }
 
     prevConfig.current = config;
   }, [config, saveConfig, isAuthenticated]);
 
-  useEffect(() => {
-    if (
-      !isEmpty(canvas) &&
-      prevSavedObjects.current !== undefined &&
-      isAuthenticated
-    ) {
+  useLayoutEffect(() => {
+    if (prevSavedObjects.current !== undefined && isAuthenticated) {
       clearTimeout(timeout);
 
       timeout = setTimeout(() => {
-        if (
-          !deepEqual(
-            sortBy(
-              objects.map((obj) => ({ ...obj, zIndex: undefined })),
-              'id'
-            ),
-            sortBy(
-              prevSavedObjects.current?.map((obj) => ({
-                ...obj,
-                zIndex: undefined,
-              })),
-              'id'
-            )
-          )
-        ) {
+        if (objectsChanged()) {
           saveObjects(objects);
 
           prevSavedObjects.current = objects;
@@ -120,5 +159,5 @@ export const useAutosave = () => {
     if (prevSavedObjects.current === undefined) {
       prevSavedObjects.current = objects;
     }
-  }, [mode, objects, saveObjects, prevSavedObjects, canvas, isAuthenticated]);
+  }, [mode, objects, saveObjects, prevSavedObjects, isAuthenticated]);
 };
