@@ -1,6 +1,6 @@
 // @ts-ignore
 import camelCaseObjectDeep from 'camelcase-object-deep';
-import express, { Request } from 'express';
+import express, { Request, Response } from 'express';
 import { expressjwt as jwt } from 'express-jwt';
 import { JwtPayload } from 'jsonwebtoken';
 import jwks from 'jwks-rsa';
@@ -9,8 +9,10 @@ import pg from 'pg';
 import SQL from 'sql-template-strings';
 import { fileURLToPath } from 'url';
 
-import { updateObjects } from './endpoints/updateObjects.js';
-import { updateVarieties } from './endpoints/updateVarieties.js';
+import { Config, GardenObject, Variety } from '../src/types';
+import { saveConfig } from './utils/saveConfig.js';
+import { saveObjects } from './utils/saveObjects.js';
+import { saveVarieties } from './utils/saveVarieties.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,7 +22,7 @@ const { Client } = pg;
 const app = express();
 const port = process.env.PORT || 5303;
 
-export type RequestBody<T> = Request<{}, {}, T> & { auth?: JwtPayload };
+export type RequestBody<T = {}> = Request<{}, {}, T> & { auth?: JwtPayload };
 
 const jwtCheck = jwt({
   // @ts-ignore
@@ -56,11 +58,42 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
+// Bootstrap determines if this is first login after signup
+// If it is: we save to database the state saved in web storage.
+// Other queries wait for this query to finish because the app uses suspense.
+app.post(
+  '/api/bootstrap',
+  jwtCheck,
+  async (
+    req: RequestBody<{
+      varieties: Variety[];
+      objects: GardenObject[];
+      config: Config;
+    }>,
+    res
+  ) => {
+    // Check if the user already has configuration entry
+    const result = await client.query(
+      SQL`SELECT * FROM config WHERE user_id = ${req.auth?.sub}`
+    );
+
+    // No entry yet, save web state
+    if (!result.rows.length) {
+      await saveConfig(req.body.config, req.auth);
+      await saveVarieties(req.body.varieties, req.auth);
+      await saveObjects(req.body.objects, req.auth);
+    }
+
+    res.json({});
+  }
+);
+
 app.get('/api/plants', async (req, res) => {
   const result = await client.query(
     SQL`SELECT plants.*, families.name AS family_name, families.latin_name AS family_latin_name 
     FROM plants LEFT OUTER JOIN families ON (plants.family_id = families.id) ORDER BY plants.name ASC`
   );
+
   res.json(camelCaseObjectDeep(result.rows));
 });
 
@@ -72,30 +105,45 @@ app.get('/api/config', jwtCheck, async (req: RequestBody<any>, res) => {
   res.json(camelCaseObjectDeep(result.rows[0]));
 });
 
-app.put('/api/config', jwtCheck, async (req: RequestBody<any>, res) => {
-  await client.query(
-    SQL`INSERT INTO config (user_id, width, height) 
-        VALUES (${req.auth?.sub}, ${req.body.width}, ${req.body.height}) 
-        ON CONFLICT (user_id) DO UPDATE SET width=${req.body.width}, height=${req.body.height}`
-  );
+app.put('/api/config', jwtCheck, async (req: RequestBody<Config>, res) => {
+  await saveConfig(req.body, req.auth);
 
   res.send();
 });
 
-app.get('/api/objects', jwtCheck, async (req, res) => {
-  const result = await client.query(`SELECT objects.* FROM objects`);
-  res.json(camelCaseObjectDeep(result.rows));
-});
-
-app.get('/api/varieties', jwtCheck, async (req, res) => {
-  const result = await client.query(SQL`SELECT * FROM varieties ORDER BY name`);
+app.get('/api/objects', jwtCheck, async (req: RequestBody, res) => {
+  const result = await client.query(
+    SQL`SELECT objects.* FROM objects WHERE user_id = ${req.auth?.sub}`
+  );
 
   res.json(camelCaseObjectDeep(result.rows));
 });
 
-app.put('/api/varieties', jwtCheck, updateVarieties);
+app.get('/api/varieties', jwtCheck, async (req: RequestBody, res) => {
+  const result = await client.query(
+    SQL`SELECT * FROM varieties WHERE user_id = ${req.auth?.sub} ORDER BY name `
+  );
 
-app.put('/api/objects', jwtCheck, updateObjects);
+  res.json(camelCaseObjectDeep(result.rows));
+});
+
+app.put(
+  '/api/varieties',
+  jwtCheck,
+  async (req: RequestBody<Variety[]>, res: Response) => {
+    await saveVarieties(req.body, req.auth);
+    res.send();
+  }
+);
+
+app.put(
+  '/api/objects',
+  jwtCheck,
+  async (req: RequestBody<any[]>, res: Response) => {
+    await saveObjects(req.body, req.auth);
+    res.send();
+  }
+);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

@@ -8,7 +8,7 @@ import {
   canvasAtom,
   offsetAtom,
   plantsAtom,
-  plotAtom,
+  configAtom,
   plotCanvasAtom,
   zoomAtom,
 } from 'atoms';
@@ -28,7 +28,7 @@ export const roundTwoDecimals = (num: number) =>
 
 export const useUtils = () => {
   const zoom = useAtomValue(zoomAtom);
-  const plot = useAtomValue(plotAtom);
+  const plot = useAtomValue(configAtom);
   const plotCanvas = useAtomValue(plotCanvasAtom);
   const canvas = useAtomValue(canvasAtom);
   const offset = useAtomValue(offsetAtom);

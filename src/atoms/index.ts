@@ -1,7 +1,7 @@
 export {
   modeAtom,
   canvasAtom,
-  plotAtom,
+  configAtom,
   plotCanvasAtom,
   creatableAtom,
   mousePositionAtom,

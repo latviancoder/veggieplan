@@ -7,14 +7,14 @@ import {
 } from '@blueprintjs/core';
 import { useAtom } from 'jotai';
 
-import { plotAtom } from 'atoms';
+import { configAtom } from 'atoms';
 import { useNumericInputCallback } from 'hooks/useNumericInputCallback';
 import { roundTwoDecimals } from 'utils/utils';
 
 import sidebarStyles from './SidebarRight.module.scss';
 
 export const PlotDetails = () => {
-  const [plot, setPlot] = useAtom(plotAtom);
+  const [plot, setPlot] = useAtom(configAtom);
 
   const [widthString, widthNumber, onWidthChange] = useNumericInputCallback(
     plot.width

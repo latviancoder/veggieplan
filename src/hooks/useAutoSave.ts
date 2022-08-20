@@ -12,10 +12,9 @@ import {
 import { useMutation } from 'react-query';
 
 import {
-  canvasAtom,
   modeAtom,
   objectsInMetersAtom,
-  plotAtom,
+  configAtom,
   varietiesAtom,
 } from 'atoms';
 import { useAccessToken } from 'hooks/useAccessToken';
@@ -47,7 +46,7 @@ export const useAutosave = () => {
 
   const mode = useAtomValue(modeAtom);
   const objects = useAtomValue(objectsInMetersAtom);
-  const config = useAtomValue(plotAtom);
+  const config = useAtomValue(configAtom);
   const varieties = useAtomValue(varietiesAtom);
 
   const prevSavedObjects = useRef<GardenObject[] | undefined>();

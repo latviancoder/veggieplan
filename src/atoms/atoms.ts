@@ -31,7 +31,7 @@ export const canvasAtom = atom<{
 );
 
 // In meters
-export const plotAtom = atomWithStorage<Config>(
+export const configAtom = atomWithStorage<Config>(
   'config',
   {
     width: 10,
@@ -41,7 +41,7 @@ export const plotAtom = atomWithStorage<Config>(
 );
 
 export const plotCanvasAtom = atom<{ width: number; height: number }>((get) => {
-  const plot = get(plotAtom);
+  const plot = get(configAtom);
   const canvas = get(canvasAtom);
 
   const plotCanvas = {

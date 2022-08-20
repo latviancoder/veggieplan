@@ -1,13 +1,13 @@
 import { atom } from 'jotai';
 
 import { roundTwoDecimals } from '../utils/utils';
-import { canvasAtom, plotAtom, plotCanvasAtom } from './atoms';
+import { canvasAtom, configAtom, plotCanvasAtom } from './atoms';
 import { utilsAtom } from './utilsAtom';
 
 export const infoAtom = atom((get) => {
   const { meterToPx } = get(utilsAtom);
 
-  const plot = get(plotAtom);
+  const plot = get(configAtom);
   const canvas = get(canvasAtom);
   const plotCanvas = get(plotCanvasAtom);
 

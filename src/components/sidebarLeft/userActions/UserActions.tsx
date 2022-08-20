@@ -1,9 +1,18 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { Button, ButtonGroup } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
+import { useAtomValue } from 'jotai/utils';
+
+import { objectsInMetersAtom, configAtom, varietiesAtom } from 'atoms';
 
 export const UserActions = () => {
   const { isAuthenticated, isLoading, logout, loginWithRedirect } = useAuth0();
+
+  const redirectToLogin = () => {
+    loginWithRedirect({
+      ui_locales: 'de',
+    });
+  };
 
   return (
     <ButtonGroup
@@ -12,19 +21,14 @@ export const UserActions = () => {
       style={{ visibility: isLoading ? 'hidden' : 'visible' }}
     >
       {!isAuthenticated && (
-        <Tooltip2 content={<span>Einloggen</span>}>
-          <Button
-            icon="log-in"
-            onClick={() =>
-              loginWithRedirect({ ui_locales: 'de', screen_hint: 'signup' })
-            }
-          />
-        </Tooltip2>
+        <Button icon="log-in" onClick={redirectToLogin}>
+          Anmelden
+        </Button>
       )}
       {isAuthenticated && (
-        <Tooltip2 content={<span>Ausloggen</span>}>
-          <Button icon="user" onClick={() => logout()} />
-        </Tooltip2>
+        <Button icon="user" onClick={() => logout()}>
+          Ausloggen
+        </Button>
       )}
     </ButtonGroup>
   );

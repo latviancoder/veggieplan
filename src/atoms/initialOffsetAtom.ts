@@ -1,10 +1,10 @@
 import { atom } from 'jotai';
 
-import { canvasAtom, offsetAtom, plotAtom, plotCanvasAtom } from './atoms';
+import { canvasAtom, offsetAtom, configAtom, plotCanvasAtom } from './atoms';
 
 // Position plot canvas in the middle of canvas
 export const initialOffsetAtom = atom(null, (get, set) => {
-  const plot = get(plotAtom);
+  const plot = get(configAtom);
   const canvas = get(canvasAtom);
   const plotCanvas = get(plotCanvasAtom);
 

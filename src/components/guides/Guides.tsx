@@ -7,7 +7,7 @@ import {
   canvasAtom,
   infoAtom,
   offsetAtom,
-  plotAtom,
+  configAtom,
   plotCanvasAtom,
   zoomAtom,
 } from 'atoms';
@@ -16,7 +16,7 @@ export const Guides = () => {
   const offset = useAtomValue(offsetAtom);
   const info = useAtomValue(infoAtom);
   const zoom = useAtomValue(zoomAtom);
-  const plot = useAtomValue(plotAtom);
+  const plot = useAtomValue(configAtom);
   const plotCanvas = useAtomValue(plotCanvasAtom);
   const canvas = useAtomValue(canvasAtom);
 

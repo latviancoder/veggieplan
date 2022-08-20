@@ -5,7 +5,7 @@ import {
   canvasAtom,
   offsetAtom,
   plantsAtom,
-  plotAtom,
+  configAtom,
   plotCanvasAtom,
 } from './atoms';
 import { zoomAtom } from './zoomAtom';
@@ -14,7 +14,7 @@ export const utilsAtom = atom((get) => {
   const canvas = get(canvasAtom);
   const zoom = get(zoomAtom);
   const offset = get(offsetAtom);
-  const plot = get(plotAtom);
+  const plot = get(configAtom);
   const plotCanvas = get(plotCanvasAtom);
   const plants = get(plantsAtom);
 

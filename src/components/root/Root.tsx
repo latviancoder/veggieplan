@@ -1,22 +1,24 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useAuth0 } from '@auth0/auth0-react';
+import { useAtom } from 'jotai';
 import { useAtomDevtools } from 'jotai/devtools';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
 import {
-  accessTokenAtom,
   objectsAtom,
   plantsAtom,
-  plotAtom,
+  configAtom,
   varietiesAtom,
   viewAtom,
+  objectsInMetersAtom,
 } from 'atoms';
 import { PlantsTable } from 'components/plantsTable/PlantsTable';
 import { useAccessToken } from 'hooks/useAccessToken';
 import { useAutosave } from 'hooks/useAutoSave';
 import { GardenObject, PlantDetails, Variety, Views } from 'types';
+import { post } from 'utils/utils';
 
 import { DrawableArea } from '../drawableArea/DrawableArea';
 import { GlobalHeader } from '../header/GlobalHeader';
@@ -33,13 +35,37 @@ const Root = () => {
   const { isAuthenticated } = useAuth0();
 
   const view = useAtomValue(viewAtom);
-  const setPlot = useUpdateAtom(plotAtom);
   const setPlants = useUpdateAtom(plantsAtom);
+  const [config, setConfig] = useAtom(configAtom);
+  const objectsInMeters = useAtomValue(objectsInMetersAtom);
   const setObjects = useUpdateAtom(objectsAtom);
-  const setVarieties = useUpdateAtom(varietiesAtom);
+  const [varieties, setVarieties] = useAtom(varietiesAtom);
 
   // @ts-ignore
   useAtomDevtools(objectsAtom);
+
+  // Bootstrap determines if this is first login after signup
+  // If it is: we save to database the state saved in web storage.
+  //
+  // Other queries wait for this query to finish because the app uses suspense.
+  // This query throws a promise internally and suspends the component before the other queries run.
+  useQuery(
+    ['bootstrap'],
+    async () =>
+      await post('/api/bootstrap', {
+        body: {
+          config,
+          objects: objectsInMeters,
+          varieties,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((res) => res.json()),
+    {
+      enabled: isAuthenticated,
+    }
+  );
 
   useQuery<PlantDetails[]>(['plants'], {
     queryFn: async () => {
@@ -96,7 +122,7 @@ const Root = () => {
         },
       }).then((res) => res.json());
 
-      setPlot({
+      setConfig({
         width: payload.width,
         height: payload.height,
       });
@@ -118,42 +144,47 @@ const Root = () => {
 
   useAutosave();
 
-  return (
-    <div className={styles.root}>
-      <GlobalHeader>
-        {view === Views.PLAN && (
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              marginRight: '5px',
-            }}
-          >
-            <MonthsSelector />
-          </div>
-        )}
-      </GlobalHeader>
-      <div className={styles.content}>
-        {view === Views.PLAN && (
-          <>
-            <SidebarLeft />
-            <DrawableArea />
-            <SidebarRightConnected />
-          </>
-        )}
-        {view === Views.TABLE && (
-          <Suspense fallback="Wird geladen..">
-            <CalendarTable />
-          </Suspense>
-        )}
-        {view === Views.VARIETIES && (
-          <Suspense fallback="Wird geladen..">
-            <PlantsTable />
-          </Suspense>
-        )}
+  const content = useMemo(
+    () => (
+      <div className={styles.root}>
+        <GlobalHeader>
+          {view === Views.PLAN && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginRight: '5px',
+              }}
+            >
+              <MonthsSelector />
+            </div>
+          )}
+        </GlobalHeader>
+        <div className={styles.content}>
+          {view === Views.PLAN && (
+            <>
+              <SidebarLeft />
+              <DrawableArea />
+              <SidebarRightConnected />
+            </>
+          )}
+          {view === Views.TABLE && (
+            <Suspense fallback="Wird geladen..">
+              <CalendarTable />
+            </Suspense>
+          )}
+          {view === Views.VARIETIES && (
+            <Suspense fallback="Wird geladen..">
+              <PlantsTable />
+            </Suspense>
+          )}
+        </div>
       </div>
-    </div>
+    ),
+    [view]
   );
+
+  return <>{content}</>;
 };
 
 export default Root;
