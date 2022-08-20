@@ -1,9 +1,5 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { Button, ButtonGroup } from '@blueprintjs/core';
-import { Tooltip2 } from '@blueprintjs/popover2';
-import { useAtomValue } from 'jotai/utils';
-
-import { objectsInMetersAtom, configAtom, varietiesAtom } from 'atoms';
 
 export const UserActions = () => {
   const { isAuthenticated, isLoading, logout, loginWithRedirect } = useAuth0();

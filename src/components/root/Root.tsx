@@ -4,7 +4,7 @@ import { useAtom } from 'jotai';
 import { useAtomDevtools } from 'jotai/devtools';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { lazy, Suspense, useEffect, useMemo } from 'react';
-import { useQuery } from 'react-query';
+import { useQueries, useQuery } from 'react-query';
 
 import {
   objectsAtom,
@@ -78,6 +78,25 @@ const Root = () => {
     refetchOnWindowFocus: false,
   });
 
+  useQuery<{ width: number; height: number }>(['config'], {
+    queryFn: async () => {
+      const payload = await fetch('/api/config', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((res) => res.json());
+
+      setConfig({
+        width: payload.width,
+        height: payload.height,
+      });
+
+      return payload;
+    },
+    enabled: isAuthenticated,
+    refetchOnWindowFocus: false,
+  });
+
   useQuery<GardenObject[]>(['objects'], {
     queryFn: async () => {
       const payload = await fetch('/api/objects', {
@@ -107,25 +126,6 @@ const Root = () => {
       }).then((res) => res.json());
 
       setVarieties(payload);
-
-      return payload;
-    },
-    enabled: isAuthenticated,
-    refetchOnWindowFocus: false,
-  });
-
-  useQuery<{ width: number; height: number }>(['config'], {
-    queryFn: async () => {
-      const payload = await fetch('/api/config', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then((res) => res.json());
-
-      setConfig({
-        width: payload.width,
-        height: payload.height,
-      });
 
       return payload;
     },

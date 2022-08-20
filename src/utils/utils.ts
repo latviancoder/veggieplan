@@ -110,7 +110,7 @@ export const useUtils = () => {
       const rows = Math.round(smallestSide / (rowSpacing / 100));
       const inRow = Math.round(largestSide / (inRowSpacing / 100));
 
-      return { rows, inRow };
+      return { rows: Math.max(rows, 1), inRow: Math.max(inRow, 1) };
     },
   };
 };

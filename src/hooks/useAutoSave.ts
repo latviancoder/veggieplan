@@ -1,7 +1,7 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import deepEqual from 'deep-equal';
 import { useAtomValue } from 'jotai/utils';
-import { isEmpty, sortBy } from 'lodash';
+import { sortBy } from 'lodash';
 import {
   useCallback,
   useEffect,
