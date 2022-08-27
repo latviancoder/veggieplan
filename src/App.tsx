@@ -4,7 +4,8 @@ import { useAtomsDevtools } from 'jotai/devtools';
 import { ReactElement, ReactNode, Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import Root from './components/root/Root';
+import { Loader } from 'components/loader/Loader';
+import Root from 'components/root/Root';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,9 +53,21 @@ const Content = () => {
   const { isLoading } = useAuth0();
 
   return (
-    <Suspense fallback="Es wird geladen...">
+    <Suspense
+      fallback={
+        <Loader aria-label="Wir loggen dich ein">Wir loggen dich ein...</Loader>
+      }
+    >
       <Suspender isSuspended={isLoading}>
-        <Root />
+        <Suspense
+          fallback={
+            <Loader aria-label="Die App wird geladen">
+              Die App wird geladen...
+            </Loader>
+          }
+        >
+          <Root />
+        </Suspense>
       </Suspender>
     </Suspense>
   );

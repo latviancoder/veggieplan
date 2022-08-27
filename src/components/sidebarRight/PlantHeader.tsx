@@ -98,9 +98,6 @@ export const PlantHeader = memo(
               placeholder: 'Sorte auswählen',
               autoFocus: true,
               small: true,
-              onBlur: () => {
-                setTimeout(() => setShowVarietySelect(false), 100);
-              },
             }}
             popoverProps={{ minimal: true }}
             itemsEqual={(varA, varB) => varA.name === varB.name}
@@ -122,3 +119,5 @@ export const PlantHeader = memo(
     );
   }
 );
+
+PlantHeader.displayName = 'PlantHeader';

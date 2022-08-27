@@ -35,6 +35,7 @@ export const Badge = () => {
   useEffect(() => {
     if (textRef.current) {
       const boundingRect = textRef.current.getBoundingClientRect();
+
       setTextDimensions({
         width: boundingRect.width,
         height: boundingRect.height,
