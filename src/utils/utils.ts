@@ -509,6 +509,7 @@ export const getTerminalDates = ({
   | 'dateFirstHarvest'
   | 'dateLastHarvest'
 >): {
+  earliest: Date | undefined;
   earliestPlanting: Date | undefined;
   latestPlanting: Date | undefined;
   latestHarvest: Date | undefined;
@@ -520,10 +521,12 @@ export const getTerminalDates = ({
   const fh = dateFirstHarvest ? new Date(dateFirstHarvest) : undefined;
   const lh = dateLastHarvest ? new Date(dateLastHarvest) : undefined;
 
-  const allPlantingDates = compact([si, tp, ds]);
+  const allStartDates = compact([si, tp, ds]);
+  const allPlantingDates = compact([tp, ds]);
   const allHarvestDates = compact([fh, lh]);
 
   return {
+    earliest: isEmpty(allStartDates) ? undefined : min(allStartDates),
     earliestPlanting: isEmpty(allPlantingDates)
       ? undefined
       : min(allPlantingDates),

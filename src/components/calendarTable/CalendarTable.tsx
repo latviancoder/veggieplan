@@ -19,6 +19,7 @@ import {
   convertRectangleToPolygon,
   doPolygonsIntersect,
   getPlantName,
+  getTerminalDates,
   isPlant,
   isRectangleShape,
   isRectangular,
@@ -102,29 +103,10 @@ const CalendarTable = () => {
   }, [getPlantAmount, getPlantDetails, plantObjects, shapeObjects, varieties]);
 
   const months: Month[] = useMemo(() => {
-    const dates = tableRows.map(
-      ({
-        dateStartIndoors,
-        dateTransplant,
-        dateDirectSow,
-        dateFirstHarvest,
-        dateLastHarvest,
-      }) => {
-        const si = dateStartIndoors ? new Date(dateStartIndoors) : undefined;
-        const tp = dateTransplant ? new Date(dateTransplant) : undefined;
-        const ds = dateDirectSow ? new Date(dateDirectSow) : undefined;
-        const fh = dateFirstHarvest ? new Date(dateFirstHarvest) : undefined;
-        const lh = dateLastHarvest ? new Date(dateLastHarvest) : undefined;
+    const dates = tableRows.map(getTerminalDates);
 
-        const earliestDate = min(compact([si, tp, ds]));
-        const latestDate = max(compact([fh, lh]));
-
-        return { earliestDate, latestDate };
-      }
-    );
-
-    const earliestDate = min(dates.map(({ earliestDate }) => earliestDate));
-    const latestDate = max(dates.map(({ latestDate }) => latestDate));
+    const earliestDate = min(dates.map(({ earliest }) => earliest));
+    const latestDate = max(dates.map(({ latestHarvest }) => latestHarvest));
 
     if (latestDate && earliestDate) {
       const monthsCount = differenceInMonths(latestDate, earliestDate);

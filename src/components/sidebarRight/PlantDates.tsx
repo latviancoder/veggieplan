@@ -131,7 +131,7 @@ export const PlantDates = memo((props: Props) => {
             >
               <DateInput
                 {...defaultProps}
-                minDate={terminalDates.earliestPlanting || defaultMinDate}
+                minDate={terminalDates.earliest || defaultMinDate}
                 maxDate={terminalDates.earliestHarvest || defaultMaxDate}
                 inputProps={{ id: 'transplant' }}
                 value={dateTransplant ? new Date(dateTransplant) : null}
