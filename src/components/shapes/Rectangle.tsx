@@ -49,7 +49,7 @@ export const Rectangle = memo(
     }
 
     if (isHovered) {
-      stroke = Colors.COBALT1;
+      stroke = Colors.BLUE4;
       if (isPlant(rest)) {
         fill = Colors.SEPIA4;
       } else {
