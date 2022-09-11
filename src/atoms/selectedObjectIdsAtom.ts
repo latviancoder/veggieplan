@@ -9,8 +9,12 @@ export const selectedObjectIdsAtom = atom<
 >(
   (get) => get(_selectedObjectIdsAtom),
   (get, set, action) => {
+    const current = get(_selectedObjectIdsAtom);
+
     if (action.type === 'reset') {
-      set(_selectedObjectIdsAtom, []);
+      if (current.length > 0) {
+        set(_selectedObjectIdsAtom, []);
+      }
     }
 
     if (action.type === 'reset-add') {

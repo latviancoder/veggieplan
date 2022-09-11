@@ -36,6 +36,7 @@ export const objectsInMetersAtom = atom<GardenObject[], SetParams>(
 
     let objects = get(_objectsAtom);
 
+    // TODO this has to be refactored because every selection change results in different objects reference
     objects = objects.map((obj) =>
       produce(obj, (draft) => {
         const isSelected = selectedObjectIds.includes(draft.id);

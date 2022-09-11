@@ -33,6 +33,8 @@ export const useAutosave = () => {
 
   const [changeMade, setChangeMade] = useState(false);
 
+  // TODO
+  // This fires more often than expected because of issues with changing references and memoization
   useEffect(() => {
     if (changeMade && !isAuthenticated) {
       window.addEventListener('beforeunload', func);

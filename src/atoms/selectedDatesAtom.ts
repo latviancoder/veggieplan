@@ -43,7 +43,7 @@ export const selectedDatesAtom = atom<
 
     const { start, end } = payload!;
 
-    // Defining hidden objects here is more performance than inside objectsAtom
+    // Defining hidden objects here is more performant than inside objectsAtom
     // on every rotation/resize/move etc.
     set(
       hiddenObjectIdsAtom,
