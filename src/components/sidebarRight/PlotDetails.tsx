@@ -6,6 +6,7 @@ import {
   Tag,
 } from '@blueprintjs/core';
 import { useAtom } from 'jotai';
+import { useTranslation } from 'react-i18next';
 
 import { configAtom } from 'atoms';
 import { useNumericInputCallback } from 'hooks/useNumericInputCallback';
@@ -14,6 +15,7 @@ import { roundTwoDecimals } from 'utils/utils';
 import sidebarStyles from './SidebarRight.module.scss';
 
 export const PlotDetails = () => {
+  const { t } = useTranslation();
   const [plot, setPlot] = useAtom(configAtom);
 
   const [widthString, widthNumber, onWidthChange] = useNumericInputCallback(
@@ -36,11 +38,11 @@ export const PlotDetails = () => {
   return (
     <div className={sidebarStyles.root}>
       <h4 className={Classes.HEADING} style={{ margin: 0 }}>
-        Garten
+        {t('Garden')}
       </h4>
       <div className={sidebarStyles.twoColumns}>
         <FormGroup
-          label={'Breite'}
+          label={t('Width')}
           labelFor="text-input1"
           style={{ margin: 0 }}
         >
@@ -55,10 +57,14 @@ export const PlotDetails = () => {
             intent={!widthString ? 'danger' : 'none'}
             onValueChange={onWidthChange}
             onBlur={onBlur}
-            rightElement={<Tag minimal>m</Tag>}
+            rightElement={<Tag minimal>{t('m')}</Tag>}
           />
         </FormGroup>
-        <FormGroup label={'Länge'} labelFor="text-input2" style={{ margin: 0 }}>
+        <FormGroup
+          label={t('Length')}
+          labelFor="text-input2"
+          style={{ margin: 0 }}
+        >
           <NumericInput
             buttonPosition="none"
             id="text-input2"
@@ -69,14 +75,14 @@ export const PlotDetails = () => {
             intent={!heightString ? 'danger' : 'none'}
             onValueChange={onHeightChange}
             onBlur={onBlur}
-            rightElement={<Tag minimal>m</Tag>}
+            rightElement={<Tag minimal>{t('m')}</Tag>}
           />
         </FormGroup>
       </div>
       <div className={sidebarStyles.twoColumns}>
         <div>
           <h6 className={Classes.HEADING} style={{ color: Colors.GRAY3 }}>
-            Fläche
+            {t('Area')}
           </h6>
           {roundTwoDecimals(
             Number(widthString || '0') * Number(heightString || '0')

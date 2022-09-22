@@ -1,5 +1,6 @@
 import { useAtomValue } from 'jotai/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   creatableAtom,
@@ -12,6 +13,8 @@ import { ObjectTypes, Plant, Shape } from 'types';
 import { isPlant, useUtils } from 'utils/utils';
 
 export const Badge = () => {
+  const { t } = useTranslation();
+
   const hoveredObjectId = useAtomValue(hoveredAtom);
   const objects = useAtomValue(objectsAtom);
   const panStart = useAtomValue(panStartAtom);
@@ -51,9 +54,13 @@ export const Badge = () => {
 
       const { rows, inRow } = getPlantAmount(plant);
 
-      return `${plantDetails.name} - ${rows} x ${inRow} Pflanzen (${
-        rows * inRow
-      }) - ${plant.width.toFixed(2)}x${plant.height.toFixed(2)}m`;
+      const numPlants = rows * inRow;
+
+      return `${plantDetails.name} - ${
+        numPlants > 1 ? `${rows} x ${inRow}` : ''
+      } ${t('plants', {
+        numPlants,
+      })} - ${plant.width.toFixed(2)}x${plant.height.toFixed(2)}m`;
     },
     [getPlantAmount, getPlantDetails, pxToMeterObject]
   );
@@ -65,7 +72,7 @@ export const Badge = () => {
       let ret = `${shape.width.toFixed(2)}x${shape.height.toFixed(2)}m`;
 
       if (shape.objectType === ObjectTypes.Shape && shape.title) {
-        ret = `Beet ${shape.title} - ${ret}`;
+        ret = `${t('Bed')} ${shape.title} - ${ret}`;
       }
 
       return ret;

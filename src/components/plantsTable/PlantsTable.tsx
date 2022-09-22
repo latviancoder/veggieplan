@@ -1,7 +1,9 @@
 import { HTMLTable } from '@blueprintjs/core';
+import { t } from 'i18next';
 import { atom, useAtom, useAtomValue } from 'jotai';
 import { groupBy } from 'lodash';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { plantsAtom, varietiesAtom } from 'atoms';
 import { PlantDetails, Variety } from 'types';
@@ -39,6 +41,7 @@ export const varietyModalAtom = atom<
 );
 
 export const PlantsTable = () => {
+  const { t } = useTranslation();
   const [varietyModal, setVarietyModal] = useAtom(varietyModalAtom);
 
   const plants = useAtomValue(plantsAtom);
@@ -55,9 +58,11 @@ export const PlantsTable = () => {
         <thead>
           <tr>
             <th>Name</th>
-            <th style={{ width: '150px' }}>In Reihe (cm)</th>
-            <th style={{ width: '175px' }}>Zwischen Reihen (cm)</th>
-            <th style={{ width: '175px' }}>Kulturdauer (Wochen)</th>
+            <th style={{ width: '150px' }}>{t('In row (cm)')}</th>
+            <th style={{ width: '175px' }}>{t('Between rows (cm)')}</th>
+            <th style={{ width: '175px' }}>
+              {t('Maturity')} ({t('weeks')})
+            </th>
           </tr>
         </thead>
         <tbody>

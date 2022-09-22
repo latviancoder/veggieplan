@@ -7,6 +7,7 @@ import {
 } from '@blueprintjs/core';
 import { useUpdateAtom } from 'jotai/utils';
 import { memo, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { objectsAtom } from 'atoms';
 import { PlantDetails } from 'types';
@@ -19,6 +20,7 @@ type Props = {
 };
 
 export const PlantSpacing = memo(({ plantDetails, objectId }: Props) => {
+  const { t } = useTranslation();
   const setObjects = useUpdateAtom(objectsAtom);
 
   const [inRowSpacing, setInRowSpacing] = useState('');
@@ -80,12 +82,12 @@ export const PlantSpacing = memo(({ plantDetails, objectId }: Props) => {
   return (
     <>
       <h6 className={Classes.HEADING} style={{ color: Colors.GRAY3 }}>
-        Abstand
+        {t('Spacing')}
       </h6>
       <div className={styles.twoColumns}>
         <div>
           <FormGroup
-            label={'In Reihe'}
+            label={t('In row')}
             labelFor="text-input1"
             style={{ margin: 0 }}
           >
@@ -103,7 +105,7 @@ export const PlantSpacing = memo(({ plantDetails, objectId }: Props) => {
         </div>
         <div>
           <FormGroup
-            label={'Zwischen Reihen'}
+            label={t('Between rows')}
             labelFor="text-input"
             style={{ margin: 0 }}
           >
@@ -115,7 +117,7 @@ export const PlantSpacing = memo(({ plantDetails, objectId }: Props) => {
               fill
               value={rowSpacing}
               onValueChange={onRowSpacingChange}
-              rightElement={<Tag minimal>cm</Tag>}
+              rightElement={<Tag minimal>{t('cm')}</Tag>}
             />
           </FormGroup>
         </div>

@@ -2,6 +2,7 @@ import { Button, Classes, MenuItem } from '@blueprintjs/core';
 import { ItemPredicate, ItemRenderer, Suggest2 } from '@blueprintjs/select';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { memo, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { objectsAtom, varietiesAtom } from 'atoms';
 import { PlantDetails, Variety } from 'types';
@@ -18,6 +19,7 @@ type Props = {
 
 export const PlantHeader = memo(
   ({ plantDetails, objectId, varietyId, plantId }: Props) => {
+    const { t } = useTranslation();
     const setObjects = useUpdateAtom(objectsAtom);
 
     const allVarieties = useAtomValue(varietiesAtom);
@@ -95,7 +97,7 @@ export const PlantHeader = memo(
             onItemSelect={onItemSelect}
             selectedItem={selectedVariety}
             inputProps={{
-              placeholder: 'Sorte auswählen',
+              placeholder: t('Choose variety'),
               autoFocus: true,
               small: true,
             }}
@@ -105,7 +107,7 @@ export const PlantHeader = memo(
           />
         ) : (
           <Button
-            text="Sorte"
+            text={t('Variety')}
             icon="edit"
             onClick={() => {
               setShowVarietySelect(true);

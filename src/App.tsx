@@ -2,6 +2,7 @@ import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 import { HotkeysProvider } from '@blueprintjs/core';
 import { useAtomsDevtools } from 'jotai/devtools';
 import { ReactElement, ReactNode, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { Loader } from 'components/loader/Loader';
@@ -50,19 +51,22 @@ const App = () => (
 );
 
 const Content = () => {
+  const { t, i18n } = useTranslation();
   const { isLoading } = useAuth0();
 
   return (
     <Suspense
       fallback={
-        <Loader aria-label="Wir loggen dich ein">Wir loggen dich ein...</Loader>
+        <Loader aria-label={t("We're logging you in...")}>
+          {t("We're logging you in...")}
+        </Loader>
       }
     >
       <Suspender isSuspended={isLoading}>
         <Suspense
           fallback={
-            <Loader aria-label="Die App wird geladen">
-              Die App wird geladen...
+            <Loader aria-label={t('Application is loading...')}>
+              {t('Application is loading...')}
             </Loader>
           }
         >

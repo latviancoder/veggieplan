@@ -9,6 +9,7 @@ import {
 } from '@blueprintjs/core';
 import { useUpdateAtom } from 'jotai/utils';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useNumericInputCallback } from 'hooks/useNumericInputCallback';
 import { Variety } from 'types';
@@ -29,6 +30,7 @@ export const VarietyUpdateModal = ({
   mode,
   variety,
 }: VarietyModalParams) => {
+  const { t } = useTranslation();
   const plantOrVariety = isEditMode(mode, variety) ? variety : plant;
 
   const { name, rowSpacing, inRowSpacing, maturity } = plantOrVariety;
@@ -57,7 +59,7 @@ export const VarietyUpdateModal = ({
   return (
     <Dialog
       title={`${name}: ${
-        mode === 'create' ? 'Sorte hinzufügen' : 'Sorte anpassen'
+        mode === 'create' ? t('Add variety') : t('Edit variety')
       }`}
       isCloseButtonShown
       transitionDuration={0}
@@ -65,7 +67,7 @@ export const VarietyUpdateModal = ({
       onClose={onClose}
     >
       <div className={Classes.DIALOG_BODY}>
-        <FormGroup label={'Name'} labelFor="name">
+        <FormGroup label={t('Name')} labelFor="name">
           <InputGroup
             autoComplete="off"
             id="name"
@@ -74,7 +76,7 @@ export const VarietyUpdateModal = ({
             onChange={(e) => setVarietyName(e.target.value)}
           />
         </FormGroup>
-        <FormGroup label={'Abstand in Reihe'} labelFor="inRowSpacing">
+        <FormGroup label={t('Spacing in row')} labelFor="inRowSpacing">
           <NumericInput
             id="inRowSpacing"
             buttonPosition="none"
@@ -85,7 +87,7 @@ export const VarietyUpdateModal = ({
             rightElement={<Tag minimal>cm</Tag>}
           />
         </FormGroup>
-        <FormGroup label={'Abstand zwischen Reihen'} labelFor="rowSpacing">
+        <FormGroup label={t('Spacing between rows')} labelFor="rowSpacing">
           <NumericInput
             id="rowSpacing"
             buttonPosition="none"
@@ -96,7 +98,7 @@ export const VarietyUpdateModal = ({
             rightElement={<Tag minimal>cm</Tag>}
           />
         </FormGroup>
-        <FormGroup label={'Kulturdauen'} labelFor="maturity">
+        <FormGroup label={t('Maturity')} labelFor="maturity">
           <NumericInput
             id="maturity"
             buttonPosition="none"
@@ -104,13 +106,13 @@ export const VarietyUpdateModal = ({
             fill
             value={maturityString}
             onValueChange={onMaturityChange}
-            rightElement={<Tag minimal>Wochen</Tag>}
+            rightElement={<Tag minimal>{t('weeks')}</Tag>}
           />
         </FormGroup>
       </div>
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-          <Button onClick={onClose}>Schließen</Button>
+          <Button onClick={onClose}>{t('Cancel')}</Button>
           <Button
             intent="primary"
             onClick={() => {
@@ -124,7 +126,7 @@ export const VarietyUpdateModal = ({
               onClose();
             }}
           >
-            Speichern
+            {t('Save')}
           </Button>
         </div>
       </div>

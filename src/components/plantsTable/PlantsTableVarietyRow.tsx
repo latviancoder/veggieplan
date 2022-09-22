@@ -3,6 +3,7 @@ import produce from 'immer';
 import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { varietiesAtom } from 'atoms';
 import { PlantDetails, Variety } from 'types';
@@ -17,6 +18,8 @@ type Props = {
 
 export const PlantsTableVarietyRow = ({ variety, plant }: Props) => {
   const { id, name, inRowSpacing, rowSpacing, maturity } = variety;
+
+  const { t } = useTranslation();
 
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
@@ -81,14 +84,14 @@ export const PlantsTableVarietyRow = ({ variety, plant }: Props) => {
         canEscapeKeyCancel
         canOutsideClickCancel
         isOpen={deleteConfirm}
-        confirmButtonText="Löschen"
-        cancelButtonText="Abbrechen"
+        confirmButtonText={t('Delete')}
+        cancelButtonText={t('Cancel')}
         icon={<Icon icon="trash" size={IconSize.LARGE} intent="danger" />}
         intent={Intent.DANGER}
         onClose={() => setDeleteConfirm(false)}
         onConfirm={onDelete}
       >
-        <p>{variety.name} löschen?</p>
+        <p>{t('Delete')}?</p>
       </Alert>
     </>
   );

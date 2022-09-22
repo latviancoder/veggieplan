@@ -15,6 +15,8 @@ import {
 import { de } from 'date-fns/locale';
 import { compact } from 'lodash';
 
+import { useFormatDate } from 'hooks/useFormatDate';
+
 import styles from './PlantDatesBar.module.scss';
 
 export type Month = {
@@ -50,6 +52,8 @@ export const PlantDatesBar = ({
   showMonthTitle,
   barHeight = 4,
 }: Props) => {
+  const formatDate = useFormatDate();
+
   if (
     (!dateTransplant && !dateDirectSow) ||
     (!dateFirstHarvest && !dateLastHarvest)
@@ -70,7 +74,7 @@ export const PlantDatesBar = ({
     const monthsCount = differenceInMonths(latestDate, earliestDate);
 
     months = [...Array(monthsCount + 1).keys()].map((i) => ({
-      title: format(addMonths(earliestDate, i), 'MMM', { locale: de }),
+      title: formatDate(addMonths(earliestDate, i), 'MMM'),
       start: startOfMonth(addMonths(earliestDate, i)),
       end: endOfMonth(addMonths(earliestDate, i)),
     }));

@@ -35,6 +35,7 @@ import {
 } from 'react';
 
 import { objectsAtom, selectedDatesAtom } from 'atoms';
+import { useFormatDate } from 'hooks/useFormatDate';
 import { getTerminalDates, isPlant } from 'utils/utils';
 
 import styles from './MonthsSelector.module.scss';
@@ -79,6 +80,7 @@ type Month = {
 };
 
 export const MonthsSelector = memo(() => {
+  const formatDate = useFormatDate();
   const prevInterval = useRef<Date[] | undefined>(undefined);
 
   const [selectedDates, setSelectedDates] = useAtom(selectedDatesAtom);
@@ -138,9 +140,9 @@ export const MonthsSelector = memo(() => {
       return [...Array(monthsCount + 1).keys()].map((i) => {
         const d = addMonths(earliestDate!, i);
         return {
-          title: format(d, 'MMM', { locale: de }),
-          month: Number(format(d, 'M')),
-          year: Number(format(d, 'yyyy')),
+          title: formatDate(d, 'MMM'),
+          month: Number(formatDate(d, 'M')),
+          year: Number(formatDate(d, 'yyyy')),
           date: d,
         };
       });
@@ -238,11 +240,6 @@ export const MonthsSelector = memo(() => {
       interval[resultingDateIndex2].getTime() !== selectedDates?.end.getTime()
     ) {
       startTransition(() => {
-        // console.log({
-        //   start: interval[resultingDateIndex1],
-        //   end: interval[resultingDateIndex2],
-        // });
-
         setSelectedDates({
           start: interval[resultingDateIndex1],
           end: interval[resultingDateIndex2],
@@ -274,9 +271,6 @@ export const MonthsSelector = memo(() => {
   }, [initial2, months.length, initial1]);
 
   if (!months.length) return null;
-
-  // console.log(months);
-  // console.log(selectedDates);
 
   return (
     <div className={styles.container} ref={containerRef}>

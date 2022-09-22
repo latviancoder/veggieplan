@@ -1,12 +1,14 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { Button, ButtonGroup } from '@blueprintjs/core';
+import { useTranslation } from 'react-i18next';
 
 export const UserActions = () => {
+  const { t, i18n } = useTranslation();
   const { isAuthenticated, isLoading, logout, loginWithRedirect } = useAuth0();
 
   const redirectToLogin = () => {
     loginWithRedirect({
-      ui_locales: 'de',
+      ui_locales: i18n.resolvedLanguage,
     });
   };
 
@@ -18,12 +20,12 @@ export const UserActions = () => {
     >
       {!isAuthenticated && (
         <Button icon="log-in" onClick={redirectToLogin}>
-          Anmelden
+          {t('Sign in')}
         </Button>
       )}
       {isAuthenticated && (
         <Button icon="user" onClick={() => logout()}>
-          Ausloggen
+          {t('Logout')}
         </Button>
       )}
     </ButtonGroup>

@@ -474,17 +474,6 @@ export const put = (
     body: JSON.stringify(init.body),
   });
 
-export const formatDate = (
-  date: Date | string | undefined,
-  f = 'dd.MM.yyyy'
-): string => {
-  if (typeof date === 'string') {
-    date = new Date(date);
-  }
-
-  return date ? format(date, f, { locale: de }) : '';
-};
-
 export const getPlantName = (name: string, variety?: string): string => {
   let res = name;
 

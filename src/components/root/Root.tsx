@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useAuth0 } from '@auth0/auth0-react';
+import { t } from 'i18next';
 import { useAtom } from 'jotai';
 import { useAtomDevtools } from 'jotai/devtools';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { lazy, Suspense, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQueries, useQuery } from 'react-query';
 
 import {
@@ -14,6 +16,7 @@ import {
   viewAtom,
   objectsInMetersAtom,
 } from 'atoms';
+import { Loader } from 'components/loader/Loader';
 import { PlantsTable } from 'components/plantsTable/PlantsTable';
 import { useAccessToken } from 'hooks/useAccessToken';
 import { useAutosave } from 'hooks/useAutoSave';
@@ -30,8 +33,9 @@ import styles from './Root.module.css';
 const CalendarTable = lazy(() => import('../calendarTable/CalendarTable'));
 
 const Root = () => {
-  const token = useAccessToken();
+  const { t } = useTranslation();
 
+  const token = useAccessToken();
   const { isAuthenticated } = useAuth0();
 
   const view = useAtomValue(viewAtom);
@@ -169,12 +173,20 @@ const Root = () => {
             </>
           )}
           {view === Views.TABLE && (
-            <Suspense fallback="Wird geladen..">
+            <Suspense
+              fallback={
+                <Loader aria-label={t('Loading...')}>{t('Loading...')}</Loader>
+              }
+            >
               <CalendarTable />
             </Suspense>
           )}
           {view === Views.VARIETIES && (
-            <Suspense fallback="Wird geladen..">
+            <Suspense
+              fallback={
+                <Loader aria-label={t('Loading...')}>{t('Loading...')}</Loader>
+              }
+            >
               <PlantsTable />
             </Suspense>
           )}

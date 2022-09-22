@@ -6,13 +6,14 @@ import {
   format,
   startOfMonth,
 } from 'date-fns';
-import { de } from 'date-fns/locale';
 import { useAtomValue } from 'jotai/utils';
-import { compact, max, min, sortBy } from 'lodash';
+import { max, min, sortBy } from 'lodash';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { objectsInMetersAtom, varietiesAtom } from 'atoms';
 import { Month } from 'components/plantDatesBar/PlantDatesBar';
+import { useFormatDate } from 'hooks/useFormatDate';
 import { Plant } from 'types';
 
 import {
@@ -40,6 +41,8 @@ export type Row = Plant & {
 };
 
 const CalendarTable = () => {
+  const { t } = useTranslation();
+  const formatDate = useFormatDate();
   const varieties = useAtomValue(varietiesAtom);
   const { getPlantDetails, getPlantAmount } = useUtils();
 
@@ -112,7 +115,7 @@ const CalendarTable = () => {
       const monthsCount = differenceInMonths(latestDate, earliestDate);
 
       return [...Array(monthsCount + 1).keys()].map((i) => ({
-        title: format(addMonths(earliestDate, i), 'MMM', { locale: de }),
+        title: formatDate(addMonths(earliestDate, i), 'MMM'),
         start: startOfMonth(addMonths(earliestDate, i)),
         end: endOfMonth(addMonths(earliestDate, i)),
       }));
@@ -131,9 +134,9 @@ const CalendarTable = () => {
       >
         <thead>
           <tr>
-            <th style={{ width: '15%' }}>Pflanze</th>
-            <th style={{ width: '50px' }}>Beet</th>
-            <th style={{ width: '50px' }}>Abstand</th>
+            <th style={{ width: '15%' }}>{t('Plant')}</th>
+            <th style={{ width: '50px' }}>{t('Bed')}</th>
+            <th style={{ width: '50px' }}>{t('Spacing')}</th>
             <th>
               <div className={styles.header}>
                 {months.map(({ title }, i) => (
@@ -143,7 +146,7 @@ const CalendarTable = () => {
                 ))}
               </div>
             </th>
-            <th style={{ width: '20%' }}>Notizen</th>
+            <th style={{ width: '20%' }}>{t('Notes')}</th>
           </tr>
         </thead>
         <tbody>

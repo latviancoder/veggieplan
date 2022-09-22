@@ -1,15 +1,18 @@
 import { Button, ButtonGroup } from '@blueprintjs/core';
 import { useAtom, useAtomValue } from 'jotai';
 import { FC, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { selectedDatesAtom, viewAtom } from 'atoms';
 import { UserActions } from 'components/sidebarLeft/userActions/UserActions';
+import { useFormatDate } from 'hooks/useFormatDate';
 import { Views } from 'types';
-import { formatDate } from 'utils/utils';
 
 import styles from './GlobalHeader.module.scss';
 
 export const GlobalHeader: FC<any> = memo(({ children }) => {
+  const formatDate = useFormatDate();
+  const { t } = useTranslation();
   const selectedDates = useAtomValue(selectedDatesAtom);
   const [view, setView] = useAtom(viewAtom);
 
@@ -22,7 +25,7 @@ export const GlobalHeader: FC<any> = memo(({ children }) => {
           active={view === Views.PLAN}
           onClick={() => setView(Views.PLAN)}
         >
-          Plan
+          {t('Plan')}
         </Button>
         <Button
           style={{ marginRight: '5px' }}
@@ -30,21 +33,21 @@ export const GlobalHeader: FC<any> = memo(({ children }) => {
           active={view === Views.TABLE}
           onClick={() => setView(Views.TABLE)}
         >
-          Kalender
+          {t('Calendar')}
         </Button>
         <Button
           small
           active={view === Views.VARIETIES}
           onClick={() => setView(Views.VARIETIES)}
         >
-          Kulturen & Sorten
+          {t('Species and varieties')}
         </Button>
       </ButtonGroup>
       <div className={styles.right}>
         {selectedDates && view === Views.PLAN && (
           <div className={styles.selectedDates}>
-            {formatDate(selectedDates?.start, 'dd MMM')} -{' '}
-            {formatDate(selectedDates?.end, 'dd MMM')}
+            {formatDate(selectedDates?.start, 'PP')} -{' '}
+            {formatDate(selectedDates?.end, 'PP')}
           </div>
         )}
         <div>{children}</div>

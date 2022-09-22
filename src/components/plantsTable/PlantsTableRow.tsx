@@ -3,6 +3,7 @@ import { useAtom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { nanoid } from 'nanoid';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { varietiesAtom } from 'atoms';
 import { PlantDetails } from 'types';
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export const PlantsTableRow = memo(({ plant }: Props) => {
+  const { t } = useTranslation();
   const [varieties, setVarieties] = useAtom(varietiesAtom);
   const { name, id, rowSpacing, inRowSpacing, maturity } = plant;
 
@@ -49,7 +51,7 @@ export const PlantsTableRow = memo(({ plant }: Props) => {
               icon="plus"
               onClick={onCreateVariety}
             >
-              Sorte
+              {t('Variety')}
             </Button>
           </div>
         </td>

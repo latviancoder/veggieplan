@@ -37,7 +37,7 @@ export const Rectangle = memo(
   }: Props) => {
     const zoom = useAtomValue(zoomAtom);
 
-    let strokeWidth = 2 / zoom;
+    let strokeWidth = isPlant(rest) ? 1 / zoom : 2 / zoom;
     let fillOpacity = 1;
     let fill = isPlant(rest) ? Colors.SEPIA5 : 'transparent';
     let stroke = Colors.SEPIA2;

@@ -2,7 +2,7 @@ import { Position } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
 
 import { Month, PlantDatesBar } from 'components/plantDatesBar/PlantDatesBar';
-import { formatDate } from 'utils/utils';
+import { useFormatDate } from 'hooks/useFormatDate';
 
 import { Row } from '../CalendarTable';
 import styles from '../CalendarTable.module.scss';
@@ -20,6 +20,8 @@ export const PlantingDatesCell = ({
   data: Row;
   months: Month[];
 }) => {
+  const formatDate = useFormatDate();
+
   return (
     <Tooltip2
       content={
@@ -27,31 +29,31 @@ export const PlantingDatesCell = ({
           {dateStartIndoors && (
             <div className={styles.dateTooltipRow}>
               <span>Voranzucht:</span>{' '}
-              <strong>{formatDate(dateStartIndoors, 'd MMM')}</strong>
+              <strong>{formatDate(dateStartIndoors, 'PPP')}</strong>
             </div>
           )}
           {dateTransplant && (
             <div className={styles.dateTooltipRow}>
               <span>Auspflanzen:</span>{' '}
-              <strong>{formatDate(dateTransplant, 'd MMM')}</strong>
+              <strong>{formatDate(dateTransplant, 'PPP')}</strong>
             </div>
           )}
           {dateDirectSow && (
             <div className={styles.dateTooltipRow}>
               <span>Aussaat ins Freiland:</span>{' '}
-              <strong>{formatDate(dateDirectSow, 'd MMM')}</strong>
+              <strong>{formatDate(dateDirectSow, 'PPP')}</strong>
             </div>
           )}
           {dateFirstHarvest && (
             <div className={styles.dateTooltipRow}>
               <span>Erste Ernte:</span>{' '}
-              <strong>{formatDate(dateFirstHarvest, 'd MMM')}</strong>
+              <strong>{formatDate(dateFirstHarvest, 'PPP')}</strong>
             </div>
           )}
           {dateLastHarvest && (
             <div className={styles.dateTooltipRow}>
               <span>Letze Ernte:</span>{' '}
-              <strong>{formatDate(dateLastHarvest, 'd MMM')}</strong>
+              <strong>{formatDate(dateLastHarvest, 'PPP')}</strong>
             </div>
           )}
         </div>

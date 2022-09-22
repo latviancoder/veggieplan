@@ -3,10 +3,12 @@ import { DateInput, DateInputProps, DateUtils } from '@blueprintjs/datetime';
 import { addYears, parse } from 'date-fns';
 import { useUpdateAtom } from 'jotai/utils';
 import { memo, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { objectsAtom } from 'atoms';
+import { useFormatDate } from 'hooks/useFormatDate';
 import { Plant } from 'types';
-import { formatDate, getTerminalDates } from 'utils/utils';
+import { getTerminalDates } from 'utils/utils';
 
 import { localeUtils } from '../../datepickerLocaleUtils';
 import { PlantDatesBar } from '../plantDatesBar/PlantDatesBar';
@@ -36,6 +38,9 @@ const parseDate = (str: string) => {
 };
 
 export const PlantDates = memo((props: Props) => {
+  const { t } = useTranslation();
+  const formatDate = useFormatDate();
+
   const {
     id,
     dateStartIndoors,
@@ -87,7 +92,7 @@ export const PlantDates = memo((props: Props) => {
     formatDate,
     parseDate,
     localeUtils,
-    placeholder: 'TT.MM.JJJJ',
+    placeholder: t('DD.MM.YYYY'),
   };
 
   return (
@@ -97,11 +102,11 @@ export const PlantDates = memo((props: Props) => {
           className={Classes.HEADING}
           style={{ color: Colors.GRAY3, margin: 0 }}
         >
-          Timings
+          {t('Timings')}
         </h6>
         <Checkbox
           style={{ margin: 0 }}
-          label="Mit Voranzucht"
+          label={t('Start seeds indoors')}
           checked={seedStart}
           onChange={() => setSeedStart(!seedStart)}
         />
@@ -110,7 +115,7 @@ export const PlantDates = memo((props: Props) => {
         {seedStart && (
           <>
             <FormGroup
-              label={'Voranzucht'}
+              label={t('Start indoors')}
               labelFor="seed-start"
               style={{ margin: 0 }}
             >
@@ -125,7 +130,7 @@ export const PlantDates = memo((props: Props) => {
               />
             </FormGroup>
             <FormGroup
-              label={'Auspflanzen'}
+              label={t('Transplant')}
               labelFor="transplant"
               style={{ margin: 0 }}
             >
@@ -143,7 +148,7 @@ export const PlantDates = memo((props: Props) => {
         {!seedStart && (
           <>
             <FormGroup
-              label={'Aussaat ins Freiland'}
+              label={t('Sow outside')}
               labelFor="sow-outside"
               style={{ margin: 0 }}
             >
@@ -160,7 +165,7 @@ export const PlantDates = memo((props: Props) => {
           </>
         )}
         <FormGroup
-          label={'Erste Ernte'}
+          label={t('First harvest')}
           labelFor="first-harvest"
           style={{ margin: 0 }}
         >
@@ -174,7 +179,7 @@ export const PlantDates = memo((props: Props) => {
           />
         </FormGroup>
         <FormGroup
-          label={'Letzte Ernte'}
+          label={t('Final harvest')}
           labelFor="last-harvest"
           style={{ margin: 0 }}
         >

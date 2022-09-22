@@ -5,6 +5,7 @@ import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { escapeRegExp } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { modeAtom, plantsAtom, selectedPlantAtom } from 'atoms';
 import { Modes, PlantDetails } from 'types';
@@ -12,6 +13,7 @@ import { Modes, PlantDetails } from 'types';
 import styles from './PlantsSearch.module.scss';
 
 export const PlantsSearch = () => {
+  const { t } = useTranslation();
   const fuseRef = useRef<Fuse<PlantDetails>>();
   const searchRef = useRef<HTMLInputElement | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,7 +57,7 @@ export const PlantsSearch = () => {
               id="search"
               leftElement={<Icon icon="search" />}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Name, Familie"
+              placeholder={t('Name')}
             />
           </div>
         </FormGroup>
