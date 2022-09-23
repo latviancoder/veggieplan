@@ -70,6 +70,7 @@ export const SidebarLeft = memo(() => {
             filterable={false}
             popoverProps={{ minimal: true }}
             items={['DE', 'EN']}
+            resetOnClose={true}
             itemRenderer={(item, { handleClick }) => (
               <MenuItem
                 selected={item === i18n.resolvedLanguage.toUpperCase()}

@@ -33,7 +33,7 @@ import styles from './Root.module.css';
 const CalendarTable = lazy(() => import('../calendarTable/CalendarTable'));
 
 const Root = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const token = useAccessToken();
   const { isAuthenticated } = useAuth0();
@@ -71,9 +71,11 @@ const Root = () => {
     }
   );
 
-  useQuery<PlantDetails[]>(['plants'], {
+  useQuery<PlantDetails[]>(['plants', i18n.resolvedLanguage], {
     queryFn: async () => {
-      const payload = await fetch('/api/plants').then((res) => res.json());
+      const payload = await fetch(
+        `/api/plants?language=${i18n.resolvedLanguage}`
+      ).then((res) => res.json());
 
       setPlants(payload);
 

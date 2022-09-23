@@ -90,8 +90,13 @@ app.post(
 
 app.get('/api/plants', async (req, res) => {
   const result = await client.query(
-    SQL`SELECT plants.*, families.name AS family_name, families.latin_name AS family_latin_name 
-    FROM plants LEFT OUTER JOIN families ON (plants.family_id = families.id) ORDER BY plants.name ASC`
+    SQL`SELECT plants.*, `
+      .append(`plants.name_${req.query.language} as name, `)
+      .append(
+        `plants.alternative_names_${req.query.language} as alternative_names, `
+      )
+      .append(SQL`families.name AS family_name, families.latin_name AS family_latin_name
+    FROM plants LEFT OUTER JOIN families ON (plants.family_id = families.id) ORDER by name ASC`)
   );
 
   res.json(camelCaseObjectDeep(result.rows));
