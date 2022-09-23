@@ -1,6 +1,7 @@
 import { Classes, Colors } from '@blueprintjs/core';
 import { useAtomValue } from 'jotai/utils';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { objectsInMetersAtom, selectedObjectIdsAtom } from 'atoms';
 import { GardenObject, ObjectTypes, PlantDetails } from 'types';
@@ -25,6 +26,7 @@ type Props = {
 };
 
 const SidebarRight = memo(({ selectedObject, plantDetails }: Props) => {
+  const { t } = useTranslation();
   const { width, height } = selectedObject;
 
   return (
@@ -46,19 +48,19 @@ const SidebarRight = memo(({ selectedObject, plantDetails }: Props) => {
       <div className={styles.threeColumns}>
         <div>
           <h6 className={Classes.HEADING} style={{ color: Colors.GRAY3 }}>
-            Fläche
+            {t('Area')}
           </h6>
           {roundTwoDecimals(width * height)}m
         </div>
         <div>
           <h6 className={Classes.HEADING} style={{ color: Colors.GRAY3 }}>
-            Breite
+            {t('Width')}
           </h6>
           {width}m
         </div>
         <div>
           <h6 className={Classes.HEADING} style={{ color: Colors.GRAY3 }}>
-            Länge
+            {t('Length')}
           </h6>
           {height}m
         </div>
