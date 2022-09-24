@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, MenuItem, Position } from '@blueprintjs/core';
 import { Tooltip2 } from '@blueprintjs/popover2';
 import { Select2 } from '@blueprintjs/select';
-import { useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,12 +16,10 @@ const buttonSize = '39px';
 
 export const SidebarLeft = memo(() => {
   const { t, i18n } = useTranslation();
-  const setMode = useUpdateAtom(modeAtom);
-  const setSelectedPlant = useUpdateAtom(selectedPlantAtom);
+  const [mode, setMode] = useAtom(modeAtom);
+  const [selectedPlant, setSelectedPlant] = useAtom(selectedPlantAtom);
 
   const [plantsSearch, setPlantsSearch] = useState(true);
-
-  console.log(i18n.resolvedLanguage);
 
   return (
     <aside className={styles.sidebar}>
@@ -33,6 +31,7 @@ export const SidebarLeft = memo(() => {
               position={Position.RIGHT}
             >
               <Button
+                active={mode === Modes.SELECTION && selectedPlant === null}
                 style={{ width: buttonSize, height: buttonSize }}
                 icon="select"
                 onClick={() => {
@@ -46,6 +45,7 @@ export const SidebarLeft = memo(() => {
               position={Position.RIGHT}
             >
               <Button
+                active={mode === Modes.CREATION && selectedPlant === null}
                 style={{ width: buttonSize, height: buttonSize }}
                 icon="square"
                 onClick={() => {
@@ -58,7 +58,6 @@ export const SidebarLeft = memo(() => {
               <Button
                 style={{ width: buttonSize, height: buttonSize }}
                 onClick={() => setPlantsSearch(!plantsSearch)}
-                active={plantsSearch}
               >
                 <LeafIcon width={20} height={20} fill="#5c7080" />
               </Button>
