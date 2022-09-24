@@ -89,12 +89,12 @@ app.post(
 );
 
 app.get('/api/plants', async (req, res) => {
+  const lang = req.query.language || 'en';
+
   const result = await client.query(
     SQL`SELECT plants.*, `
-      .append(`plants.name_${req.query.language} as name, `)
-      .append(
-        `plants.alternative_names_${req.query.language} as alternative_names, `
-      )
+      .append(`plants.name_${lang} as name, `)
+      .append(`plants.alternative_names_${lang} as alternative_names, `)
       .append(SQL`families.name AS family_name, families.latin_name AS family_latin_name
     FROM plants LEFT OUTER JOIN families ON (plants.family_id = families.id) ORDER by name ASC`)
   );

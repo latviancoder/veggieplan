@@ -16,8 +16,7 @@ export const saveObjects = async (objects: any[] = [], auth?: JwtPayload) => {
 
   if (deletedObjectsIds.length) {
     await client.query(
-      `DELETE FROM objects WHERE id = ANY($1) AND user_id=${auth?.sub}`,
-      [deletedObjectsIds]
+      SQL`DELETE FROM objects WHERE id = ANY(${deletedObjectsIds}) AND user_id=${auth?.sub}`
     );
   }
 

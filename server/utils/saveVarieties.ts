@@ -20,12 +20,12 @@ export const saveVarieties = async (
 
   if (deletedVarietiesIds.length) {
     await client.query(
-      `UPDATE objects SET variety_id = NULL WHERE variety_id = ANY($1) AND user_id=${auth?.sub}`,
+      SQL`UPDATE objects SET variety_id = NULL WHERE variety_id = ANY($1) AND user_id=${auth?.sub}`,
       [deletedVarietiesIds]
     );
 
     await client.query(
-      `DELETE FROM varieties WHERE id = ANY($1) AND user_id=${auth?.sub}`,
+      SQL`DELETE FROM varieties WHERE id = ANY($1) AND user_id=${auth?.sub}`,
       [deletedVarietiesIds]
     );
   }
