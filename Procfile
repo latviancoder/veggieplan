@@ -1,0 +1,1 @@
+web: npx tsx watch server/server.ts
