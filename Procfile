@@ -1,1 +1,1 @@
-web: ts-node --esm server/server.ts
+web: tsx watch server/server.ts
