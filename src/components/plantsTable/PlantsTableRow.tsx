@@ -50,6 +50,7 @@ export const PlantsTableRow = memo(({ plant }: Props) => {
               small
               icon="plus"
               onClick={onCreateVariety}
+              disabled
             >
               {t('Variety')}
             </Button>

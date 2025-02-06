@@ -65,25 +65,25 @@ export const SidebarLeft = memo(() => {
           </ButtonGroup>
         </div>
         <div className={styles.bottomActions}>
-          <Select2<string>
-            filterable={false}
-            popoverProps={{ minimal: true }}
-            items={['DE', 'EN']}
-            resetOnClose={true}
-            itemRenderer={(item, { handleClick }) => (
-              <MenuItem
-                selected={item === i18n.resolvedLanguage.toUpperCase()}
-                onClick={handleClick}
-                text={item}
-                key={item}
-              />
-            )}
-            onItemSelect={(a) => {
-              i18n.changeLanguage(a.toLowerCase());
-            }}
-          >
-            <Button text={i18n.resolvedLanguage.toUpperCase()} />
-          </Select2>
+          {/*<Select2<string>*/}
+          {/*  filterable={false}*/}
+          {/*  popoverProps={{ minimal: true }}*/}
+          {/*  items={['DE', 'EN']}*/}
+          {/*  resetOnClose={true}*/}
+          {/*  itemRenderer={(item, { handleClick }) => (*/}
+          {/*    <MenuItem*/}
+          {/*      selected={item === i18n.resolvedLanguage.toUpperCase()}*/}
+          {/*      onClick={handleClick}*/}
+          {/*      text={item}*/}
+          {/*      key={item}*/}
+          {/*    />*/}
+          {/*  )}*/}
+          {/*  onItemSelect={(a) => {*/}
+          {/*    i18n.changeLanguage(a.toLowerCase());*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  <Button text={i18n.resolvedLanguage.toUpperCase()} />*/}
+          {/*</Select2>*/}
         </div>
       </nav>
       {plantsSearch && (

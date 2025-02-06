@@ -41,7 +41,7 @@ export const client = new Client(
   process.env.ENVIRONMENT === 'DEV'
     ? {
         host: 'localhost',
-        database: 'sergejsrizovs',
+        database: 'sergey',
       }
     : {
         connectionString: process.env.DATABASE_URL,

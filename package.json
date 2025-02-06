@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"vite\" \"ENVIRONMENT=DEV nodemon --ignore ./src/ --esm server/server.ts\" --kill-others",
+    "dev": "concurrently \"vite\" \"ENVIRONMENT=DEV tsx watch server/server.ts\" --kill-others",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -41,6 +41,7 @@
     "express": "^4.17.1",
     "express-jwt": "^7.7.5",
     "fuse.js": "^6.4.6",
+    "global": "^4.4.0",
     "hammerjs": "^2.0.8",
     "i18next": "^21.9.1",
     "i18next-browser-languagedetector": "^6.1.5",
@@ -53,7 +54,7 @@
     "jwks-rsa": "^2.1.4",
     "lodash": "^4.17.21",
     "nanoid": "^3.1.23",
-    "node-sass": "^7.0.1",
+    "node-sass": "^9.0.0",
     "pg": "^8.7.1",
     "prettier": "^2.3.1",
     "puppeteer": "^15.5.0",
@@ -63,7 +64,7 @@
     "react-i18next": "^11.18.6",
     "react-query": "^4.0.0-beta.23",
     "sql-template-strings": "^2.2.2",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.7.4"
   },
@@ -71,7 +72,7 @@
     "@trivago/prettier-plugin-sort-imports": "^3.3.0",
     "@vitejs/plugin-react": "^2.0.0",
     "sass": "^1.54.0",
-    "vite": "^3.0.0",
+    "vite": "^6.1.0",
     "vite-plugin-svgr": "^2.2.0",
     "vite-tsconfig-paths": "^3.5.0"
   }
