@@ -7,7 +7,7 @@
     "dev": "concurrently \"vite\" \"ENVIRONMENT=DEV tsx watch server/server.ts\" --kill-others",
     "build": "vite build",
     "preview": "vite preview",
-    "postinstall": "tsx watch server/server.ts"
+    "postinstall": "npx tsx watch server/server.ts"
   },
   "dependencies": {
     "@auth0/auth0-react": "^1.10.2",
